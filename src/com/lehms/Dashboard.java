@@ -2,6 +2,7 @@ package com.lehms;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
@@ -38,7 +39,8 @@ public class Dashboard extends RoboActivity {
 	
 	public void onClientsClick(View view)
 	{
-		
+		Intent i = new Intent(this, ClientsActivity.class);
+		startActivity(i);
 	}
 	
 	public void onMapClick(View view)
