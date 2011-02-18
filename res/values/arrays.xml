@@ -6,6 +6,7 @@
         <item>Development Emulation</item>
         <item>Testing</item>
         <item>Production</item>  
+        <item>Mock</item>
     </string-array>
 
     <string-array name="application_settings_profile_entry_values">
@@ -13,5 +14,13 @@
         <item>DevelopmentEmulation</item>
         <item>Testing</item>
         <item>Production</item>  
+        <item>Mock</item>
     </string-array>
+
+    <string-array name="dashboard_my_roster_selection">
+        <item>Today</item>
+        <item>Tomorrow</item>
+        <item>Yesterday</item>
+    </string-array>
+
 </resources>

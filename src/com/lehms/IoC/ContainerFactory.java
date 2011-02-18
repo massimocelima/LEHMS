@@ -4,11 +4,18 @@ import com.lehms.LehmsApplication;
 
 public class ContainerFactory {
 
+	private static IContainer _container;
+	
 	private ContainerFactory() {}
 	
-	public static IContainer Create(LehmsApplication context)
+	public static IContainer Create()
 	{
-		return new Container(context);
+		return _container;
+	}
+	
+	public static void SetContainer(IContainer container)
+	{
+		_container = container;
 	}
 	
 }

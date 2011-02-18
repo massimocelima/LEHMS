@@ -40,4 +40,9 @@ public class Profile {
 		return result;
 	}
 	
+	public ProfileEnvironment GetProfileEnvironment()
+	{
+		return _profileEnvironment;
+	}
+	
 }
