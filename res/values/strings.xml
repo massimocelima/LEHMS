@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="hello">Hello World, LoginActivity!</string>
+    <string name="app_name">LEHMS V2</string>
+    <string name="login_username">Username:</string>
+    <string name="login_password">Password:</string>
+    <string name="login_login">Login</string>
+    <string name="login_cancel">Cancel</string>
+    <string name="application_settings_environment">Environment</string>
+    <string name="application_settings_profile">Profile</string>
+    <string name="application_settings_profile_summary">This is the target envirment for the application</string>
+</resources>

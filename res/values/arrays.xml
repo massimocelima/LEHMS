@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+ 
+    <string-array name="application_settings_profile_entries">
+        <item>Development</item>
+        <item>Development Emulation</item>
+        <item>Testing</item>
+        <item>Production</item>  
+    </string-array>
+
+    <string-array name="application_settings_profile_entry_values">
+        <item>Development</item>
+        <item>DevelopmentEmulation</item>
+        <item>Testing</item>
+        <item>Production</item>  
+    </string-array>
+</resources>
