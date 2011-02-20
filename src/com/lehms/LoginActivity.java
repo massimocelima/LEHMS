@@ -37,8 +37,8 @@ public class LoginActivity extends RoboActivity {
     
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
+        super.onCreate(savedInstanceState);
         setContentView(R.layout.login);
                 
         _progressDialog = new ProgressDialog(this);
@@ -135,8 +135,8 @@ public class LoginActivity extends RoboActivity {
 					
 		            // Here we start the next activity, and then call finish()
 		            // so that our own will stop running and be removed from the history stack.
-		            Intent intent = new Intent();
-		            intent.setClass(LoginActivity.this, Dashboard.class);
+		            Intent intent = new Intent(_context, Dashboard.class);
+		            //intent.setClass(LoginActivity.this, Dashboard.class);
 		            _context.startActivity(intent);
 		            _context.finish();
 					

@@ -4,5 +4,6 @@ public enum ProfileEnvironment {
     Development,
     DevelopmentEmulation,
     Testing,
-    Production
+    Production,
+    Mock
 }

@@ -7,6 +7,8 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
 import com.google.inject.Module;
+import com.lehms.IoC.Container;
+import com.lehms.IoC.ContainerFactory;
 import com.lehms.messages.dataContracts.UserDataContract;
 import com.lehms.service.*;
 
@@ -15,7 +17,6 @@ import roboguice.application.RoboApplication;
 public class LehmsApplication extends RoboApplication 
 		implements IIdentityProvider, IProfileProvider 
 {
-
 	private UserDataContract _currentUser;
 	
 	@Override
@@ -23,6 +24,9 @@ public class LehmsApplication extends RoboApplication
 		// TODO Auto-generated method stub
 		super.onCreate();
 		PreferenceManager.setDefaultValues(this, R.xml.application_settings, false);
+		
+		// Inits the container for the container factory
+		ContainerFactory.SetContainer(new Container(this));
 	}
 	
 	@Override

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-	<style name="Theme.Lehms" parent="@style/Theme.GreenDroid.NoTitleBar">
+	<style name="Theme.Lehms" parent="@android:style/Theme.Light.NoTitleBar">
 	
 		<item name="gdActionBarTitleColor">@android:color/white</item>
 		<item name="gdActionBarBackground">@drawable/action_bar_background</item>
