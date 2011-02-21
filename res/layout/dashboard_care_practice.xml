@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+ <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+     android:orientation="vertical"
+     android:layout_width="fill_parent"
+     android:layout_height="wrap_content"
+     android:layout_weight="1"
+     android:padding="6dip">
+     <LinearLayout
+         android:orientation="horizontal"
+         android:layout_width="fill_parent"
+         android:layout_height="wrap_content"
+         android:layout_weight="1">
+         <Button android:id="@+id/dashboard_btn_roster"
+             style="@style/DashboardButton"
+             android:onClick="onMyRosterClick"
+             android:text="My Roster"
+             android:drawableTop="@drawable/dashboard_btn_my_roster"/>
+         <Button android:id="@+id/dashboard_btn_map"
+             style="@style/DashboardButton"
+             android:onClick="onClientsClick"
+             android:text="Clients"
+             android:drawableTop="@drawable/dashboard_btn_clients"/>
+     </LinearLayout>
+
+     <LinearLayout
+         android:orientation="horizontal"
+         android:layout_width="fill_parent"
+         android:layout_height="wrap_content"
+         android:layout_weight="1">
+         <Button android:id="@+id/dashboard_btn_map"
+             style="@style/DashboardButton"
+             android:onClick="onMapClick"
+             android:text="Navigation"
+             android:drawableTop="@drawable/dashboard_btn_map"/>
+         <Button android:id="@+id/dashboard_btn_contact"
+             style="@style/DashboardButton"
+             android:onClick="onContactClick"
+             android:text="Contact Office"
+             android:drawableTop="@drawable/dashboard_btn_contact"/>
+     </LinearLayout>
+
+     <LinearLayout
+         android:orientation="horizontal"
+         android:layout_width="fill_parent"
+         android:layout_height="wrap_content"
+         android:layout_weight="1">
+         <Button android:id="@+id/dashboard_btn_camera"
+             style="@style/DashboardButton"
+             android:onClick="onCameraClick"
+             android:text="Take A Picture"
+             android:drawableTop="@drawable/dashboard_btn_camera"/>
+         <Button android:id="@+id/dashboard_btn_emergency"
+             style="@style/DashboardButton"
+             android:text="Help"
+             android:onClick="onEmergencyClick"
+             android:drawableTop="@drawable/dashboard_btn_emergency"/>
+     </LinearLayout>
+ </LinearLayout>

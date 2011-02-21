@@ -27,7 +27,7 @@ public class AuthenticationService implements IAuthenticationService {
 		loginRequest.Password = password;
 		
 		//LoginResponse r = _channel.Get(LoginResponse.class);
-		return GetChannel().Post(loginRequest, LoginResponse.class);
+		return GetChannel().ExecuteCommand(loginRequest, LoginResponse.class);
 	}
 	
 	private IChannel GetChannel()

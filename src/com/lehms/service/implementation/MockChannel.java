@@ -31,7 +31,7 @@ public class MockChannel implements IChannel {
 	}
 
 	@Override
-	public <T> T Get(Class<T> responseType) throws Exception {
+	public <T> T Get(int pageIndex, int pageSize, String orderBy, String where, Class<T> responseType) throws Exception {
 		T result = ContainerFactory.Create().resolve(responseType);
 		return result;
 	}
@@ -43,7 +43,7 @@ public class MockChannel implements IChannel {
 	}
 
 	@Override
-	public <T> T Post(Object request, Class<T> responseType) throws Exception {
+	public <T> T Create(Object request, Class<T> responseType) throws Exception {
 		if( LoginResponse.class.equals(responseType) )
 		{
 			return (T)CreateLoginResponse(); 
@@ -51,13 +51,18 @@ public class MockChannel implements IChannel {
 		T result = ContainerFactory.Create().resolve(responseType);
 		return result;
 	}
+	
+	@Override
+	public <T> T ExecuteCommand(Object request, Class<T> responseType) throws Exception {
+		return Create(request, responseType);
+	}
 
 	@Override
 	public void Delete(String id) throws Exception {
 	}
 
 	@Override
-	public <T> T Put(String id, Object request, Class<T> responseType) throws Exception {
+	public <T> T Update(String id, Object request, Class<T> responseType) throws Exception {
 		T result = ContainerFactory.Create().resolve(responseType);
 		return result;
 	}

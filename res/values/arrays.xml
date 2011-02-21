@@ -23,4 +23,10 @@
         <item>Yesterday</item>
     </string-array>
 
+    <string-array name="dashboard_contact_office_selection">
+        <item>By Phone</item>
+        <item>By Email</item>
+    </string-array>
+
+
 </resources>

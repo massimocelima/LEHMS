@@ -38,7 +38,7 @@ public class HttpRestChannel implements IChannel {
 	}
 
 	@Override
-	public <T> T Get(Class<T> responseType) throws Exception {
+	public <T> T Get(int pageIndex, int pageSize, String orderBy, String where, Class<T> responseType) throws Exception {
 				
 		// Send GET request to <service>/GetPlates         
     	HttpGet request = new HttpGet(_url);         
@@ -88,7 +88,7 @@ public class HttpRestChannel implements IChannel {
 	}
 
 	@Override
-	public <T> T Post(Object request, Class<T> responseType) throws Exception {
+	public <T> T Create(Object request, Class<T> responseType) throws Exception {
 		
 		HttpPost httpRequest = new HttpPost(_url); 
 		httpRequest.setHeader("Accept", "application/json");             
@@ -115,6 +115,35 @@ public class HttpRestChannel implements IChannel {
 		
 		return result;
 	}
+	
+	@Override
+	public <T> T ExecuteCommand(Object request, Class<T> responseType) throws Exception {
+		HttpPost httpRequest = new HttpPost(_url); 
+		httpRequest.setHeader("Accept", "application/json");             
+		httpRequest.setHeader("Content-type", "application/json"); 
+		AddBasicAuthenticationHeader(httpRequest);
+
+		String jsonString = _serializer.serializer(request);
+		   
+		StringEntity entity = new StringEntity(jsonString); 
+		httpRequest.setEntity(entity); 
+		
+		DefaultHttpClient httpClient = new DefaultHttpClient();
+		HttpResponse response = httpClient.execute(httpRequest);
+		   
+		HttpEntity responseEntity =  response.getEntity();
+		   
+		char[] buffer = new char[(int)responseEntity.getContentLength()];         
+		InputStream stream = responseEntity.getContent();         
+		InputStreamReader reader = new InputStreamReader(stream);         
+		reader.read(buffer);         
+		stream.close();          
+		
+		T result = _serializer.Deserializer(new String(buffer), responseType);
+		
+		return result;
+	}
+
 
 	@Override
 	public void Delete(String id) throws Exception {
@@ -142,7 +171,7 @@ public class HttpRestChannel implements IChannel {
 	}
 
 	@Override
-	public <T> T Put(String id, Object request, Class<T> responseType) throws Exception {
+	public <T> T Update(String id, Object request, Class<T> responseType) throws Exception {
 		
 		HttpPut httpRequest = new HttpPut(_url + "/" + id); 
 		httpRequest.setHeader("Accept", "application/json");             
