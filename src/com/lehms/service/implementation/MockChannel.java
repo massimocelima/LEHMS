@@ -63,6 +63,7 @@ public class MockChannel implements IChannel {
 
 	@Override
 	public <T> T Update(String id, Object request, Class<T> responseType) throws Exception {
+
 		T result = ContainerFactory.Create().resolve(responseType);
 		return result;
 	}

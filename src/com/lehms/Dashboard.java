@@ -65,10 +65,6 @@ public class Dashboard extends RoboActivity implements OnGestureListener
         _leftOutAnimation = AnimationUtils.loadAnimation(this, R.anim.slide_left_out);
 	}
 	
-	public boolean onTouchEvent(MotionEvent event) {  
-		return _gestureDetector.onTouchEvent(event);
-	} 
-	
 	public void onMyRosterClick(View view)
 	{
 		AlertDialog dialog = new AlertDialog.Builder(this)
@@ -88,7 +84,7 @@ public class Dashboard extends RoboActivity implements OnGestureListener
 		dialog.show();
 		
 	}
-	
+
 	public void onContactClick(View view)
 	{
 		AlertDialog dialog = new AlertDialog.Builder(this)
@@ -147,6 +143,12 @@ public class Dashboard extends RoboActivity implements OnGestureListener
         return indicator;
     }
 
+	public boolean onTouchEvent(MotionEvent event) {  
+		return _gestureDetector.onTouchEvent(event);
+	} 
+
+    // Begin OnGestureListener Implementation
+    
 	@Override
 	public boolean onDown(MotionEvent arg0) {
 		// TODO Auto-generated method stub
@@ -182,28 +184,18 @@ public class Dashboard extends RoboActivity implements OnGestureListener
 	}
 
 	@Override
-	public void onLongPress(MotionEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void onLongPress(MotionEvent arg0) {	}
 
 	@Override
-	public boolean onScroll(MotionEvent arg0, MotionEvent arg1, float arg2,
-			float arg3) {
-		// TODO Auto-generated method stub
-		return false;
-	}
+	public boolean onScroll(MotionEvent arg0, MotionEvent arg1, float arg2,float arg3) { return false; }
 
 	@Override
-	public void onShowPress(MotionEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void onShowPress(MotionEvent arg0) {	}
 
 	@Override
-	public boolean onSingleTapUp(MotionEvent arg0) {
-		// TODO Auto-generated method stub
-		return false;
-	}
+	public boolean onSingleTapUp(MotionEvent arg0) { return false; }
+	
+    // End OnGestureListener Implementation
+
  
 }
