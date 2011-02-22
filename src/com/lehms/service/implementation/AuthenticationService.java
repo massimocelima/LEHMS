@@ -11,12 +11,16 @@ public class AuthenticationService implements IAuthenticationService {
 
 	private IChannelFactory _channelFactory;
 	private IProfileProvider _profileProvider;
-   
+	private IDepartmentProvider _departmentProvider;
+	
 	@Inject
-	private AuthenticationService(IChannelFactory channelFactory, IProfileProvider profileProvider)
+	private AuthenticationService(IChannelFactory channelFactory, 
+			IProfileProvider profileProvider, 
+			IDepartmentProvider departmentProvider)
 	{
 		_profileProvider = profileProvider;
 		_channelFactory = channelFactory;
+		_departmentProvider = departmentProvider;
 	}
 	
 	@Override
@@ -25,8 +29,8 @@ public class AuthenticationService implements IAuthenticationService {
 		LoginRequest loginRequest = new LoginRequest();
 		loginRequest.Username = username;
 		loginRequest.Password = password;
+		loginRequest.Department = _departmentProvider.getDepartment();
 		
-		//LoginResponse r = _channel.Get(LoginResponse.class);
 		return GetChannel().ExecuteCommand(loginRequest, LoginResponse.class);
 	}
 	

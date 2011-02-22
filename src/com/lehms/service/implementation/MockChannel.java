@@ -80,5 +80,11 @@ public class MockChannel implements IChannel {
 		return result;
 	}
 
+	@Override
+	public <T> T Get(Object request, Class<T> responseType) throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }
 

@@ -3,6 +3,7 @@ package com.lehms.service;
 public interface IChannel {
 
 	<T> T Get(int pageIndex, int pageSize, String orderBy, String where, Class<T> responseType) throws Exception;
+	<T> T Get(Object request, Class<T> responseType) throws Exception;
 	<T> T Get(String id, Class<T> responseType) throws Exception;
 	<T> T ExecuteCommand(Object request, Class<T> responseType) throws Exception;
 	<T> T Create(Object request, Class<T> responseType) throws Exception;

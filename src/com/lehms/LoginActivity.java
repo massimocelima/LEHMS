@@ -110,7 +110,6 @@ public class LoginActivity extends RoboActivity {
 		@Override
 		protected LoginResponse doInBackground(String... arg0) {
 			try {
-				Thread.sleep(1000);
 				return _authenticationService.Login(arg0[0], arg0[1]);
 			} catch (Exception e) {
 				Log.e("LEHMS", e.getMessage());

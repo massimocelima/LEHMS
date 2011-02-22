@@ -19,6 +19,11 @@ public class Profile {
 		return GetBaseUrl() + "/Authentication/Login";
 	}
 	
+	public String GetRosterResourceEndPoint()
+	{
+		return GetBaseUrl() + "/Roster";
+	}
+	
 	private String GetBaseUrl()
 	{
 		String result = "http://10.0.2.2:7856";

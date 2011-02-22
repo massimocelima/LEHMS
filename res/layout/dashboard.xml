@@ -59,26 +59,18 @@
 		</LinearLayout>
 	</TabHost>
 
-<!-- 
     <LinearLayout
-        android:id="@+id/now_playing_loading"
+        android:id="@+id/footer_container"
         android:layout_width="fill_parent"
         android:layout_height="@dimen/now_playing_height"
         android:orientation="horizontal"
         android:background="#eee"
         android:gravity="center">
-        <ProgressBar
-            style="?android:attr/progressBarStyleSmall"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingRight="6dip"
-            android:indeterminate="true"/>
         <TextView
+	        android:id="@+id/footer_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/text_size_small"
-            android:text="Footer"/>
+            android:textSize="@dimen/text_size_large" />
     </LinearLayout>
- -->
  
 </LinearLayout>

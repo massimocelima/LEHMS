@@ -15,6 +15,20 @@
                 android:entryValues="@array/application_settings_profile_entry_values"
                 android:dialogTitle="@string/application_settings_profile" />
 
+		<EditTextPreference
+                android:key="application_settings_device_id_pref"
+	            android:defaultValue="DEV0001"
+                android:title="@string/application_settings_device_id"
+                android:summary="@string/application_settings_device_id_summary"
+                android:dialogTitle="@string/application_settings_device_id" />
+
+		<EditTextPreference
+                android:key="application_settings_department_pref"
+	            android:defaultValue="INS"
+                android:title="@string/application_settings_department"
+                android:summary="@string/application_settings_department_summary"
+                android:dialogTitle="@string/application_settings_department" />
+
     </PreferenceCategory>
     
 </PreferenceScreen>

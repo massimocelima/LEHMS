@@ -1,11 +1,17 @@
 package com.lehms;
 
+import java.util.Calendar;
+import java.util.Date;
+
+import com.google.inject.Inject;
+import com.lehms.service.IIdentityProvider;
 import com.lehms.util.MathUtils;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.GestureDetector.OnGestureListener;
 import android.view.animation.Animation;
@@ -25,6 +31,9 @@ import roboguice.inject.InjectView;
 public class Dashboard extends RoboActivity implements OnGestureListener
 {
 	private GestureDetector _gestureDetector;
+	
+	@Inject protected IIdentityProvider _identityProvider;
+	@InjectView(R.id.footer_text) protected TextView _footerText;
 	
 	@InjectView(R.id.dashboard_tab_host) protected TabHost _tabHost;
 	@InjectView(android.R.id.tabs) protected TabWidget _tabWidget;
@@ -55,6 +64,18 @@ public class Dashboard extends RoboActivity implements OnGestureListener
         		_tabHost.newTabSpec("tabPersonalResponse")
     				.setIndicator(buildIndicator("Personal Response")) //, getResources().getDrawable(R.drawable.ic_tab_options))
     				.setContent(R.id.dashboard_personal_response_content)); // new Intent(this, Notepadv3.class)));
+		
+		try
+		{
+			_footerText.setText(
+					"Welcome " + 
+					_identityProvider.getCurrent().FirstName + " " + _identityProvider.getCurrent().LastName);
+		}
+		catch(Exception ex)
+		{
+			Log.e("LEHMS", "Failed to set footer in dashboard");
+		}
+		
 	}
 
 	private void InitAnimations()
@@ -70,9 +91,28 @@ public class Dashboard extends RoboActivity implements OnGestureListener
 		AlertDialog dialog = new AlertDialog.Builder(this)
 	        .setTitle("Please select the roster you would like to view")
             .setItems(R.array.dashboard_my_roster_selection, new DialogInterface.OnClickListener() {
+            	
                 public void onClick(DialogInterface dialog, int which) {
 
+                	//String[] selection = getApplicationContext().getResources().getStringArray(R.array.dashboard_my_roster_selection); 
+            		Intent i = new Intent(getApplicationContext(), RosterActivity.class);
+            		Date rosterDate = new Date();
+            		switch(which)
+            		{
+            		case 1:
+            			Calendar.getInstance().roll(Calendar.DAY_OF_YEAR, 1);
+            			rosterDate = Calendar.getInstance().getTime();
+            			break;
+            		case 2:
+            			Calendar.getInstance().roll(Calendar.DAY_OF_YEAR, -1);
+            			rosterDate = Calendar.getInstance().getTime();
+            			break;
+            		}
+            		
+            		i.putExtra("roster_date", rosterDate);
+            		startActivity(i);
                }
+                
             })
             .setCancelable(true)
             .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {

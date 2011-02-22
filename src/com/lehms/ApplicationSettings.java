@@ -8,8 +8,6 @@ import android.preference.PreferenceActivity;
 
 public class ApplicationSettings extends PreferenceActivity {
 
-    public static final String KEY_PROFILE_PREF = "application_settings_profile_pref";
-	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

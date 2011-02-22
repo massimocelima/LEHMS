@@ -9,4 +9,8 @@
     <string name="application_settings_environment">Environment</string>
     <string name="application_settings_profile">Profile</string>
     <string name="application_settings_profile_summary">This is the target envirment for the application</string>
+    <string name="application_settings_device_id">Device Identifier</string>
+    <string name="application_settings_device_id_summary">The identifier that uniqly identifies the device</string>
+    <string name="application_settings_department">Department</string>
+    <string name="application_settings_department_summary">The name of the deparment you are registered with</string>
 </resources>

@@ -15,9 +15,13 @@ import com.lehms.service.*;
 import roboguice.application.RoboApplication;
 
 public class LehmsApplication extends RoboApplication 
-		implements IIdentityProvider, IProfileProvider 
+		implements IIdentityProvider, IProfileProvider , IDeviceIdentifierProvider, IDepartmentProvider
 {
 	private UserDataContract _currentUser;
+	
+    public static final String KEY_PROFILE_PREF = "application_settings_profile_pref";
+    public static final String KEY_DEVICE_ID_PREF = "application_settings_device_id_pref";
+    public static final String KEY_DEPARTMENT_PREF = "application_settings_department_pref";
 	
 	@Override
 	public void onCreate() {
@@ -64,8 +68,20 @@ public class LehmsApplication extends RoboApplication
 	public Profile getProfile()
 	{
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-        String profileName = sharedPref.getString(ApplicationSettings.KEY_PROFILE_PREF, "Development");
+        String profileName = sharedPref.getString(KEY_PROFILE_PREF, "Development");
 		return new Profile( Enum.valueOf(ProfileEnvironment.class, profileName) );
+	}
+	
+	public String getDeviceId()
+	{
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+        return sharedPref.getString(KEY_DEVICE_ID_PREF, "DEV0001");
+	}
+	
+	public String getDepartment()
+	{
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+        return sharedPref.getString(KEY_DEPARTMENT_PREF, "INS");
 	}
 
 }
