@@ -27,4 +27,31 @@ public class UserDataContract {
 		return Roles.contains(role);
 	}
 	
+	public String getUserDetails()
+	{
+		String result = "";
+		if( FirstName.equals( "" ) )
+			result = "None";
+		else 
+			result = FirstName;
+
+		result += " ";
+		
+		if( LastName.equals( "" ) )
+			result += "None";
+		else 
+			result += LastName;
+
+		result += " (";
+
+		if( Email.equals( "" ) )
+			result += "none@there.com";
+		else 
+			result += Email;
+
+		result += ")";
+
+		return result;
+	}
+	
 }

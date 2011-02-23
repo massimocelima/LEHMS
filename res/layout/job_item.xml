@@ -3,14 +3,22 @@
     android:orientation="vertical"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
+    style="@style/ListItem"
     >
-
 	<TextView 
 		android:id="@+id/JobDataContract_ScheduledStartTime"
 	    android:layout_width="fill_parent"
 	    android:layout_height="wrap_content"
-	  	android:textAppearance="?android:attr/textAppearanceLarge" 
-	  	android:textColor="?android:attr/textColorPrimary" 
+	    style="@style/TextHeader"
+	>
+	</TextView>
+
+
+	<TextView 
+		android:id="@+id/JobDataContract_Type"
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    style="@style/TextHeaderTwo"
 	>
 	</TextView>
 
@@ -18,17 +26,7 @@
 		android:id="@+id/JobDataContract_Description"
 	    android:layout_width="fill_parent"
 	    android:layout_height="wrap_content"
-	  	android:textAppearance="?android:attr/textAppearanceMedium" 
-	  	android:textColor="?android:attr/textColorSecondary" 
-	>
-	</TextView>
-
-	<TextView 
-		android:id="@+id/JobDataContract_Type"
-	    android:layout_width="fill_parent"
-	    android:layout_height="wrap_content"
-	  	android:textAppearance="?android:attr/textAppearanceSmall" 
-	  	android:textColor="?android:attr/textColorTertiary" 
+	    style="@style/TextBody"
 	>
 	</TextView>
 

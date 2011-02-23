@@ -1,6 +1,7 @@
 package com.lehms;
 
 import roboguice.activity.RoboActivity;
+import roboguice.inject.*;
 
 import com.google.inject.Inject;
 import com.google.inject.Provider;
@@ -27,9 +28,8 @@ import android.widget.Toast;
 
 public class LoginActivity extends RoboActivity {
 	
-	public ProgressDialog _progressDialog;
-    private EditText _usernameEditText;
-    private EditText _passwordEditText;
+	@InjectView(R.id.login_username) protected EditText _usernameEditText;
+	@InjectView(R.id.login_password) protected EditText _passwordEditText;
 
     @Inject protected IAuthenticationService _authenticationService;
     @Inject protected IIdentityProvider _identityProvider;
@@ -40,14 +40,10 @@ public class LoginActivity extends RoboActivity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login);
-                
-        _progressDialog = new ProgressDialog(this);
-        _progressDialog.setMessage("Please wait...");
-        _progressDialog.setIndeterminate(true);
-        _progressDialog.setCancelable(false);
         
-        _usernameEditText = (EditText) findViewById(R.id.login_username);
-        _passwordEditText = (EditText) findViewById(R.id.login_password);
+        _usernameEditText.setText("Test1.t");
+        _passwordEditText.setText("utz6");
+        
     }
 
     public void OnLoginClick(View view)
@@ -95,7 +91,8 @@ public class LoginActivity extends RoboActivity {
     private class LoginTask extends AsyncTask<String, Integer, LoginResponse>
     {
     	private Activity _context;
-    	
+    	public ProgressDialog _progressDialog;
+
     	public LoginTask(Activity context)
     	{
     		_context = context;
@@ -104,6 +101,12 @@ public class LoginActivity extends RoboActivity {
     	@Override
     	protected void onPreExecute() {
     		super.onPreExecute();
+    		
+            _progressDialog = new ProgressDialog(_context);
+            _progressDialog.setMessage("Please wait...");
+            _progressDialog.setIndeterminate(true);
+            _progressDialog.setCancelable(false);
+    		
             _progressDialog.show();
     	}
     	
@@ -153,60 +156,5 @@ public class LoginActivity extends RoboActivity {
 		}
 		
     }
-    
-    /*
-    
-    private void doLogin(String username, String password)
-    {
-        Thread t = new Thread() {
-            public void run() {
-            	
-				try {
-					Thread.sleep(1000);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-            	
-            	runOnUiThread(
-            			new Runnable() {     
-            				public void run() {         
-            					_progressDialog.dismiss();
-            					createDialog("Error", "Couldn't establish a connection");
-            				} 
-            			});
-            	
-                //Intent i = new Intent();
-                //i.putExtra("userid", userID);
-                //quit(true,i);
-            	
-                //Looper.prepare();
-                //DefaultHttpClient client = new DefaultHttpClient(); 
-                //HttpConnectionParams.setConnectionTimeout(client.getParams(), 15000);                 
-                //HttpResponse response;
-                //HttpEntity entity;         
-                //try {
-                //    HttpPost post = new HttpPost(UPDATE_URL);
-                //    List <NameValuePair> nvps = new ArrayList <NameValuePair>();
-                //    nvps.add(new BasicNameValuePair("username", login));
-                //    nvps.add(new BasicNameValuePair("password", pw));
-                //    post.setHeader("Content-Type", "application/x-www-form-urlencoded");
-                //    post.setEntity(new UrlEncodedFormEntity(nvps, HTTP.UTF_8));
-                //    response = client.execute(post);
-                //    entity = response.getEntity();
-                //    InputStream is = entity.getContent();
-                //    read(is);
-                //    is.close();
-                //    if (entity != null) entity.consumeContent();
-                //} catch (Exception e) {
-                //    _progressDialog.dismiss();
-                //    createDialog("Error", "Couldn't establish a connection");
-                //}
-                //Looper.loop();                
-            }
-        };
-        t.start();
-    }
-        */
 
 }

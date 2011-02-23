@@ -30,8 +30,10 @@
         <activity android:name=".ClientsActivity"
                   android:label="@string/app_name" 
                   />
-                  
         <activity android:name=".RosterActivity"
+                  android:label="@string/app_name" 
+                  />
+        <activity android:name=".JobDetailsActivity"
                   android:label="@string/app_name" 
                   />
    </application>

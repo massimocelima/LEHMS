@@ -24,6 +24,12 @@ public class JobAdapter extends ArrayAdapter<JobDataContract> {
 	}
 	
 	@Override
+	public long getItemId(int position) {
+		// TODO Auto-generated method stub
+		return Long.parseLong(getItem(position).JobId);
+	}
+	
+	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		
 		LinearLayout view;

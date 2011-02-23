@@ -20,7 +20,7 @@
         <TextView 
 	        android:id="@+id/title_bar_title"
         	style="@style/TitleBarText" 
-        	android:text="LEHMS V2" />
+        	android:text="Roster" />
         <!-- <View style="@style/TitleBarSpring" /> -->
 
         <ImageView style="@style/TitleBarSeparator" />
@@ -32,7 +32,52 @@
     </LinearLayout>
     
     
+    <LinearLayout 
+        style="@style/HeaderContainer">
 
+		<ImageView 
+			android:layout_height="wrap_content" 
+			android:layout_width="wrap_content" 
+			android:src="@drawable/dashboard_btn_my_roster_selected"></ImageView>
+			
+	    <LinearLayout 
+		    android:orientation="vertical"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:layout_weight="1"
+		    >
+			
+			<TextView 
+				android:id="@+id/activity_roster_title"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:text="Roster"
+		        style="@style/HeaderTitle" />
+	   		<TextView 
+				android:id="@+id/activity_roster_sub_title"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        style="@style/HeaderSubTitle" />
+        </LinearLayout>
+
+	    <LinearLayout 
+		    android:orientation="vertical"
+		    android:layout_width="wrap_content"
+		    android:layout_height="fill_parent"
+		    android:gravity="center"
+		    >
+
+	        <Button 
+				 android:layout_height="wrap_content" 
+				 android:layout_width="wrap_content" 
+	             android:background="@null"
+	             android:onClick="onSpecifyDateClick"
+	             android:drawableTop="@drawable/expander_ic_minimized"/>
+		</LinearLayout>
+        
+	    
+	</LinearLayout>
+	
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="fill_parent"
@@ -40,9 +85,11 @@
         android:layout_weight="1"
         android:padding="6dip">
  
-	     <ListView android:id="@+id/android:list"
+       	<!-- class="com.lehms.GestureDetectorListView" -->
+ 		<ListView
+ 			android:id="@+id/android:list"
 	        android:layout_width="fill_parent"
-	        android:layout_height="fill_parent"/>
+	        android:layout_height="fill_parent" />
  
     </LinearLayout>
 

@@ -147,4 +147,20 @@
         <item name="android:textColor">@android:color/secondary_text_light</item>
     </style>
 
+    <style name="HeaderTitle" parent="TextHeader">
+        <item name="android:textColor">@color/foreground1</item>
+    </style>
+
+    <style name="HeaderSubTitle" parent="TextHeaderTwo">
+    </style>
+
+    <style name="HeaderContainer">
+        <item name="android:orientation">horizontal</item>
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:padding">6dip</item>
+        <item name="android:background">@drawable/header_background</item>
+    </style>
+
+
 </resources>

@@ -40,5 +40,4 @@ public class RosterResource implements IRosterResource {
 	{
 		return _channelFactory.Create(_profileProvider.getProfile().GetRosterResourceEndPoint());
 	}
-
 }
