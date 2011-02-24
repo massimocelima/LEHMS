@@ -1,16 +1,27 @@
 package com.lehms;
 
+import java.io.File;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import com.google.inject.Inject;
 import com.lehms.service.IIdentityProvider;
 import com.lehms.util.MathUtils;
 
 import android.app.AlertDialog;
+import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.DialogInterface.OnClickListener;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.GestureDetector.OnGestureListener;
@@ -19,8 +30,10 @@ import android.view.animation.AnimationUtils;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.TabHost;
+import android.widget.TabHost.TabSpec;
 import android.widget.TabWidget;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -30,20 +43,22 @@ import roboguice.inject.InjectView;
 
 public class Dashboard extends RoboActivity implements OnGestureListener
 {
-	private GestureDetector _gestureDetector;
-	
 	@Inject protected IIdentityProvider _identityProvider;
 	@InjectView(R.id.footer_text) protected TextView _footerText;
 	
 	@InjectView(R.id.dashboard_tab_host) protected TabHost _tabHost;
 	@InjectView(android.R.id.tabs) protected TabWidget _tabWidget;
-
+	
     Animation _rightInAnimation;
     Animation _rightOutAnimation;
     Animation _leftInAnimation;
     Animation _leftOutAnimation;
 
+	private GestureDetector _gestureDetector;
+    private GuestureListener _gestureListener;
 	
+    private int CAPTURE_PICTURE_INTENT = 1;
+    
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -52,8 +67,10 @@ public class Dashboard extends RoboActivity implements OnGestureListener
 		InitAnimations();
 		
 		_gestureDetector = new GestureDetector(this);
+		_gestureListener = new GuestureListener(_gestureDetector); 
 
 		_tabHost.setup();
+		_tabHost.setOnTouchListener(_gestureListener);
 		
 		_tabHost.addTab(
         		_tabHost.newTabSpec("tabCarePractice")
@@ -64,7 +81,9 @@ public class Dashboard extends RoboActivity implements OnGestureListener
         		_tabHost.newTabSpec("tabPersonalResponse")
     				.setIndicator(buildIndicator("Personal Response")) //, getResources().getDrawable(R.drawable.ic_tab_options))
     				.setContent(R.id.dashboard_personal_response_content)); // new Intent(this, Notepadv3.class)));
-		
+
+		SetTouchEventOnChildViews(_tabHost);
+
 		try
 		{
 			_footerText.setText(
@@ -78,6 +97,18 @@ public class Dashboard extends RoboActivity implements OnGestureListener
 		
 	}
 
+	private void SetTouchEventOnChildViews(ViewGroup viewGroup)
+	{
+		for(int i = 0; i < viewGroup.getChildCount(); i++)
+		{
+			View view = viewGroup.getChildAt(i);
+			view.setOnTouchListener(_gestureListener);
+			if(  view instanceof ViewGroup ){
+				SetTouchEventOnChildViews((ViewGroup)view);
+			}
+		}
+	}
+	
 	private void InitAnimations()
 	{
         _rightInAnimation = AnimationUtils.loadAnimation(this, R.anim.slide_right_in);
@@ -88,41 +119,10 @@ public class Dashboard extends RoboActivity implements OnGestureListener
 	
 	public void onMyRosterClick(View view)
 	{
-		AlertDialog dialog = new AlertDialog.Builder(this)
-	        .setTitle("Please select the roster you would like to view")
-            .setItems(R.array.dashboard_my_roster_selection, new DialogInterface.OnClickListener() {
-            	
-                public void onClick(DialogInterface dialog, int which) {
-
-                	//String[] selection = getApplicationContext().getResources().getStringArray(R.array.dashboard_my_roster_selection); 
-            		Intent i = new Intent(getApplicationContext(), RosterActivity.class);
-            		Date rosterDate = new Date();
-            		switch(which)
-            		{
-            		case 1:
-            			Calendar.getInstance().roll(Calendar.DAY_OF_YEAR, 1);
-            			rosterDate = Calendar.getInstance().getTime();
-            			break;
-            		case 2:
-            			Calendar.getInstance().roll(Calendar.DAY_OF_YEAR, -1);
-            			rosterDate = Calendar.getInstance().getTime();
-            			break;
-            		}
-            		
-            		i.putExtra("roster_date", rosterDate);
-            		startActivity(i);
-               }
-                
-            })
-            .setCancelable(true)
-            .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int whichButton) {
-                }
-            })
-            .create();
-		
-		dialog.show();
-		
+		Intent i = new Intent(getApplicationContext(), RosterActivity.class);
+		Date rosterDate = new Date();
+		i.putExtra("roster_date", rosterDate);
+		startActivity(i);
 	}
 
 	public void onContactClick(View view)
@@ -152,12 +152,57 @@ public class Dashboard extends RoboActivity implements OnGestureListener
 	
 	public void onMapClick(View view)
 	{
-		UIHelper.ShowUnderConstructionMessage(this);
+		// TODO: Need to get the destination from the user
+		UIHelper.LaunchNavigation("Wollongong", this);
+	
+	    //String uri = "geo:0,0?q=MCNAMARA+TERMINAL+ROMULUS+MI+48174";             
+	    //Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));     
+	    //startActivity(i);
+		
+		//startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("google.navigation:q=" + an + address + city)));
+		//startActivity(new Intent(Intent.ACTION_CALL, Uri.parse("tel: " + phoneNumber)));
+		//Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
+		//        photoPickerIntent.setType("image/gif");
+		//        photoPickerIntent.setType("image/jpeg");
+		//        photoPickerIntent.setType("image/tiff");
+		//        photoPickerIntent.setType("image/png");
+		//        photoPickerIntent.setType("image/bmp");
+		//        startActivityForResult(photoPickerIntent, RESULT_IMAGE_RETURNED);
+		
+		//UIHelper.ShowUnderConstructionMessage(this);
 	}
+	
+	private Uri _capturedImageURI;
 	
 	public void onCameraClick(View view)
 	{
-		UIHelper.ShowUnderConstructionMessage(this);
+		//TODO Get the image and do something with it
+        String fileName = "temp.jpg";
+        ContentValues values = new ContentValues();
+        values.put(MediaStore.Images.Media.TITLE, fileName);
+        _capturedImageURI = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);            
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, _capturedImageURI);
+        startActivityForResult(intent, CAPTURE_PICTURE_INTENT);
+	}
+	
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) 
+	{
+
+		if( requestCode == CAPTURE_PICTURE_INTENT)
+		{
+			if( resultCode == -1 )
+			{
+		        String[] projection = { MediaStore.Images.Media.DATA};              
+		        Cursor cursor = managedQuery(_capturedImageURI, projection, null, null, null);              
+		        int column_index_data = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);              
+		        cursor.moveToFirst();              
+		        String capturedImageFilePath = cursor.getString(column_index_data);
+		        
+		        UIHelper.ShowAlertDialog(this, "Picture saved", "The picture was saved to " + capturedImageFilePath);
+			}
+		}
+        
 	}
 	
 	public void onEmergencyClick(View view)

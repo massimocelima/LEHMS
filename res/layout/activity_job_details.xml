@@ -31,15 +31,49 @@
 
     </LinearLayout>
  
-    <LinearLayout
-        android:orientation="vertical"
-        android:layout_width="fill_parent"
+    <LinearLayout 
+        style="@style/HeaderContainer">
+
+		<ImageView 
+			android:layout_height="wrap_content" 
+			android:layout_width="wrap_content" 
+			android:src="@drawable/dashboard_btn_clients_selected"></ImageView>
+			
+	    <LinearLayout 
+		    android:orientation="vertical"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:layout_weight="1"
+		    >
+			
+			<TextView 
+				android:id="@+id/activity_job_details_title"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:text="Job Details"
+		        style="@style/HeaderTitle" />
+	   		<TextView 
+				android:id="@+id/activity_job_details_sub_title"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        style="@style/HeaderSubTitle" />
+        </LinearLayout>
+
+	</LinearLayout>
+
+	<TextView 
+		android:id="@+id/activity_job_details_identifier"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:padding="6dip">
- 
- 
-    </LinearLayout>
+        style="@style/HeaderSubTitleTwo" />
+
+
+	<TextView 
+		android:id="@+id/activity_job_details_date_of_birth"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/HeaderSubTitleTwo" />
+
 
   
 </LinearLayout>

@@ -1,8 +1,17 @@
 package com.lehms;
 
+import java.util.Date;
+import java.util.List;
+
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.DialogInterface.OnClickListener;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
+import android.net.Uri;
+import android.text.format.DateFormat;
 
 public class UIHelper {
 
@@ -15,14 +24,79 @@ public class UIHelper {
         context.startActivity(intent);
 	}
 
+	public static void ShowAlertDialog(Context context, String title, String message)
+	{
+		AlertDialog dialog = new AlertDialog.Builder(context)
+        .setTitle(title)
+        .setMessage(message)
+        .setPositiveButton("OK", new OnClickListener() {
+			@Override
+			public void onClick(DialogInterface arg0, int arg1) {
+			}
+		})
+        .create();
+		
+		dialog.show();
+	}
+	
 	public static void ShowUnderConstructionMessage(Context context)
 	{
 		AlertDialog dialog = new AlertDialog.Builder(context)
         .setTitle("Under Construction")
         .setMessage("This functionality is under construction")
+        .setPositiveButton("OK", new OnClickListener() {
+			@Override
+			public void onClick(DialogInterface arg0, int arg1) {
+			}
+		})
         .create();
 		
 		dialog.show();
+	}
+	
+	public static void LaunchNavigation(String desinationAddress, Context context)
+	{
+		String uri = "google.navigation";
+		if( desinationAddress != null && ! desinationAddress.equals(""))
+			uri += ":q=" + desinationAddress;
+		
+		Intent navigationIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
+		List<ResolveInfo> resolveInfoList = context.getPackageManager().queryIntentActivities( navigationIntent, PackageManager.MATCH_DEFAULT_ONLY);
+		if(! resolveInfoList.isEmpty())
+			context.startActivity(navigationIntent);
+		else
+		{
+			AlertDialog dialog = new AlertDialog.Builder(context)
+		        .setTitle("Google Navigation Not Installed")
+		        .setMessage("In order to use the navigaton on this device you will need to install Google Navigation. Please visit the Marketplace and download the Google Navigation application")
+		        .setPositiveButton("OK", new OnClickListener() {
+					@Override
+					public void onClick(DialogInterface arg0, int arg1) {
+					}
+				})
+		        .create();
+			dialog.show();
+		}
+	}
+
+	public static String FormatShortDate(Date date)
+	{
+		return DateFormat.format("dd/MM/yyyy", date).toString();
+	}
+
+	public static String FormatLongDate(Date date)
+	{
+		return DateFormat.format("EEEE, MMMM dd, yyyy", date).toString();
+	}
+
+	public static String FormatLongDateTime(Date date)
+	{
+		return DateFormat.format("EEEE, MMMM dd, yyyy h:mmaa", date).toString();
+	}
+
+	public static String FormatTime(Date date)
+	{
+		return DateFormat.format("h:mmaa", date).toString();
 	}
 
 }

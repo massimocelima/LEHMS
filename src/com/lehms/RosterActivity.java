@@ -10,6 +10,8 @@ import com.lehms.messages.LoginResponse;
 import com.lehms.messages.dataContracts.JobDataContract;
 import com.lehms.messages.dataContracts.RosterDataContract;
 import com.lehms.messages.dataContracts.UserDataContract;
+import com.lehms.persistence.IRosterRepository;
+import com.lehms.persistence.RosterRepository;
 import com.lehms.service.IIdentityProvider;
 import com.lehms.service.IRosterResource;
 import com.lehms.util.MathUtils;
@@ -28,6 +30,9 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.GestureDetector.SimpleOnGestureListener;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
@@ -51,27 +56,24 @@ public class RosterActivity  extends RoboListActivity
 	@InjectExtra(value = "roster_date", optional = true) Date _currentDate;
 	@InjectView(R.id.activity_roster_title) TextView _title;
 	@InjectView(R.id.activity_roster_sub_title) TextView _subtitle;
+	@InjectView(R.id.activity_roster_last_updated) TextView _lastUpdated;
 	
 	@Inject IRosterResource _rosterResource;
 	@Inject IIdentityProvider _identityProvider;
+    @Inject private IRosterRepository _rosterRepository; 
 	
 	private GestureDetector _gestureDetector;
-    private View.OnTouchListener _gestureListener;
+    private GuestureListener _gestureListener;
 	
+    
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_roster);
-		
+	
 		_gestureDetector = new GestureDetector(this, new FlingGestureDetector());
-		_gestureListener = new View.OnTouchListener() {             
-			public boolean onTouch(View v, MotionEvent event) {                 
-				if (_gestureDetector.onTouchEvent(event)) {                     
-					return true;                 }                 
-				return false;             
-				}         
-			}; 
+		_gestureListener = new GuestureListener(_gestureDetector);
 		
 		ListView listView = getListView();
 		listView.setTextFilterEnabled(true);
@@ -91,14 +93,14 @@ public class RosterActivity  extends RoboListActivity
 			  }); 
 		
 		initHeader();
-		fillDataAsync();
-
+		fillDataAsync(false);
 	}
 	
 	private void ShowJob(int position, long id)
 	{
 		Intent intent = new Intent(this, JobDetailsActivity.class);
 		intent.putExtra(JobDetailsActivity.JOB_ID, id);
+		intent.putExtra(JobDetailsActivity.ROSTER_DATE, _currentDate.getTime());
 		startActivity(intent);
 	}
 	
@@ -121,7 +123,7 @@ public class RosterActivity  extends RoboListActivity
 		return result;
 	}
 	
-	private void fillDataAsync()
+	private void fillDataAsync(Boolean reloadFromServer)
 	{
 		if( _currentDate == null )
 			_currentDate = new Date();
@@ -133,15 +135,16 @@ public class RosterActivity  extends RoboListActivity
 			adapter.notifyDataSetChanged();
 		}
 		
-		LoadRosterTask task = new LoadRosterTask(this);
+		LoadRosterTask task = new LoadRosterTask(this, reloadFromServer);
 		task.execute();
 	}
 
 	private void initHeader()
 	{
 		_titleBarTitle.setText("Roster");
-		_title.setText(DateFormat.format( "EEEE, MMMM dd, yyyy", _currentDate));
+		_title.setText(UIHelper.FormatLongDate(_currentDate));
 		_subtitle.setText(GetUserDetails());
+		_lastUpdated.setText("");
 	}
 	
 	public void onHomeClick(View view)
@@ -151,7 +154,7 @@ public class RosterActivity  extends RoboListActivity
 	
 	public void onRefreshClick(View view)
 	{
-		fillDataAsync();
+		fillDataAsync(true);
 	}
 	
 	public void onSpecifyDateClick(View view)
@@ -172,7 +175,7 @@ public class RosterActivity  extends RoboListActivity
             	
             	_currentDate = new Date(year - 1900, monthOfYear, dayOfMonth);
             	initHeader();
-            	fillDataAsync();
+            	fillDataAsync(false);
             }
         };
 	
@@ -180,8 +183,10 @@ public class RosterActivity  extends RoboListActivity
     {
     	private Activity _context;
     	private ProgressDialog _progressDialog;
+    	private Boolean _reloadFromServer;
+    	private Exception _exception;
 
-    	public LoadRosterTask(Activity context)
+    	public LoadRosterTask(Activity context, Boolean reloadFromServer)
     	{
     		_context = context;
     		
@@ -189,6 +194,8 @@ public class RosterActivity  extends RoboListActivity
             _progressDialog.setMessage("Loading roster please wait...");
             _progressDialog.setIndeterminate(true);
             _progressDialog.setCancelable(false);
+            
+            _reloadFromServer = reloadFromServer;
     	}
     	
     	@Override
@@ -199,13 +206,28 @@ public class RosterActivity  extends RoboListActivity
     	
 		@Override
 		protected RosterDataContract doInBackground(String... arg0) {
+			
+			RosterDataContract roster = null;
+			
 			try {
-				return _rosterResource.GetRosterFor(_currentDate);
+				_rosterRepository.open();
+				if( ! _reloadFromServer )
+					roster = _rosterRepository.fetchRosterFor(_currentDate);
+				if( roster == null )
+				{
+					roster = _rosterResource.GetRosterFor(_currentDate);
+					_rosterRepository.saveRoster(roster);
+				}
+				//_rosterRepository.close();
 			} catch (Exception e) {
 				Log.e("LEHMS", e.getMessage());
-				e.printStackTrace();
+				_exception = e;
+			} 
+			finally 
+			{
+				_rosterRepository.close();
 			}
-			return null;
+			return roster;
 		}
 		
 		@Override
@@ -213,7 +235,10 @@ public class RosterActivity  extends RoboListActivity
 			super.onPostExecute(result);
 			if( result == null )
 			{
-				createDialog("Error", "Error retriving roster");
+				if( _exception != null )
+					createDialog("Error", "Error retriving roster: " + _exception.getMessage());
+				else
+					createDialog("Error", "Error retriving roster");
 			}
 			else
 			{
@@ -221,8 +246,11 @@ public class RosterActivity  extends RoboListActivity
 				ListView listView = getListView();
 				listView.setAdapter(adapter);
 				listView.invalidate();
+				_lastUpdated.setText( UIHelper.FormatLongDateTime(result.LastUpdatedFromServer));
+
 			}
-			_progressDialog.dismiss();
+			if( _progressDialog.isShowing() )
+				_progressDialog.dismiss();
 		}
 		
 	    private void createDialog(String title, String text) {
@@ -265,7 +293,7 @@ public class RosterActivity  extends RoboListActivity
 	            _currentDate = calendar.getTime();
 	            
 	    		initHeader();
-	    		fillDataAsync();
+	    		fillDataAsync(false);
 	    		
 				return true;
 	        }

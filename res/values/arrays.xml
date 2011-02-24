@@ -24,6 +24,8 @@
     </string-array>
 
     <string-array name="dashboard_contact_office_selection">
+        <item>Office By Phone</item>
+        <item>Office By Email</item>
         <item>By Phone</item>
         <item>By Email</item>
     </string-array>

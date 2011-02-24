@@ -92,6 +92,7 @@ public class LoginActivity extends RoboActivity {
     {
     	private Activity _context;
     	public ProgressDialog _progressDialog;
+    	private Exception _exception;
 
     	public LoginTask(Activity context)
     	{
@@ -116,7 +117,7 @@ public class LoginActivity extends RoboActivity {
 				return _authenticationService.Login(arg0[0], arg0[1]);
 			} catch (Exception e) {
 				Log.e("LEHMS", e.getMessage());
-				e.printStackTrace();
+				_exception = e;
 			}
 			return null;
 		}
@@ -127,7 +128,7 @@ public class LoginActivity extends RoboActivity {
 			if( result == null )
 			{
 				_progressDialog.dismiss();
-				createDialog("Error", "Couldn't establish a connection");
+				createDialog("Error", "Couldn't establish a connection: " + _exception.getMessage());
 			}
 			else if( result.IsAuthenticated )
 			{
