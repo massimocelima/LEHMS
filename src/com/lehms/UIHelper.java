@@ -84,6 +84,11 @@ public class UIHelper {
 		return DateFormat.format("dd/MM/yyyy", date).toString();
 	}
 
+	public static String FormatShortDateTime(Date date)
+	{
+		return DateFormat.format("dd/MM/yyyy h:mmaa", date).toString();
+	}
+
 	public static String FormatLongDate(Date date)
 	{
 		return DateFormat.format("EEEE, MMMM dd, yyyy", date).toString();
@@ -98,5 +103,7 @@ public class UIHelper {
 	{
 		return DateFormat.format("h:mmaa", date).toString();
 	}
+	
+	
 
 }

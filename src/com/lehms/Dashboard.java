@@ -16,6 +16,7 @@ import android.content.Intent;
 import android.content.DialogInterface.OnClickListener;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.content.res.Configuration;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -27,11 +28,16 @@ import android.view.GestureDetector;
 import android.view.GestureDetector.OnGestureListener;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.view.Display;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.view.WindowManager;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TabHost;
 import android.widget.TabHost.TabSpec;
 import android.widget.TabWidget;
@@ -48,6 +54,7 @@ public class Dashboard extends RoboActivity implements OnGestureListener
 	
 	@InjectView(R.id.dashboard_tab_host) protected TabHost _tabHost;
 	@InjectView(android.R.id.tabs) protected TabWidget _tabWidget;
+	@InjectView(R.id.footer_container) protected LinearLayout _footerContainer;
 	
     Animation _rightInAnimation;
     Animation _rightOutAnimation;
@@ -65,7 +72,7 @@ public class Dashboard extends RoboActivity implements OnGestureListener
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.dashboard);
 		InitAnimations();
-		
+	
 		_gestureDetector = new GestureDetector(this);
 		_gestureListener = new GuestureListener(_gestureDetector); 
 
@@ -152,9 +159,29 @@ public class Dashboard extends RoboActivity implements OnGestureListener
 	
 	public void onMapClick(View view)
 	{
-		// TODO: Need to get the destination from the user
-		UIHelper.LaunchNavigation("Wollongong", this);
-	
+        // This example shows how to add a custom layout to an AlertDialog
+        LayoutInflater factory = LayoutInflater.from(this);
+        final View navigationLocationDialogView = factory.inflate(R.layout.navigation_location_dialog, null);
+        AlertDialog dialog = new AlertDialog.Builder(this)
+            .setTitle("Enter the location you are traveling to:")
+            .setView(navigationLocationDialogView)
+            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int whichButton) {
+                	
+                	EditText location = (EditText)navigationLocationDialogView.findViewById(R.id.navigation_location_dialog_location);
+                	if( ! location.getText().equals(""))
+	            		UIHelper.LaunchNavigation(location.getText().toString(), Dashboard.this);
+                }
+            })
+            .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int whichButton) {
+
+                }
+            })
+            .create();
+		
+        dialog.show();
+
 	    //String uri = "geo:0,0?q=MCNAMARA+TERMINAL+ROMULUS+MI+48174";             
 	    //Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));     
 	    //startActivity(i);

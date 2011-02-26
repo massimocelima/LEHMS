@@ -13,4 +13,5 @@
     <string name="application_settings_device_id_summary">The identifier that uniqly identifies the device</string>
     <string name="application_settings_department">Department</string>
     <string name="application_settings_department_summary">The name of the deparment you are registered with</string>
+    <string name="navigation_location_dialog_location_text">Location</string>
 </resources>

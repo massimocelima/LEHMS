@@ -22,6 +22,7 @@ import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.format.DateFormat;
@@ -125,18 +126,25 @@ public class RosterActivity  extends RoboListActivity
 	
 	private void fillDataAsync(Boolean reloadFromServer)
 	{
-		if( _currentDate == null )
-			_currentDate = new Date();
-
-		JobAdapter adapter = (JobAdapter)getListView().getAdapter();
-		if(adapter != null)
+		if( reloadFromServer && ! isOnline() )
 		{
-			adapter.clear();
-			adapter.notifyDataSetChanged();
+			UIHelper.ShowAlertDialog(this, "Unable to connect to server", "An internet connection could not be established. Please connect this device to the internet and try again.");
 		}
-		
-		LoadRosterTask task = new LoadRosterTask(this, reloadFromServer);
-		task.execute();
+		else
+		{
+			if( _currentDate == null )
+				_currentDate = new Date();
+
+			JobAdapter adapter = (JobAdapter)getListView().getAdapter();
+			if(adapter != null)
+			{
+				adapter.clear();
+				adapter.notifyDataSetChanged();
+			}
+			
+			LoadRosterTask task = new LoadRosterTask(this, reloadFromServer);
+			task.execute();
+		}
 	}
 
 	private void initHeader()
@@ -215,8 +223,17 @@ public class RosterActivity  extends RoboListActivity
 					roster = _rosterRepository.fetchRosterFor(_currentDate);
 				if( roster == null )
 				{
-					roster = _rosterResource.GetRosterFor(_currentDate);
-					_rosterRepository.saveRoster(roster);
+					if( ! isOnline() )
+						throw new Exception("The roster for this date has not been cahced onto the device and a internet connection could not be found." + 
+								" Please connect this device to the internet and try again");
+					else
+					{
+						roster = _rosterResource.GetRosterFor(_currentDate);
+						_rosterRepository.saveRoster(roster);
+						
+						String x = roster.LastUpdatedFromServer.toString();
+						
+					}
 				}
 				//_rosterRepository.close();
 			} catch (Exception e) {
@@ -246,7 +263,7 @@ public class RosterActivity  extends RoboListActivity
 				ListView listView = getListView();
 				listView.setAdapter(adapter);
 				listView.invalidate();
-				_lastUpdated.setText( UIHelper.FormatLongDateTime(result.LastUpdatedFromServer));
+				_lastUpdated.setText( "Last Updated on " + UIHelper.FormatShortDateTime(result.LastUpdatedFromServer));
 
 			}
 			if( _progressDialog.isShowing() )
@@ -264,6 +281,12 @@ public class RosterActivity  extends RoboListActivity
 		
     }
 
+    public boolean isOnline() 
+    {  
+    	ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);  
+    	return cm.getActiveNetworkInfo().isConnectedOrConnecting();  
+    } 
+    
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
 		return _gestureDetector.onTouchEvent(event);
