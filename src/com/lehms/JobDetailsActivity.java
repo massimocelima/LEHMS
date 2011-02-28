@@ -3,24 +3,27 @@ package com.lehms;
 import java.util.Date;
 
 import com.google.inject.Inject;
-import com.lehms.messages.dataContracts.JobDetailsDataContract;
-import com.lehms.messages.dataContracts.JobStatusDataContract;
-import com.lehms.messages.dataContracts.RosterDataContract;
+import com.lehms.controls.*;
+import com.lehms.messages.dataContracts.*;
 import com.lehms.persistence.IRosterRepository;
-import com.lehms.service.IRosterResource;
 
-import android.R.integer;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.content.res.ColorStateList;
-import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.AnimationSet;
+import android.view.animation.ScaleAnimation;
+import android.view.animation.TranslateAnimation;
 import android.widget.EditText;
+import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import roboguice.activity.RoboActivity;
@@ -44,6 +47,7 @@ public class JobDetailsActivity extends RoboActivity {
 	@InjectView(R.id.activity_job_details_identifier_value) TextView _identifier;
 	@InjectView(R.id.activity_job_details_phone_value) TextView _phone;
 
+	@InjectView(R.id.activity_job_details_client_details_container) LinearLayout _clientDetailsContainer;
 	@InjectView(R.id.activity_job_details_service_type_value) TextView _serviceType;
 	@InjectView(R.id.activity_job_details_service_details_value) TextView _serviceDetails;
 	@InjectView(R.id.activity_job_details_duration_value) TextView _duration;
@@ -51,7 +55,14 @@ public class JobDetailsActivity extends RoboActivity {
 	@InjectView(R.id.activity_job_details_begin_time_value) TextView _beginTime;
 	@InjectView(R.id.activity_job_details_end_time_value) TextView _endTime;
 	@InjectView(R.id.activity_job_details_status_value) TextView _status;
+	@InjectView(R.id.activity_job_details_client_details_expander) ImageButton _clientDetailsExpander;
 
+	@InjectView(R.id.activity_job_details_begin_job) Button _btnBeginJob;
+	@InjectView(R.id.activity_job_details_end_job) Button _btnEndJob;
+	@InjectView(R.id.activity_job_details_progress_notes) Button _btnProgressNotes;
+	@InjectView(R.id.activity_job_details_complete_forms) Button _btnCompleteForms;
+
+	
 	@Inject IRosterRepository _rosterRepository; 
 	
 	private RosterDataContract _roster = null;
@@ -64,9 +75,9 @@ public class JobDetailsActivity extends RoboActivity {
 		JobDetailsDataContract job = GetJob();
 		
 		if(job != null)
-		{
 			LoadJob(job);
-		}
+		
+		//CreateQuickActions();
 	}
 	
 	private void LoadJob(JobDetailsDataContract job)
@@ -76,9 +87,11 @@ public class JobDetailsActivity extends RoboActivity {
 		_title.setText(job.Client.FirstName + " " + job.Client.LastName);
 		
 		_address.setText( UIHelper.FormatAddress(job.Client.Address) );
-		_dateOfBirth.setText(UIHelper.FormatLongDate(job.Client.DateOfBirth));
+		if( job.Client.DateOfBirth != null )
+			_dateOfBirth.setText(UIHelper.FormatLongDate(job.Client.DateOfBirth));
 		_identifier.setText(job.Client.ClientId);
-		_phone.setText(job.Client.Phone);
+		if( job.Client.Phone != null )
+			_phone.setText(job.Client.Phone);
 
 		_serviceType.setText( job.Type );
 		_duration.setText(job.ExtendOfService + " " + job.UnitOfMeasure);
@@ -95,12 +108,18 @@ public class JobDetailsActivity extends RoboActivity {
 		{
 		case Finished:
 			_status.setTextColor(Color.rgb(110,23,0));
+			_btnBeginJob.setVisibility(View.GONE);
+			_btnEndJob.setVisibility(View.GONE);
 			break;
 		case Pending:
 			_status.setTextColor(Color.rgb(0,88,167));
+			_btnBeginJob.setVisibility(View.VISIBLE);
+			_btnEndJob.setVisibility(View.GONE);
 			break;
 		case Started:
 			_status.setTextColor(Color.rgb(0,110,40));
+			_btnBeginJob.setVisibility(View.GONE);
+			_btnEndJob.setVisibility(View.VISIBLE);
 			break;
 		}
 	}
@@ -123,6 +142,42 @@ public class JobDetailsActivity extends RoboActivity {
 	public void onEndJobClick(View view)
 	{
 		ShowKilometersTravelledDialog(JobDetailsActivity.END_JOB_ACTION);
+	}
+	
+	public void onClientDetailsExpanderClick(View view)
+	{
+		ToggleClientDetailsVisibility();
+	}
+	
+	private void ToggleClientDetailsVisibility()
+	{
+		if(_clientDetailsContainer.getVisibility() == View.GONE)
+		{
+			_clientDetailsContainer.setVisibility(View.VISIBLE);
+			_clientDetailsExpander.setImageResource(R.drawable.expander_ic_maximized);
+			
+			AnimationSet set = new AnimationSet(true);
+
+			Animation animation = new AlphaAnimation(0.0f, 1.0f);
+			animation.setDuration(200);
+			set.addAnimation(animation);
+
+			animation = new ScaleAnimation(1, 1, 0, 1);
+			animation.setDuration(200);
+			set.addAnimation(animation);
+
+			//animation = new TranslateAnimation(
+			//	      Animation.RELATIVE_TO_SELF, -1.0f, Animation.RELATIVE_TO_SELF, 0.0f,
+			//	      Animation.RELATIVE_TO_SELF, 0.0f, Animation.RELATIVE_TO_SELF, 0.0f
+			//	  );
+
+			_clientDetailsContainer.startAnimation(set);
+		}
+		else
+		{
+			_clientDetailsContainer.setVisibility(View.GONE);
+			_clientDetailsExpander.setImageResource(R.drawable.expander_ic_minimized);
+		}
 	}
 	
 	private void KilometersTravelledDialogResult(int resultType, float kilometersTravelled)
@@ -267,6 +322,44 @@ public class JobDetailsActivity extends RoboActivity {
 		}
 		
 		return result;
+	}
+	
+	private void CreateQuickActions()
+	{
+		final ActionItem first = new ActionItem();
+		
+		first.setTitle("Dashboard");
+		first.setIcon(getResources().getDrawable(R.drawable.quick_actions_ic_dashboard));
+		first.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Toast.makeText(JobDetailsActivity.this, "Dashboard" , Toast.LENGTH_SHORT).show();
+			}
+		});
+		
+		final ActionItem second = new ActionItem();
+		
+		second.setTitle("Users & Groups");
+		//second.setIcon(getResources().getDrawable(R.drawable.kontak));
+		second.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Toast.makeText(JobDetailsActivity.this, "User & Group", Toast.LENGTH_SHORT).show();
+			}
+		});
+		
+		Button btn1 = (Button) this.findViewById(R.id.activity_job_details_begin_job);
+		btn1.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				QuickAction qa = new QuickAction(v);
+				
+				qa.addActionItem(first);
+				qa.addActionItem(second);
+				
+				qa.show();
+			}
+		});
 	}
 	
 }

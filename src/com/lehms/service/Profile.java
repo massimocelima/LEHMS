@@ -37,12 +37,12 @@ public class Profile {
 			//result = "http://10.0.2.2:7856";
 			break;
 		case Testing:
-			result = "http://lehms.theinsgroup.com.au:29686/INSGateway";
-			//result = "http2://lehms.theinsgroup.com.au:29687/INSGateway";
+			result = "http://lehms.theinsgroup.com.au:82/INSGateway";
+			//result = "https://lehms.theinsgroup.com.au:83/INSGateway";
 			break;
 		case Production:
-			result = "http://lehms.theinsgroup.com.au:29688/INSGateway";
-			//result = "http://lehms.theinsgroup.com.au:29689/INSGateway";
+			result = "http://lehms.theinsgroup.com.au:84/INSGateway";
+			//result = "https://lehms.theinsgroup.com.au:85/INSGateway";
 			break;
 		}
 		return result;
