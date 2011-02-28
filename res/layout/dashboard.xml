@@ -9,16 +9,13 @@
     <include layout="@layout/colorstrip"/>
  	-->
  
-   <LinearLayout style="@style/TitleBar">
-        
-        <ImageView style="@style/TitleBarSeparator" />
-        <TextView style="@style/TitleBarText" android:text="LEHMS V2" />
+	<LinearLayout style="@style/TitleBar">
+	     
+	     <ImageView style="@style/TitleBarSeparator" />
+	     <TextView style="@style/TitleBarText" android:text="LEHMS V2" />
+	
+	</LinearLayout>
 
-    </LinearLayout>
-<!-- 
-    <view
-        class="com.lehms.FlingableTabHost"
--->
 	<TabHost
 		android:id="@+id/dashboard_tab_host"
 		android:layout_width="fill_parent"
@@ -59,18 +56,6 @@
 		</LinearLayout>
 	</TabHost>
 
-    <LinearLayout
-        android:id="@+id/footer_container"
-        android:layout_width="fill_parent"
-        android:layout_height="@dimen/now_playing_height"
-        android:orientation="horizontal"
-        android:background="#eee"
-        android:gravity="center">
-        <TextView
-	        android:id="@+id/footer_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="@dimen/text_size_large" />
-    </LinearLayout>
- 
+	<include layout="@layout/dashboard_footer" /> 
+
 </LinearLayout>

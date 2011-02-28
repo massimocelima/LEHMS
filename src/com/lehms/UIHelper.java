@@ -3,6 +3,8 @@ package com.lehms;
 import java.util.Date;
 import java.util.List;
 
+import com.lehms.messages.dataContracts.AddressDataContract;
+
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -84,6 +86,11 @@ public class UIHelper {
 		return DateFormat.format("dd/MM/yyyy", date).toString();
 	}
 
+	public static String FormatShortDateTime(Date date)
+	{
+		return DateFormat.format("dd/MM/yyyy h:mmaa", date).toString();
+	}
+
 	public static String FormatLongDate(Date date)
 	{
 		return DateFormat.format("EEEE, MMMM dd, yyyy", date).toString();
@@ -97,6 +104,24 @@ public class UIHelper {
 	public static String FormatTime(Date date)
 	{
 		return DateFormat.format("h:mmaa", date).toString();
+	}
+	
+	public static String FormatAddress(AddressDataContract address)
+	{
+		String result = "";
+		if( address.Appartment != null && ! address.Appartment.equalsIgnoreCase(""))
+			result += address.Appartment + "/";
+		
+		result += address.StreetNumber; 
+		result += " " + address.Street; 
+				
+		result +=  "\n";
+			
+		result += address.Suburb;
+		result += ", " + address.State;
+		result += " " + address.Postcode;
+		
+		return result;
 	}
 
 }

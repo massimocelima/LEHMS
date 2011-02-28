@@ -6,10 +6,10 @@ public class Profile {
 	
 	public Profile()
 	{
-		_profileEnvironment = ProfileEnvironment.Development;
+		_profileEnvironment = com.lehms.service.ProfileEnvironment.Development;
 	}
 	
-	public Profile(ProfileEnvironment profileEnvironment)
+	public Profile(com.lehms.service.ProfileEnvironment profileEnvironment)
 	{
 		_profileEnvironment = profileEnvironment;
 	}
@@ -33,13 +33,16 @@ public class Profile {
 			result = "http://192.168.0.112/INS.Gateway.WASHost";
 			break;
 		case DevelopmentEmulation:
-			result = "http://10.0.2.2:7856";
+			result = "http://192.168.1.3/INS.Gateway.WASHost";
+			//result = "http://10.0.2.2:7856";
 			break;
 		case Testing:
-			result = "https://lehms.theinsgroup.com.au:29687";
+			result = "http://lehms.theinsgroup.com.au:29686/INSGateway";
+			//result = "http2://lehms.theinsgroup.com.au:29687/INSGateway";
 			break;
 		case Production:
-			result = "https://lehms.theinsgroup.com.au:29688";
+			result = "http://lehms.theinsgroup.com.au:29688/INSGateway";
+			//result = "http://lehms.theinsgroup.com.au:29689/INSGateway";
 			break;
 		}
 		return result;

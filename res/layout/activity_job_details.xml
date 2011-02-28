@@ -5,9 +5,6 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     >
-    <!-- 
-    <include layout="@layout/colorstrip"/>
- 	-->
  
    <LinearLayout style="@style/TitleBar">
         
@@ -37,7 +34,7 @@
 		<ImageView 
 			android:layout_height="wrap_content" 
 			android:layout_width="wrap_content" 
-			android:src="@drawable/dashboard_btn_clients_selected"></ImageView>
+			android:src="@drawable/ic_job"></ImageView>
 			
 	    <LinearLayout 
 		    android:orientation="vertical"
@@ -57,23 +54,321 @@
 		        android:layout_width="wrap_content"
 		        android:layout_height="wrap_content"
 		        style="@style/HeaderSubTitle" />
+	   		<TextView 
+				android:id="@+id/activity_job_details_sub_title2"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        style="@style/HeaderSubTitle" />
         </LinearLayout>
 
 	</LinearLayout>
 
-	<TextView 
-		android:id="@+id/activity_job_details_identifier"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        style="@style/HeaderSubTitleTwo" />
+	<ScrollView
+	  android:layout_width="fill_parent"
+	  android:layout_height="wrap_content">
 
+	    <LinearLayout
+			android:layout_width="fill_parent"
+		  	android:layout_height="fill_parent"
+		  	android:orientation="vertical">
 
-	<TextView 
-		android:id="@+id/activity_job_details_date_of_birth"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        style="@style/HeaderSubTitleTwo" />
+			<include layout="@layout/seperator"></include>
+		
+		    <LinearLayout
+		        android:background="@color/background2"
+		        android:paddingLeft="14dip"
+		        android:paddingRight="14dip"
+		        android:paddingTop="5dip"
+		        android:paddingBottom="5dip"
+		        android:layout_width="fill_parent"
+		        android:layout_height="wrap_content"
+		        android:orientation="vertical">
+				<TextView 
+					android:id="@+id/activity_job_details_client_details"
+					android:text="Client Details"
+			        android:layout_width="fill_parent"
+			        android:layout_height="wrap_content"
+			        style="@style/HeaderSubTitleTwo" />
+		    </LinearLayout>
+		
+			<include layout="@layout/seperator"></include>
+		
+		    <LinearLayout
+		        android:paddingLeft="14dip"
+		        android:paddingRight="14dip"
+		        android:paddingTop="10dip"
+		        android:paddingBottom="10dip"
+		        android:layout_width="fill_parent"
+		        android:layout_height="wrap_content"
+		        android:orientation="vertical">
+		
+		
+			    <LinearLayout
+			        android:layout_width="fill_parent"
+			        android:layout_height="wrap_content"
+			        android:orientation="horizontal">
+			    
+					<TextView 
+						android:id="@+id/activity_job_details_identifier"
+				        android:text="Client Id:"
+				        style="@style/FieldsetLabel" />
+				
+					<TextView 
+						android:id="@+id/activity_job_details_identifier_value"
+				        style="@style/FieldsetInput" />
+				
+				</LinearLayout>
+		
+				<include layout="@layout/seperator"></include>
+			
+			    <LinearLayout
+			        android:layout_width="fill_parent"
+			        android:layout_height="wrap_content"
+			        android:orientation="horizontal">
+					<TextView 
+						android:id="@+id/activity_job_details_date_of_birth"
+				        android:text="Date Of Birth:"
+				        style="@style/FieldsetLabel" />
+				
+					<TextView 
+						android:id="@+id/activity_job_details_date_of_birth_value"
+				        style="@style/FieldsetInput" />
+		
+				</LinearLayout>
+			
+				<include layout="@layout/seperator"></include>
+			
+			    <LinearLayout
+			        android:layout_width="fill_parent"
+			        android:layout_height="wrap_content"
+			        android:orientation="horizontal">
+		
+					<TextView 
+						android:id="@+id/activity_job_details_address"
+				        android:text="Address:"
+				        style="@style/FieldsetLabel" />
+				
+					<TextView 
+						android:id="@+id/activity_job_details_address_value"
+				        style="@style/FieldsetInput" />
+			
+				</LinearLayout>
+		
+				<include layout="@layout/seperator"></include>
+		
+			    <LinearLayout
+			        android:layout_width="fill_parent"
+			        android:layout_height="wrap_content"
+			        android:orientation="horizontal">
+				
+					<TextView 
+						android:id="@+id/activity_job_details_phone"
+				        android:text="Phone Number:"
+				        style="@style/FieldsetLabel" />
+				
+					<TextView 
+						android:id="@+id/activity_job_details_phone_value"
+				        style="@style/FieldsetInput" />
+		  
+			  </LinearLayout>
+		
+		  </LinearLayout>
+		
+			<include layout="@layout/seperator"></include>
+		  
+		    <LinearLayout
+		        android:background="@color/background2"
+		        android:paddingLeft="14dip"
+		        android:paddingRight="14dip"
+		        android:paddingTop="5dip"
+		        android:paddingBottom="5dip"
+		        android:layout_width="fill_parent"
+		        android:layout_height="wrap_content"
+		        android:orientation="vertical">
+				<TextView 
+					android:id="@+id/activity_job_details_client_details"
+					android:text="Job Details"
+			        android:layout_width="fill_parent"
+			        android:layout_height="wrap_content"
+			        style="@style/HeaderSubTitleTwo" />
+		    </LinearLayout>
+		
+			<include layout="@layout/seperator"></include>  
+			
+			
+		    <LinearLayout
+		        android:paddingLeft="14dip"
+		        android:paddingRight="14dip"
+		        android:paddingTop="10dip"
+		        android:paddingBottom="10dip"
+		        android:layout_width="fill_parent"
+		        android:layout_height="wrap_content"
+		        android:orientation="vertical">
+		
+		
+			    <LinearLayout
+			        android:layout_width="fill_parent"
+			        android:layout_height="wrap_content"
+			        android:orientation="horizontal">
+			    
+					<TextView 
+						android:id="@+id/activity_job_details_service_type"
+				        android:text="Service:"
+				        style="@style/FieldsetLabel" />
+				
+					<TextView 
+						android:id="@+id/activity_job_details_service_type_value"
+				        style="@style/FieldsetInput" />
+				
+				</LinearLayout>
+		
+				<include layout="@layout/seperator"></include>
+		
+			    <LinearLayout
+			        android:layout_width="fill_parent"
+			        android:layout_height="wrap_content"
+			        android:orientation="horizontal">
+			    
+					<TextView 
+						android:id="@+id/activity_job_details_service_details"
+				        android:text="Service Details:"
+				        style="@style/FieldsetLabel" />
+				
+					<TextView 
+						android:id="@+id/activity_job_details_service_details_value"
+				        style="@style/FieldsetInput" />
+				
+				</LinearLayout>
 
+				<include layout="@layout/seperator"></include>
+		
+			    <LinearLayout
+			        android:layout_width="fill_parent"
+			        android:layout_height="wrap_content"
+			        android:orientation="horizontal">
+			    
+					<TextView 
+						android:id="@+id/activity_job_details_duration"
+				        android:text="Duration:"
+				        style="@style/FieldsetLabel" />
+				
+					<TextView 
+						android:id="@+id/activity_job_details_duration_value"
+				        style="@style/FieldsetInput" />
+				
+				</LinearLayout>
+		
+				<include layout="@layout/seperator"></include>
+		
+			    <LinearLayout
+			        android:layout_width="fill_parent"
+			        android:layout_height="wrap_content"
+			        android:orientation="horizontal">
+			    
+					<TextView 
+						android:id="@+id/activity_job_details_begin_time"
+				        android:text="Begin Time:"
+				        style="@style/FieldsetLabel" />
+				
+					<TextView 
+						android:id="@+id/activity_job_details_begin_time_value"
+				        style="@style/FieldsetInput" />
+				
+				</LinearLayout>
+		
+				<include layout="@layout/seperator"></include>
 
-  
+			    <LinearLayout
+			        android:layout_width="fill_parent"
+			        android:layout_height="wrap_content"
+			        android:orientation="horizontal">
+			    
+					<TextView 
+						android:id="@+id/activity_job_details_end_time"
+				        android:text="End Time:"
+				        style="@style/FieldsetLabel" />
+				
+					<TextView 
+						android:id="@+id/activity_job_details_end_time_value"
+				        style="@style/FieldsetInput" />
+				
+				</LinearLayout>
+		
+				<include layout="@layout/seperator"></include>
+		
+			    <LinearLayout
+			        android:layout_width="fill_parent"
+			        android:layout_height="wrap_content"
+			        android:orientation="horizontal">
+			    
+					<TextView 
+						android:id="@+id/activity_job_details_status"
+				        android:text="Status:"
+				        style="@style/FieldsetLabel" />
+				
+					<TextView 
+						android:id="@+id/activity_job_details_status_value"
+				        style="@style/FieldsetInput" />
+				
+				</LinearLayout>
+
+				<include layout="@layout/seperator"></include>
+		
+			    <LinearLayout
+			        android:layout_width="fill_parent"
+			        android:layout_height="wrap_content"
+			        android:orientation="horizontal">
+			    
+					<TextView 
+						android:id="@+id/activity_job_details_notes"
+				        android:text="Notes:"
+				        style="@style/FieldsetLabel" />
+				
+					<TextView 
+						android:id="@+id/activity_job_details_notes_value"
+				        style="@style/FieldsetInput" />
+				
+				</LinearLayout>
+		
+				<include layout="@layout/seperator"></include>
+				
+			</LinearLayout>
+			
+			
+			<LinearLayout
+					android:layout_width="fill_parent"
+			        android:layout_height="wrap_content"
+			        android:orientation="horizontal"
+			        >
+			        
+			    <Button 
+					android:layout_width="wrap_content"
+			        android:layout_height="wrap_content"
+			        android:text="Begin Job"
+			        android:onClick="onBeginJobClick"
+			         />
+
+			    <Button 
+					android:layout_width="wrap_content"
+			        android:layout_height="wrap_content"
+			        android:text="End Job" 
+			        android:onClick="onEndJobClick"
+			        />
+
+			    <Button 
+					android:layout_width="wrap_content"
+			        android:layout_height="wrap_content"
+			        android:text="Progress Notes" />
+
+			    <Button 
+					android:layout_width="wrap_content"
+			        android:layout_height="wrap_content"
+			        android:text="Complete Forms" />
+			        
+			</LinearLayout>
+			
+		</LinearLayout>
+		
+	</ScrollView>
+	
 </LinearLayout>

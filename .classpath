@@ -3,8 +3,8 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="gen"/>
 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
-	<classpathentry kind="lib" path="C:/Development/Android/Roboguice/guice-2.0-no_aop.jar"/>
-	<classpathentry kind="lib" path="C:/Development/Android/Roboguice/roboguice-1.1.jar"/>
+	<classpathentry kind="lib" path="C:/Development/Android/roboguice/guice-2.0-no_aop.jar"/>
+	<classpathentry kind="lib" path="C:/Development/Android/roboguice/roboguice-1.1.jar"/>
 	<classpathentry kind="lib" path="C:/Development/Android/gson/google-gson-1.6-release/gson-1.6.jar"/>
 	<classpathentry kind="src" path="com_cyrilmottier_android_greendroid_src"/>
 	<classpathentry kind="output" path="bin"/>

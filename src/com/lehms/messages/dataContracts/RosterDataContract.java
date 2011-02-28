@@ -11,6 +11,6 @@ public class RosterDataContract {
 	}
 	
 	public Date Date;
-	public List<JobDataContract> Jobs;
+	public List<JobDetailsDataContract> Jobs;
 	public Date LastUpdatedFromServer;
 }

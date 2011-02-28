@@ -1,7 +1,9 @@
 package com.lehms.service.implementation;
 
 import java.lang.reflect.Type; 
+import java.util.Calendar;
 import java.util.Date; 
+import java.util.TimeZone;
 import java.util.regex.Matcher; 
 import java.util.regex.Pattern;   
 import com.google.gson.JsonDeserializationContext; 
@@ -18,8 +20,8 @@ public class DateDeserializer implements JsonDeserializer<Date>, JsonSerializer<
 	public Date deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)           
 			throws JsonParseException { 
 		String JSONDateToMilliseconds = "\\/(Date\\((.*?)(\\+.*)?\\))\\/";           
-		Pattern pattern = Pattern.compile(JSONDateToMilliseconds);           
-		Matcher matcher = pattern.matcher(json.getAsJsonPrimitive().getAsString());           
+		Pattern pattern = Pattern.compile(JSONDateToMilliseconds);
+		Matcher matcher = pattern.matcher(json.getAsJsonPrimitive().getAsString());
 		String result = matcher.replaceAll("$2");
 		Date dateResult = new Date(new Long(result));
 		return dateResult;       

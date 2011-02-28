@@ -42,16 +42,13 @@ public class UserDataContract {
 		else 
 			result += LastName;
 
-		result += " (";
-
-		if( Email.equals( "" ) )
-			result += "none@there.com";
-		else 
-			result += Email;
-
-		result += ")";
-
 		return result;
+	}
+	
+	public String GetFullUsername()
+	{
+		String fullUsername = Department + "\\" + Username;
+		return fullUsername;
 	}
 	
 }

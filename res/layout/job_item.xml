@@ -30,4 +30,12 @@
 	>
 	</TextView>
 
+	<TextView 
+		android:id="@+id/JobDataContract_Status"
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    style="@style/TextBody"
+	>
+	</TextView>
+
 </LinearLayout>

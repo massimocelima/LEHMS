@@ -3,9 +3,10 @@ package com.lehms.adapters;
 import java.util.List;
 
 import com.lehms.R;
-import com.lehms.messages.dataContracts.JobDataContract;
+import com.lehms.messages.dataContracts.JobDetailsDataContract;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,11 +15,11 @@ import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-public class JobAdapter extends ArrayAdapter<JobDataContract> {
+public class JobAdapter extends ArrayAdapter<JobDetailsDataContract> {
 
 	private int _resource;
 	
-	public JobAdapter(Context context, int resource, List<JobDataContract> items) {
+	public JobAdapter(Context context, int resource, List<JobDetailsDataContract> items) {
 		super(context, resource, items);
 		_resource = resource;
 	}
@@ -46,11 +47,13 @@ public class JobAdapter extends ArrayAdapter<JobDataContract> {
         	view = (LinearLayout)convertView; 
         }
 
-		JobDataContract job = getItem(position);
+        JobDetailsDataContract job = getItem(position);
 		
 		TextView titleTextView = (TextView)view.findViewById(R.id.JobDataContract_ScheduledStartTime);
 		TextView descriptionTextView = (TextView)view.findViewById(R.id.JobDataContract_Description);
 		TextView typeTextView = (TextView)view.findViewById(R.id.JobDataContract_Type);
+		TextView statusTextView = (TextView)view.findViewById(R.id.JobDataContract_Status);
+		
 		
 		titleTextView.setText(DateFormat.format("h:mmaa", job.ScheduledStartTime) + " - " + job.Client.FirstName + " " + job.Client.LastName);
 		descriptionTextView.setText(job.Client.Address.StreetNumber + " " + 
@@ -59,6 +62,19 @@ public class JobAdapter extends ArrayAdapter<JobDataContract> {
 				job.Client.Address.State + " " +
 				job.Client.Address.Postcode);
 		typeTextView.setText(job.Type + " : " + job.ExtendOfService + " " + job.UnitOfMeasure);
+		statusTextView.setText( job.StatusEnum().name() );
+		switch(job.StatusEnum())
+		{
+		case Finished:
+			statusTextView.setTextColor(Color.rgb(110,23,0));
+			break;
+		case Pending:
+			statusTextView.setTextColor(Color.rgb(0,88,167));
+			break;
+		case Started:
+			statusTextView.setTextColor(Color.rgb(0,110,40));
+			break;
+		}
 		
 		return view;
 		
