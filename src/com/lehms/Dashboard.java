@@ -7,6 +7,7 @@ import java.util.List;
 
 import com.google.inject.Inject;
 import com.lehms.service.IIdentityProvider;
+import com.lehms.service.IOfficeContactProvider;
 import com.lehms.util.MathUtils;
 
 import android.app.AlertDialog;
@@ -50,6 +51,7 @@ import roboguice.inject.InjectView;
 public class Dashboard extends RoboActivity implements OnGestureListener
 {
 	@Inject protected IIdentityProvider _identityProvider;
+	@Inject protected IOfficeContactProvider _officeContactProvider;
 	@InjectView(R.id.footer_text) protected TextView _footerText;
 	
 	@InjectView(R.id.dashboard_tab_host) protected TabHost _tabHost;
@@ -138,7 +140,23 @@ public class Dashboard extends RoboActivity implements OnGestureListener
 	        .setTitle("Please select how you would like to contact the office")
             .setItems(R.array.dashboard_contact_office_selection, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int which) {
-
+                	switch(which)
+                	{
+                	case 0:
+                		UIHelper.MakeCall( _officeContactProvider.getOfficePhoneNumber(), Dashboard.this);
+                		break;
+                	case 1:
+                		UIHelper.OpenEmail(Dashboard.this, _officeContactProvider.getOfficeEmail());
+                		break;
+                	case 2:
+                		UIHelper.OpenCall(Dashboard.this);
+                		break;
+                	case 3:
+                		UIHelper.OpenEmail(Dashboard.this, null);
+                		break;
+                	}
+                	
+                	//_officeContactProvider.getOfficePhoneNumber();
                }
             })
             .setCancelable(true)

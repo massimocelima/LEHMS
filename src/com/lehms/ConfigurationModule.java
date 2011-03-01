@@ -32,6 +32,7 @@ public class ConfigurationModule extends AbstractAndroidModule {
 		bind(IDeviceIdentifierProvider.class).toInstance(_context);
 		bind(IIdentityProvider.class).toInstance(_context);
 		bind(IProfileProvider.class).toInstance(_context);
+		bind(IOfficeContactProvider.class).toInstance(_context);
 		
 		bind(IChannelFactory.class).toInstance(
 				new HttpChannelFactory(new JsonSerializer(), 
