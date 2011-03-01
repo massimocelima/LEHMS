@@ -390,20 +390,7 @@
 	        android:text="End Job" 
 	        android:onClick="onEndJobClick"
 	        />
-<!-- 
-	    <Button 
-			android:id="@+id/activity_job_details_progress_notes"
-			android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:text="Progress Notes" />
 
-	    <Button 
-			android:id="@+id/activity_job_details_complete_forms"
-			android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:text="Complete Forms" />
-	        
- -->
 	    <Button 
 			android:id="@+id/activity_job_details_view"
 			android:layout_width="wrap_content"

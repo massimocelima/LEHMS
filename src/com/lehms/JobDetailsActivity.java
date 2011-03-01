@@ -60,8 +60,6 @@ public class JobDetailsActivity extends RoboActivity {
 
 	@InjectView(R.id.activity_job_details_begin_job) Button _btnBeginJob;
 	@InjectView(R.id.activity_job_details_end_job) Button _btnEndJob;
-	//@InjectView(R.id.activity_job_details_progress_notes) Button _btnProgressNotes;
-	//@InjectView(R.id.activity_job_details_complete_forms) Button _btnCompleteForms;
 	@InjectView(R.id.activity_job_details_view) Button _btnView;
 	
 	@Inject IRosterRepository _rosterRepository; 
@@ -439,6 +437,7 @@ public class JobDetailsActivity extends RoboActivity {
 				_quickActions.addActionItem(qaNavigate);
 
 				_quickActions.show();
+
 			}
 		});
 	}
