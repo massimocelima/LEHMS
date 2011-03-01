@@ -1,26 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+    android:orientation="horizontal"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     >
 
-	<TextView 
-		android:id="@+id/client_item_name"
-	    android:layout_width="fill_parent"
+	<ImageView
+	    android:layout_width="wrap_content"
 	    android:layout_height="wrap_content"
-	  	android:textAppearance="?android:attr/textAppearanceLarge" 
-	  	android:textColor="?android:attr/textColorPrimary" 
-	>
-	</TextView>
+		android:src="@drawable/dashboard_btn_clients_default"
+	></ImageView>
 
-	<TextView 
-		android:id="@+id/client_item_description"
+	<LinearLayout 
+	    android:orientation="vertical"
 	    android:layout_width="fill_parent"
 	    android:layout_height="wrap_content"
-	  	android:textAppearance="?android:attr/textAppearanceSmall" 
-	  	android:textColor="?android:attr/textColorSecondary" 
-	>
-	</TextView>
-  
+	    >
+	
+	
+		<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+		    android:orientation="horizontal"
+		    android:layout_width="fill_parent"
+		    android:layout_height="wrap_content"
+		    >
+	
+			<TextView 
+				android:id="@+id/client_item_last_name"
+			    android:layout_width="wrap_content"
+			    android:layout_height="wrap_content"
+			  	android:textAppearance="?android:attr/textAppearanceLarge" 
+			  	android:textColor="?android:attr/textColorPrimary" 
+			>
+			</TextView>
+			<TextView 
+			    android:layout_width="wrap_content"
+			    android:layout_height="wrap_content"
+			  	android:textAppearance="?android:attr/textAppearanceLarge" 
+			  	android:textColor="?android:attr/textColorPrimary" 
+			  	android:text=", "
+			>
+			</TextView>
+			<TextView 
+				android:id="@+id/client_item_first_name"
+			    android:layout_width="wrap_content"
+			    android:layout_height="wrap_content"
+			  	android:textAppearance="?android:attr/textAppearanceLarge" 
+			  	android:textColor="?android:attr/textColorPrimary" 
+			>
+			</TextView>
+			
+		</LinearLayout>
+	
+		<TextView 
+			android:id="@+id/client_item_client_id"
+		    android:layout_width="fill_parent"
+		    android:layout_height="wrap_content"
+		  	android:textAppearance="?android:attr/textAppearanceSmall" 
+		  	android:textColor="?android:attr/textColorSecondary" 
+		>
+		</TextView>
+			
+	</LinearLayout>
+	
 </LinearLayout>

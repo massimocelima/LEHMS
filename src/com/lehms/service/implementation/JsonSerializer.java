@@ -1,5 +1,6 @@
 package com.lehms.service.implementation;
 
+import java.lang.reflect.Type;
 import java.util.Date;
 
 import org.json.JSONObject;
@@ -12,7 +13,7 @@ import org.json.*;
 public class JsonSerializer implements ISerializer {
 
 	@Override
-	public String serializer(Object o) throws Exception {
+	public String Serializer(Object o) throws Exception {
 		GsonBuilder gsonb = new GsonBuilder(); 
 		DateDeserializer ds = new DateDeserializer(); 
 		gsonb.registerTypeAdapter(Date.class, ds); 
@@ -32,6 +33,33 @@ public class JsonSerializer implements ISerializer {
 		try {
 			JSONObject j = new JSONObject(data);
 			return gson.fromJson(j.toString(), type);
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			throw new Exception("Unable to convert string to json");
+		}
+		
+	}
+
+	@Override
+	public Object Deserializer(String data, Type type) throws Exception {
+	
+		GsonBuilder gsonb = new GsonBuilder(); 
+		DateDeserializer ds = new DateDeserializer(); 
+		gsonb.registerTypeAdapter(Date.class, ds); 
+		Gson gson = gsonb.create(); 
+		
+		try {
+			if( data.startsWith("[") )
+			{
+				JSONArray a = new JSONArray(data);
+				return gson.fromJson(a.toString(), type);
+			}
+			else
+			{
+				JSONObject j = new JSONObject(data);
+				return gson.fromJson(j.toString(), type);
+			}
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

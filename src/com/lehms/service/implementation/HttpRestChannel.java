@@ -3,6 +3,7 @@ package com.lehms.service.implementation;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.Field;
+import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Date;
@@ -45,20 +46,47 @@ public class HttpRestChannel implements IChannel {
 	}
 
 	@Override
+	public Object Get(Type responseType) throws Exception {
+
+		// Send GET request to <service>/GetPlates         
+    	HttpGet httpRequest = new HttpGet(_url);         
+    	httpRequest.setHeader("Accept", "application/json");         
+    	httpRequest.setHeader("Content-type", "application/json");
+		AddBasicAuthenticationHeader(httpRequest);
+
+    	DefaultHttpClient httpClient = new DefaultHttpClient();         
+    	HttpResponse response;
+		response = httpClient.execute(httpRequest);
+    	HttpEntity responseEntity = response.getEntity();
+    	
+    	String jsonStringResponse = GetJsonStringFromStream(responseEntity);
+    	return _serializer.Deserializer(jsonStringResponse, responseType);
+	}
+
+	
+	@Override
+	public <T> T Get(Class<T> responseType) throws Exception {
+		return Get(null, responseType);
+	}
+
+	@Override
 	public <T> T Get(Object request, Class<T> responseType) throws Exception {
 		
 		String url = _url;
 		
-		Field[] fields =request.getClass().getFields();
-		for (int i = 0; i < fields.length; i++ )
+		if( request != null )
 		{
-			url += i == 0 ? "?" : "&";
-			Object value = fields[i].get(request);
-		
-			if( Date.class.equals(value.getClass()))
-				url += fields[i].getName() + "=" + DateFormat.format("yyyy-MM-dd", (Date)value);
-			else
-				url += fields[i].getName().toLowerCase() + "=" + value.toString();
+			Field[] fields = request.getClass().getFields();
+			for (int i = 0; i < fields.length; i++ )
+			{
+				url += i == 0 ? "?" : "&";
+				Object value = fields[i].get(request);
+			
+				if( Date.class.equals(value.getClass()))
+					url += fields[i].getName() + "=" + DateFormat.format("yyyy-MM-dd", (Date)value);
+				else
+					url += fields[i].getName().toLowerCase() + "=" + value.toString();
+			}
 		}
 		
 		// Send GET request to <service>/GetPlates         
@@ -122,7 +150,7 @@ public class HttpRestChannel implements IChannel {
 		httpRequest.setHeader("Content-type", "application/json"); 
 		AddBasicAuthenticationHeader(httpRequest);
 
-		String jsonString = _serializer.serializer(request);
+		String jsonString = _serializer.Serializer(request);
 		   
 		StringEntity entity = new StringEntity(jsonString); 
 		httpRequest.setEntity(entity); 
@@ -145,7 +173,7 @@ public class HttpRestChannel implements IChannel {
 		httpRequest.setHeader("Content-type", "application/json"); 
 		AddBasicAuthenticationHeader(httpRequest);
 
-		String jsonString = _serializer.serializer(request);
+		String jsonString = _serializer.Serializer(request);
 		   
 		StringEntity entity = new StringEntity(jsonString); 
 		httpRequest.setEntity(entity); 
@@ -195,7 +223,7 @@ public class HttpRestChannel implements IChannel {
 		httpRequest.setHeader("Content-type", "application/json"); 
 		AddBasicAuthenticationHeader(httpRequest);
 		
-		String jsonString = _serializer.serializer(request);
+		String jsonString = _serializer.Serializer(request);
 		   
 		StringEntity entity = new StringEntity(jsonString); 
 		httpRequest.setEntity(entity); 

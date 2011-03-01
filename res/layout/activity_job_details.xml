@@ -65,12 +65,15 @@
 
 	<ScrollView
 	  android:layout_width="fill_parent"
-	  android:layout_height="wrap_content">
+	  android:layout_height="wrap_content"
+	  android:layout_weight="1"
+	  >
 
 	    <LinearLayout
 			android:layout_width="fill_parent"
 		  	android:layout_height="fill_parent"
 		  	android:orientation="vertical">
+
 
 			<include layout="@layout/seperator"></include>
 		
@@ -78,28 +81,56 @@
 		        android:background="@color/background2"
 		        android:paddingLeft="14dip"
 		        android:paddingRight="14dip"
-		        android:paddingTop="5dip"
-		        android:paddingBottom="5dip"
 		        android:layout_width="fill_parent"
 		        android:layout_height="wrap_content"
-		        android:orientation="vertical">
-				<TextView 
-					android:id="@+id/activity_job_details_client_details"
-					android:text="Client Details"
-			        android:layout_width="fill_parent"
-			        android:layout_height="wrap_content"
-			        style="@style/HeaderSubTitleTwo" />
+		        android:orientation="horizontal"
+		        android:onClick="onClientDetailsExpanderClick"
+		        >
+		        
+		        <LinearLayout 
+				    android:orientation="vertical"
+				    android:layout_width="wrap_content"
+				    android:layout_height="fill_parent"
+				    android:layout_weight="1"
+				    android:gravity="center_vertical"
+				    >
+					<TextView 
+						android:id="@+id/activity_job_details_client_details"
+						android:text="Client Details"
+				        android:layout_width="fill_parent"
+				        android:layout_height="wrap_content"
+				        style="@style/HeaderSubTitleTwo" />
+				</LinearLayout>
+		        
+	    	    <LinearLayout 
+				    android:orientation="vertical"
+				    android:layout_width="wrap_content"
+				    android:layout_height="fill_parent"
+				    android:gravity="center"
+				    >
+				    <ImageButton 
+						 android:id="@+id/activity_job_details_client_details_expander"
+				    	 android:layout_height="wrap_content" 
+						 android:layout_width="wrap_content" 
+			             android:background="@null"
+			             android:onClick="onClientDetailsExpanderClick" 
+			             android:src="@drawable/expander_ic_minimized" />
+				</LinearLayout>
+			    
+			        
 		    </LinearLayout>
 		
 			<include layout="@layout/seperator"></include>
 		
 		    <LinearLayout
+				android:id="@+id/activity_job_details_client_details_container"
 		        android:paddingLeft="14dip"
 		        android:paddingRight="14dip"
 		        android:paddingTop="10dip"
 		        android:paddingBottom="10dip"
 		        android:layout_width="fill_parent"
 		        android:layout_height="wrap_content"
+		        android:visibility="gone"
 		        android:orientation="vertical">
 		
 		
@@ -194,7 +225,6 @@
 		    </LinearLayout>
 		
 			<include layout="@layout/seperator"></include>  
-			
 			
 		    <LinearLayout
 		        android:paddingLeft="14dip"
@@ -333,42 +363,54 @@
 				<include layout="@layout/seperator"></include>
 				
 			</LinearLayout>
-			
-			
-			<LinearLayout
-					android:layout_width="fill_parent"
-			        android:layout_height="wrap_content"
-			        android:orientation="horizontal"
-			        >
-			        
-			    <Button 
-					android:layout_width="wrap_content"
-			        android:layout_height="wrap_content"
-			        android:text="Begin Job"
-			        android:onClick="onBeginJobClick"
-			         />
-
-			    <Button 
-					android:layout_width="wrap_content"
-			        android:layout_height="wrap_content"
-			        android:text="End Job" 
-			        android:onClick="onEndJobClick"
-			        />
-
-			    <Button 
-					android:layout_width="wrap_content"
-			        android:layout_height="wrap_content"
-			        android:text="Progress Notes" />
-
-			    <Button 
-					android:layout_width="wrap_content"
-			        android:layout_height="wrap_content"
-			        android:text="Complete Forms" />
-			        
-			</LinearLayout>
-			
+		
 		</LinearLayout>
 		
 	</ScrollView>
+
+	<LinearLayout
+			android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:orientation="horizontal"
+	        style="@android:style/ButtonBar"
+	        >
+	        
+	    <Button 
+			android:id="@+id/activity_job_details_begin_job"
+			android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:text="Begin Job"
+	        android:onClick="onBeginJobClick"
+	         />
+
+	    <Button 
+			android:id="@+id/activity_job_details_end_job"
+			android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:text="End Job" 
+	        android:onClick="onEndJobClick"
+	        />
+<!-- 
+	    <Button 
+			android:id="@+id/activity_job_details_progress_notes"
+			android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:text="Progress Notes" />
+
+	    <Button 
+			android:id="@+id/activity_job_details_complete_forms"
+			android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:text="Complete Forms" />
+	        
+ -->
+	    <Button 
+			android:id="@+id/activity_job_details_view"
+			android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:text="More ..." />
+	        
+	</LinearLayout>
+	
 	
 </LinearLayout>

@@ -12,6 +12,7 @@ import android.content.Intent;
 import android.content.DialogInterface.OnClickListener;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.text.format.DateFormat;
 
@@ -122,6 +123,12 @@ public class UIHelper {
 		result += " " + address.Postcode;
 		
 		return result;
+	}
+	
+	public static boolean IsOnline(Context context) 
+	{
+		ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);  
+		return cm.getActiveNetworkInfo().isConnectedOrConnecting();  
 	}
 
 }

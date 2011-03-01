@@ -17,7 +17,7 @@
             android:onClick="onHomeClick" />
         
         <ImageView style="@style/TitleBarSeparator" />
-        <TextView style="@style/TitleBarText" android:text="LEHMS V2" />
+        <TextView style="@style/TitleBarText" android:text="Clients" />
         <!-- <View style="@style/TitleBarSpring" /> -->
 
         <ImageView style="@style/TitleBarSeparator" />

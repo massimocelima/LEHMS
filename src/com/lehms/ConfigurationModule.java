@@ -24,6 +24,7 @@ public class ConfigurationModule extends AbstractAndroidModule {
 		bind(ISerializer.class).to(JsonSerializer.class);
 		bind(IAuthenticationService.class).to(AuthenticationService.class);
 		bind(IRosterResource.class).to(RosterResource.class);
+		bind(IClientResource.class).to(ClientResource.class);
 		
 		bind(IRosterRepository.class).toInstance(new RosterRepository(new JsonSerializer(), _context, _context));
 				

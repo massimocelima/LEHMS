@@ -11,7 +11,7 @@
         android:layout_marginRight="20dip"
         android:text="@string/killometers_traveled"
         android:gravity="left"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        style="@style/DialogText" />
             
     <EditText
         android:id="@+id/killometers_travelled_value"

@@ -70,7 +70,7 @@ public class RosterRepository implements IRosterRepository {
     	
         ContentValues initialValues = new ContentValues();
         initialValues.put(KEY_ROWID, GetDateId(roster.Date));
-        initialValues.put(KEY_DATA, _serializer.serializer(roster));
+        initialValues.put(KEY_DATA, _serializer.Serializer(roster));
         initialValues.put(KEY_CREATED, (new Date()).getTime());
         initialValues.put(KEY_USER_ID, _identityProvider.getCurrent().GetFullUsername());
         

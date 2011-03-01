@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/home_root"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    >
+ 
+   <LinearLayout style="@style/TitleBar">
+        
+		<ImageButton style="@style/TitleBarAction"
+            android:contentDescription="Home"
+            android:src="@drawable/ic_title_home"
+            android:onClick="onHomeClick" />
+        
+        <ImageView style="@style/TitleBarSeparator" />
+        <TextView 
+	        android:id="@+id/title_bar_title"
+        	style="@style/TitleBarText" 
+        	android:text="Client Details" />
+        <!-- <View style="@style/TitleBarSpring" /> -->
+
+        <ImageView style="@style/TitleBarSeparator" />
+        <ImageButton style="@style/TitleBarAction"
+            android:contentDescription="Refresh"
+            android:src="@drawable/ic_title_refresh"
+            android:onClick="onRefreshClick" />
+
+    </LinearLayout>
+ 
+    <LinearLayout 
+        style="@style/HeaderContainer">
+
+		<ImageView 
+			android:layout_height="wrap_content" 
+			android:layout_width="wrap_content" 
+			android:src="@drawable/dashboard_btn_clients_default"></ImageView>
+			
+	    <LinearLayout 
+		    android:orientation="vertical"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:layout_weight="1"
+		    >
+			
+			<TextView 
+				android:id="@+id/activity_client_details_title"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:text="Job Details"
+		        style="@style/HeaderTitle" />
+	   		<TextView 
+				android:id="@+id/activity_client_details_sub_title"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        style="@style/HeaderSubTitle" />
+	   		<TextView 
+				android:id="@+id/activity_client_details_sub_title2"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        style="@style/HeaderSubTitle" />
+        </LinearLayout>
+
+	</LinearLayout>
+
+	<ScrollView
+	  android:layout_width="fill_parent"
+	  android:layout_height="wrap_content"
+	  android:layout_weight="1"
+	  >
+
+	    <LinearLayout
+			android:layout_width="fill_parent"
+		  	android:layout_height="fill_parent"
+		  	android:orientation="vertical">
+		
+		    <LinearLayout
+				android:id="@+id/activity_client_details_container"
+		        android:paddingLeft="14dip"
+		        android:paddingRight="14dip"
+		        android:paddingTop="10dip"
+		        android:paddingBottom="10dip"
+		        android:layout_width="fill_parent"
+		        android:layout_height="wrap_content"
+		        android:orientation="vertical">
+		
+			    <LinearLayout
+			        android:layout_width="fill_parent"
+			        android:layout_height="wrap_content"
+			        android:orientation="horizontal">
+					<TextView 
+						android:id="@+id/activity_client_details_date_of_birth"
+				        android:text="Date Of Birth:"
+				        style="@style/FieldsetLabel" />
+				
+					<TextView 
+						android:id="@+id/activity_client_details_date_of_birth_value"
+				        style="@style/FieldsetInput" />
+		
+				</LinearLayout>
+			
+				<include layout="@layout/seperator"></include>
+			
+			    <LinearLayout
+			        android:layout_width="fill_parent"
+			        android:layout_height="wrap_content"
+			        android:orientation="horizontal">
+		
+					<TextView 
+						android:id="@+id/activity_client_details_address"
+				        android:text="Address:"
+				        style="@style/FieldsetLabel" />
+				
+					<TextView 
+						android:id="@+id/activity_client_details_address_value"
+				        style="@style/FieldsetInput" />
+			
+				</LinearLayout>
+		
+				<include layout="@layout/seperator"></include>
+		
+			    <LinearLayout
+			        android:layout_width="fill_parent"
+			        android:layout_height="wrap_content"
+			        android:orientation="horizontal">
+				
+					<TextView 
+						android:id="@+id/activity_client_details_phone"
+				        android:text="Phone Number:"
+				        style="@style/FieldsetLabel" />
+				
+					<TextView 
+						android:id="@+id/activity_client_details_phone_value"
+				        style="@style/FieldsetInput" />
+		  
+			  </LinearLayout>
+		
+		  	</LinearLayout>
+		  	
+			<include layout="@layout/activity_client_details_contacts"></include>
+
+			<include layout="@layout/activity_client_details_pharmacy"></include>
+
+			<include layout="@layout/activity_client_details_doctor"></include>
+
+			<include layout="@layout/activity_client_details_allergies"></include>
+
+			<include layout="@layout/activity_client_details_medical_conditions"></include>
+		  
+		</LinearLayout>
+		
+	</ScrollView>
+
+	<LinearLayout
+			android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:orientation="horizontal"
+	        style="@android:style/ButtonBar"
+	        >
+	        
+	    <Button 
+			android:id="@+id/activity_client_details_more"
+			android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:text="More ..." />
+	        
+	</LinearLayout>
+	
+	
+</LinearLayout>

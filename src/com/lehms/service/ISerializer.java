@@ -1,8 +1,11 @@
 package com.lehms.service;
 
+import java.lang.reflect.Type;
+
 public interface ISerializer {
 
-	String serializer(Object o) throws Exception;
+	String Serializer(Object o) throws Exception;
 	<T> T Deserializer(String data, Class<T> type) throws Exception;
+	Object Deserializer(String data, Type type) throws Exception;
 	
 }

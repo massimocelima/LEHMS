@@ -2,6 +2,7 @@ package com.lehms.service.implementation;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
@@ -82,6 +83,18 @@ public class MockChannel implements IChannel {
 
 	@Override
 	public <T> T Get(Object request, Class<T> responseType) throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public <T> T Get(Class<T> responseType) throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Object Get(Type type) throws Exception {
 		// TODO Auto-generated method stub
 		return null;
 	}
