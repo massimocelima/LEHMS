@@ -6,7 +6,7 @@ import com.lehms.controls.ActionItem;
 import com.lehms.controls.QuickAction;
 import com.lehms.messages.GetClientDetailsResponse;
 import com.lehms.messages.dataContracts.ClientDataContract;
-import com.lehms.service.IClientResource;
+import com.lehms.serviceInterface.IClientResource;
 
 import android.app.Activity;
 import android.app.AlertDialog;

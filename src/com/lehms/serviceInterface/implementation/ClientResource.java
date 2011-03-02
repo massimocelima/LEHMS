@@ -1,4 +1,4 @@
-package com.lehms.service.implementation;
+package com.lehms.serviceInterface.implementation;
 
 import java.lang.reflect.Type;
 import java.util.List;
@@ -8,11 +8,11 @@ import com.google.inject.Inject;
 import com.lehms.messages.GetClientDetailsResponse;
 import com.lehms.messages.dataContracts.ClientDataContract;
 import com.lehms.messages.dataContracts.ClientSummaryDataContract;
-import com.lehms.service.IChannel;
-import com.lehms.service.IChannelFactory;
-import com.lehms.service.IClientResource;
-import com.lehms.service.IDepartmentProvider;
-import com.lehms.service.IProfileProvider;
+import com.lehms.serviceInterface.IChannel;
+import com.lehms.serviceInterface.IChannelFactory;
+import com.lehms.serviceInterface.IClientResource;
+import com.lehms.serviceInterface.IDepartmentProvider;
+import com.lehms.serviceInterface.IProfileProvider;
 
 public class ClientResource implements IClientResource {
 

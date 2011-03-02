@@ -1,13 +1,13 @@
-package com.lehms.service.implementation;
+package com.lehms.serviceInterface.implementation;
 
 import com.lehms.IoC.ContainerFactory;
-import com.lehms.service.IChannel;
-import com.lehms.service.IChannelFactory;
-import com.lehms.service.IDepartmentProvider;
-import com.lehms.service.IIdentityProvider;
-import com.lehms.service.IProfileProvider;
-import com.lehms.service.ISerializer;
-import com.lehms.service.ProfileEnvironment;
+import com.lehms.serviceInterface.IChannel;
+import com.lehms.serviceInterface.IChannelFactory;
+import com.lehms.serviceInterface.IDepartmentProvider;
+import com.lehms.serviceInterface.IIdentityProvider;
+import com.lehms.serviceInterface.IProfileProvider;
+import com.lehms.serviceInterface.ISerializer;
+import com.lehms.serviceInterface.ProfileEnvironment;
 
 public class HttpChannelFactory implements IChannelFactory {
 	

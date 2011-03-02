@@ -1,4 +1,4 @@
-package com.lehms.service.implementation;
+package com.lehms.serviceInterface.implementation;
 
 import java.lang.reflect.Type; 
 import java.util.Calendar;

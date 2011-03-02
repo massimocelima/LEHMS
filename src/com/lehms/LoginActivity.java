@@ -7,8 +7,8 @@ import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.lehms.IoC.ContainerFactory;
 import com.lehms.messages.LoginResponse;
-import com.lehms.service.*;
-import com.lehms.service.implementation.*;
+import com.lehms.serviceInterface.*;
+import com.lehms.serviceInterface.implementation.*;
 
 import android.app.Activity;
 import android.app.AlertDialog;

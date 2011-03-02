@@ -8,7 +8,7 @@
 
 	<uses-sdk android:minSdkVersion="4" />
 
-    <application android:name="com.lehms.LehmsApplication" 
+    <application android:name="LehmsApplication" 
 	    android:icon="@drawable/icon" 
     	android:label="@string/app_name"
     	android:theme="@style/Theme.Lehms"
@@ -39,16 +39,24 @@
                   android:label="@string/app_name" 
                   android:configChanges="orientation" 
                   />
-        <activity android:name=".JobDetailsActivity"
+        <activity android:name="JobDetailsActivity"
                   android:label="@string/app_name" 
                   android:configChanges="orientation" 
                   />
+        
+        <!--
+		<service android:name="com.varma.samples.gpslogger.service.GPSLoggerService"/>                  
+		<receiver android:name="com.varma.samples.gpslogger.receivers.AlarmReceiver"/>            
+        -->
+        
    </application>
     
     <uses-permission android:name="android.permission.RECEIVE_SMS" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" /> 
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" /> 
-    <uses-permission android:name="android.permission.CALL_PHONE"></uses-permission>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>  
+	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" /> 
+    <uses-permission android:name="android.permission.CALL_PHONE" />
 
 </manifest>

@@ -12,8 +12,8 @@ import com.lehms.messages.dataContracts.RosterDataContract;
 import com.lehms.messages.dataContracts.UserDataContract;
 import com.lehms.persistence.IRosterRepository;
 import com.lehms.persistence.RosterRepository;
-import com.lehms.service.IIdentityProvider;
-import com.lehms.service.IRosterResource;
+import com.lehms.serviceInterface.IIdentityProvider;
+import com.lehms.serviceInterface.IRosterResource;
 import com.lehms.util.MathUtils;
 
 import android.app.Activity;

@@ -10,7 +10,7 @@ import com.google.inject.Module;
 import com.lehms.IoC.Container;
 import com.lehms.IoC.ContainerFactory;
 import com.lehms.messages.dataContracts.UserDataContract;
-import com.lehms.service.*;
+import com.lehms.serviceInterface.*;
 
 import roboguice.application.RoboApplication;
 

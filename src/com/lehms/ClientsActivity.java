@@ -8,7 +8,7 @@ import com.lehms.adapters.ClientSummaryAdapter;
 import com.lehms.adapters.JobAdapter;
 import com.lehms.messages.dataContracts.ClientSummaryDataContract;
 import com.lehms.messages.dataContracts.RosterDataContract;
-import com.lehms.service.IClientResource;
+import com.lehms.serviceInterface.IClientResource;
 
 import android.app.Activity;
 import android.app.AlertDialog;

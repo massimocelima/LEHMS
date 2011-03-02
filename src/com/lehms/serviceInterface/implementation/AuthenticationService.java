@@ -1,11 +1,11 @@
-package com.lehms.service.implementation;
+package com.lehms.serviceInterface.implementation;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 
 import com.google.inject.Inject;
 import com.lehms.messages.*;
-import com.lehms.service.*;
+import com.lehms.serviceInterface.*;
 
 public class AuthenticationService implements IAuthenticationService {
 

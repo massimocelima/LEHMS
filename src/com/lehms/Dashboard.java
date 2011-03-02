@@ -6,8 +6,8 @@ import java.util.Date;
 import java.util.List;
 
 import com.google.inject.Inject;
-import com.lehms.service.IIdentityProvider;
-import com.lehms.service.IOfficeContactProvider;
+import com.lehms.serviceInterface.IIdentityProvider;
+import com.lehms.serviceInterface.IOfficeContactProvider;
 import com.lehms.util.MathUtils;
 
 import android.app.AlertDialog;
