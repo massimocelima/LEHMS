@@ -155,6 +155,7 @@ public class UIHelper {
 		context.startActivity(Intent.createChooser(emailIntent, "Send mail..."));
 		
 		//Uri uri = Uri.fromFile(new File(Environment.getExternalStorageDirectory(), FILENAME));
+		//Uri.parse("file://"+ sPhotoFileName));
 		//emailIntent.putExtra(Intent.EXTRA_STREAM, uri);
 	}
 
