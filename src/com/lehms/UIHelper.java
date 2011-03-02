@@ -130,5 +130,32 @@ public class UIHelper {
 		ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);  
 		return cm.getActiveNetworkInfo().isConnectedOrConnecting();  
 	}
+	
+	public static void MakeCall(String phoneNumber, Context context)
+	{
+		Intent intent = new Intent(Intent.ACTION_CALL);
+		intent.setData(Uri.parse("tel:" + phoneNumber));
+		context.startActivity(intent);
+	}
+
+	public static void OpenCall(Context context)
+	{
+		Intent intent = new Intent(Intent.ACTION_CALL_BUTTON);
+		context.startActivity(intent);
+	}
+	
+	public static void OpenEmail(Context context, String recipient)
+	{
+		Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND);
+		emailIntent.setType("plain/text");
+		if( recipient != null && !recipient.equals(""))
+			emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL, new String[]{recipient} ); //new String[]{"to@email.com"});
+		emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "");   
+		emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, "");
+		context.startActivity(Intent.createChooser(emailIntent, "Send mail..."));
+		
+		//Uri uri = Uri.fromFile(new File(Environment.getExternalStorageDirectory(), FILENAME));
+		//emailIntent.putExtra(Intent.EXTRA_STREAM, uri);
+	}
 
 }

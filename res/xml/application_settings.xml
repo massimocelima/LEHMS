@@ -29,6 +29,20 @@
                 android:summary="@string/application_settings_department_summary"
                 android:dialogTitle="@string/application_settings_department" />
 
+		<EditTextPreference
+                android:key="application_settings_office_phone_pref"
+	            android:defaultValue="0410308497"
+                android:title="@string/application_settings_office_phone"
+                android:summary="@string/application_settings_office_phone_summary"
+                android:dialogTitle="@string/application_settings_office_phone" />
+
+		<EditTextPreference
+                android:key="application_settings_office_email_pref"
+	            android:defaultValue="massimo_celima@tpg.com.au"
+                android:title="@string/application_settings_office_email"
+                android:summary="@string/application_settings_office_email_summary"
+                android:dialogTitle="@string/application_settings_office_email" />
+
     </PreferenceCategory>
     
 </PreferenceScreen>

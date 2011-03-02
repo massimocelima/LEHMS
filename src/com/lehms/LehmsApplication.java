@@ -15,14 +15,16 @@ import com.lehms.service.*;
 import roboguice.application.RoboApplication;
 
 public class LehmsApplication extends RoboApplication 
-		implements IIdentityProvider, IProfileProvider , IDeviceIdentifierProvider, IDepartmentProvider
+		implements IIdentityProvider, IProfileProvider , IDeviceIdentifierProvider, IDepartmentProvider, IOfficeContactProvider
 {
 	private UserDataContract _currentUser;
 	
     public static final String KEY_PROFILE_PREF = "application_settings_profile_pref";
     public static final String KEY_DEVICE_ID_PREF = "application_settings_device_id_pref";
     public static final String KEY_DEPARTMENT_PREF = "application_settings_department_pref";
-	
+    public static final String KEY_OFFICE_PHONE_PREF = "application_settings_office_phone_pref";
+    public static final String KEY_OFFICE_EMAIL_PREF = "application_settings_office_email_pref";
+    
 	@Override
 	public void onCreate() {
 		// TODO Auto-generated method stub
@@ -82,6 +84,18 @@ public class LehmsApplication extends RoboApplication
 	{
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
         return sharedPref.getString(KEY_DEPARTMENT_PREF, "INS");
+	}
+	
+	public String getOfficePhoneNumber()
+	{
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+        return sharedPref.getString(KEY_OFFICE_PHONE_PREF, "0410308497");
+	}
+
+	public String getOfficeEmail()
+	{
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+        return sharedPref.getString(KEY_OFFICE_EMAIL_PREF, "massimo_celima@tpg.com.au");
 	}
 
 }
