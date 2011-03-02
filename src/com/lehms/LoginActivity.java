@@ -4,27 +4,19 @@ import roboguice.activity.RoboActivity;
 import roboguice.inject.*;
 
 import com.google.inject.Inject;
-import com.google.inject.Provider;
-import com.lehms.IoC.ContainerFactory;
 import com.lehms.messages.LoginResponse;
 import com.lehms.serviceInterface.*;
-import com.lehms.serviceInterface.implementation.*;
+import com.lehms.util.AppLog;
 
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.EditText;
-import android.widget.Toast;
 
 public class LoginActivity extends RoboActivity {
 	
@@ -116,7 +108,7 @@ public class LoginActivity extends RoboActivity {
 			try {
 				return _authenticationService.Login(arg0[0], arg0[1]);
 			} catch (Exception e) {
-				Log.e("LEHMS", e.getMessage());
+				AppLog.error(e.getMessage());
 				_exception = e;
 			}
 			return null;
@@ -135,12 +127,12 @@ public class LoginActivity extends RoboActivity {
 				try {
 					_identityProvider.setCurrent(result.User);
 					_progressDialog.dismiss();
-					
+
 		            // Here we start the next activity, and then call finish()
 		            // so that our own will stop running and be removed from the history stack.
 		            Intent intent = new Intent(_context, Dashboard.class);
-		            //intent.setClass(LoginActivity.this, Dashboard.class);
 		            _context.startActivity(intent);
+		            
 		            _context.finish();
 					
 				} catch (Exception e) {

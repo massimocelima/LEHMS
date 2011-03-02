@@ -44,10 +44,8 @@
                   android:configChanges="orientation" 
                   />
         
-        <!--
-		<service android:name="com.varma.samples.gpslogger.service.GPSLoggerService"/>                  
-		<receiver android:name="com.varma.samples.gpslogger.receivers.AlarmReceiver"/>            
-        -->
+		<service android:name="com.lehms.service.GPSLoggerService"/>                  
+		<receiver android:name="com.lehms.receivers.GPSLoggerAlarmReciever"/>            
         
    </application>
     

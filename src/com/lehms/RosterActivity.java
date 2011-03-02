@@ -14,6 +14,7 @@ import com.lehms.persistence.IRosterRepository;
 import com.lehms.persistence.RosterRepository;
 import com.lehms.serviceInterface.IIdentityProvider;
 import com.lehms.serviceInterface.IRosterResource;
+import com.lehms.util.AppLog;
 import com.lehms.util.MathUtils;
 
 import android.app.Activity;
@@ -115,7 +116,7 @@ public class RosterActivity  extends RoboListActivity
 			user = _identityProvider.getCurrent(); 	
 		} catch(Exception e) {
 			// This should never happen
-			Log.e("LEHMS", "Error getting identity from provider");
+			AppLog.error("Error getting identity from provider");
 		}
 		if( user != null )
 		{
@@ -237,7 +238,7 @@ public class RosterActivity  extends RoboListActivity
 				}
 				//_rosterRepository.close();
 			} catch (Exception e) {
-				Log.e("LEHMS", e.getMessage());
+				AppLog.error(e.getMessage());
 				_exception = e;
 			} 
 			finally 

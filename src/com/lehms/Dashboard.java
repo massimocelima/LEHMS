@@ -6,8 +6,10 @@ import java.util.Date;
 import java.util.List;
 
 import com.google.inject.Inject;
+import com.lehms.service.GPSLoggerService;
 import com.lehms.serviceInterface.IIdentityProvider;
 import com.lehms.serviceInterface.IOfficeContactProvider;
+import com.lehms.util.AppLog;
 import com.lehms.util.MathUtils;
 
 import android.app.AlertDialog;
@@ -101,9 +103,13 @@ public class Dashboard extends RoboActivity implements OnGestureListener
 		}
 		catch(Exception ex)
 		{
-			Log.e("LEHMS", "Failed to set footer in dashboard");
+			AppLog.error("Failed to set footer in dashboard");
 		}
 		
+		// Starts the GPS logging
+        Intent serviceIntent = new Intent(this, GPSLoggerService.class);
+        this.startService(serviceIntent);
+        
 	}
 
 	private void SetTouchEventOnChildViews(ViewGroup viewGroup)
@@ -327,5 +333,11 @@ public class Dashboard extends RoboActivity implements OnGestureListener
 	
     // End OnGestureListener Implementation
 
- 
+
+	@Override
+	public void onBackPressed() {
+		super.onBackPressed();
+        Intent serviceIntent = new Intent(this, GPSLoggerService.class);
+        this.stopService(serviceIntent);
+	}
 }
