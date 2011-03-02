@@ -1,4 +1,4 @@
-package com.lehms.service.implementation;
+package com.lehms.serviceInterface.implementation;
 
 public enum RequestMethod {
 	POST,

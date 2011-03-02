@@ -1,4 +1,4 @@
-package com.lehms.service;
+package com.lehms.serviceInterface;
 
 public interface IChannelFactory {
 

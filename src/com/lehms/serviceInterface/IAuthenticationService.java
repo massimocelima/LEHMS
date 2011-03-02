@@ -1,4 +1,4 @@
-package com.lehms.service;
+package com.lehms.serviceInterface;
 
 import com.lehms.messages.LoginResponse;
 

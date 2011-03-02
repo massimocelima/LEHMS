@@ -1,4 +1,4 @@
-package com.lehms.service.implementation;
+package com.lehms.serviceInterface.implementation;
 
 import java.lang.reflect.Type;
 import java.util.Date;
@@ -7,7 +7,8 @@ import org.json.JSONObject;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.lehms.service.ISerializer;
+import com.lehms.serviceInterface.ISerializer;
+
 import org.json.*;
 
 public class JsonSerializer implements ISerializer {

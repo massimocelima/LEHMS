@@ -1,4 +1,4 @@
-package com.lehms.service;
+package com.lehms.serviceInterface;
 
 public class Profile {
 
@@ -6,10 +6,10 @@ public class Profile {
 	
 	public Profile()
 	{
-		_profileEnvironment = com.lehms.service.ProfileEnvironment.Development;
+		_profileEnvironment = com.lehms.serviceInterface.ProfileEnvironment.Development;
 	}
 	
-	public Profile(com.lehms.service.ProfileEnvironment profileEnvironment)
+	public Profile(com.lehms.serviceInterface.ProfileEnvironment profileEnvironment)
 	{
 		_profileEnvironment = profileEnvironment;
 	}

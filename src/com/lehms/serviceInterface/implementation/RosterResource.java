@@ -1,15 +1,15 @@
-package com.lehms.service.implementation;
+package com.lehms.serviceInterface.implementation;
 
 import java.util.Date;
 
 import com.google.inject.Inject;
 import com.lehms.messages.GetRosterRequest;
 import com.lehms.messages.dataContracts.RosterDataContract;
-import com.lehms.service.IChannel;
-import com.lehms.service.IChannelFactory;
-import com.lehms.service.IDepartmentProvider;
-import com.lehms.service.IProfileProvider;
-import com.lehms.service.IRosterResource;
+import com.lehms.serviceInterface.IChannel;
+import com.lehms.serviceInterface.IChannelFactory;
+import com.lehms.serviceInterface.IDepartmentProvider;
+import com.lehms.serviceInterface.IProfileProvider;
+import com.lehms.serviceInterface.IRosterResource;
 
 public class RosterResource implements IRosterResource {
 

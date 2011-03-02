@@ -6,7 +6,8 @@ import com.lehms.controls.ActionItem;
 import com.lehms.controls.QuickAction;
 import com.lehms.messages.GetClientDetailsResponse;
 import com.lehms.messages.dataContracts.ClientDataContract;
-import com.lehms.service.IClientResource;
+import com.lehms.serviceInterface.IClientResource;
+import com.lehms.util.AppLog;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -144,7 +145,7 @@ public class ClientDetailsActivity  extends RoboActivity { //implements AsyncQue
 			try {
 				_clientResponse = _clientResource.GetClientDetails(_clientId);
 			} catch (Exception e) {
-				Log.e("LEHMS", e.getMessage());
+				AppLog.error(e.getMessage());
 				_exception = e;
 			} 
 			

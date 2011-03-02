@@ -1,4 +1,4 @@
-package com.lehms.service.implementation;
+package com.lehms.serviceInterface.implementation;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -21,9 +21,9 @@ import android.util.Base64;
 import com.lehms.IoC.ContainerFactory;
 import com.lehms.messages.LoginResponse;
 import com.lehms.messages.dataContracts.UserDataContract;
-import com.lehms.service.IChannel;
-import com.lehms.service.IIdentityProvider;
-import com.lehms.service.ISerializer;
+import com.lehms.serviceInterface.IChannel;
+import com.lehms.serviceInterface.IIdentityProvider;
+import com.lehms.serviceInterface.ISerializer;
 
 public class MockChannel implements IChannel {
 

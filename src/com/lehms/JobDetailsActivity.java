@@ -6,6 +6,7 @@ import com.google.inject.Inject;
 import com.lehms.controls.*;
 import com.lehms.messages.dataContracts.*;
 import com.lehms.persistence.IRosterRepository;
+import com.lehms.util.AppLog;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -292,7 +293,7 @@ public class JobDetailsActivity extends RoboActivity {
 				
 			} catch (Exception e) {
 				UIHelper.ShowAlertDialog(this, "Can not find roster", "Can not roster" + UIHelper.FormatShortDate(new Date(_rosterTime)) );
-				Log.e("LEHMS", "Can not find roster " + UIHelper.FormatShortDate(new Date(_rosterTime)));
+				AppLog.error("Can not find roster " + UIHelper.FormatShortDate(new Date(_rosterTime)));
 			}
 			finally
 			{
@@ -319,7 +320,7 @@ public class JobDetailsActivity extends RoboActivity {
 		if( result == null )
 		{
 			UIHelper.ShowAlertDialog(this, "Can not find job", "Can not find job " + _jobId );
-			Log.e("LEHMS", "Can not find job " + _jobId);
+			AppLog.error("Can not find job " + _jobId);
 		}
 		
 		return result;

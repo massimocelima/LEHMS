@@ -8,7 +8,8 @@ import com.lehms.adapters.ClientSummaryAdapter;
 import com.lehms.adapters.JobAdapter;
 import com.lehms.messages.dataContracts.ClientSummaryDataContract;
 import com.lehms.messages.dataContracts.RosterDataContract;
-import com.lehms.service.IClientResource;
+import com.lehms.serviceInterface.IClientResource;
+import com.lehms.util.AppLog;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -104,7 +105,7 @@ public class ClientsActivity  extends RoboListActivity { //implements AsyncQuery
 				
 				clients = _clientResource.GetClientSummaries();
 			} catch (Exception e) {
-				Log.e("LEHMS", e.getMessage());
+				AppLog.error(e.getMessage());
 				_exception = e;
 			} 
 			

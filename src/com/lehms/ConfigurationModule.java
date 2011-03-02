@@ -3,8 +3,8 @@ package com.lehms;
 import android.content.Context;
 
 import com.lehms.persistence.*;
-import com.lehms.service.*;
-import com.lehms.service.implementation.*;
+import com.lehms.serviceInterface.*;
+import com.lehms.serviceInterface.implementation.*;
 
 import roboguice.config.AbstractAndroidModule;
 import roboguice.inject.SharedPreferencesName;
