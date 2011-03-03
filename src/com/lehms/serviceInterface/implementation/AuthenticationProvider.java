@@ -7,14 +7,14 @@ import com.google.inject.Inject;
 import com.lehms.messages.*;
 import com.lehms.serviceInterface.*;
 
-public class AuthenticationService implements IAuthenticationService {
+public class AuthenticationProvider implements IAuthenticationProvider {
 
 	private IChannelFactory _channelFactory;
 	private IProfileProvider _profileProvider;
 	private IDepartmentProvider _departmentProvider;
 	
 	@Inject
-	private AuthenticationService(IChannelFactory channelFactory, 
+	private AuthenticationProvider(IChannelFactory channelFactory, 
 			IProfileProvider profileProvider, 
 			IDepartmentProvider departmentProvider)
 	{

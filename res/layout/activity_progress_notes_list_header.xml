@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent">
+
+	<LinearLayout android:id="@+id/add_progress_note" 
+		android:clickable="true" 
+		android:focusable="true" 
+		android:background="@drawable/list_header_background" 
+		android:layout_width="match_parent" 
+		android:layout_height="wrap_content" 
+		android:orientation="horizontal">
+		
+		<ImageView 
+		  	android:layout_width="68dip" 
+  			android:layout_height="68dip" 
+		 	android:duplicateParentState="true" 
+			android:gravity="center" 
+			android:scaleType="center" 
+			android:src="@drawable/ic_menu_add" /> 
+		
+		  <TextView android:duplicateParentState="true" 
+		  	android:layout_height="wrap_content" 
+		  	android:layout_width="wrap_content" 
+		  	android:layout_gravity="center_vertical" 
+		  	android:textAppearance="?android:attr/textAppearanceLarge" 
+		  	android:textColor="?android:attr/textColorPrimary" 
+		  	android:text="Create Progress Note" /> 
+	</LinearLayout>
+	
+	<ImageView android:layout_width="match_parent" 
+	 	android:layout_height="wrap_content" 
+	 	android:scaleType="fitXY" 
+	 	android:gravity="fill_horizontal" 
+	 	android:src="@android:drawable/divider_horizontal_dark" /> 
+
+</LinearLayout>

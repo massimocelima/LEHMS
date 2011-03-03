@@ -2,20 +2,27 @@ package com.lehms;
 
 import java.util.List;
 
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
 import com.google.inject.Module;
 import com.lehms.IoC.Container;
 import com.lehms.IoC.ContainerFactory;
+import com.lehms.messages.dataContracts.Permission;
+import com.lehms.messages.dataContracts.RoleDataContract;
 import com.lehms.messages.dataContracts.UserDataContract;
 import com.lehms.serviceInterface.*;
+import com.lehms.util.AppLog;
 
 import roboguice.application.RoboApplication;
 
 public class LehmsApplication extends RoboApplication 
-		implements IIdentityProvider, IProfileProvider , IDeviceIdentifierProvider, IDepartmentProvider, IOfficeContactProvider
+		implements IIdentityProvider, 
+			IProfileProvider , 
+			IDeviceIdentifierProvider, 
+			IDepartmentProvider, 
+			IOfficeContactProvider, 
+			IAuthorisationProvider
 {
 	private UserDataContract _currentUser;
 	
@@ -96,6 +103,49 @@ public class LehmsApplication extends RoboApplication
 	{
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
         return sharedPref.getString(KEY_OFFICE_EMAIL_PREF, "massimo_celima@tpg.com.au");
+	}
+
+	@Override
+	public Boolean isAuthorised(Permission permission) {
+		Boolean result = false;
+		try {
+			UserDataContract user = getCurrent();
+			
+			RoleDataContract role;
+			for(int i=0; i < user.Roles.size(); i++)
+			{
+				role = user.Roles.get(i);
+				for(int j=0; j < role.Permissions.size(); j++)
+				{
+					if( role.Permissions.get(j).equals(permission) )
+					{
+						result = true;
+						break;
+					}
+				}
+				// We have found the permission, so exit the for loop
+				if(result)
+					break;
+			}
+			
+		} catch (Exception e) {
+			result = false;
+			AppLog.error(e.getMessage(), e);
+		}
+		return result;
+	}
+
+	@Override
+	public Boolean isInRole(String role) {
+		Boolean result = false;
+		try {
+			UserDataContract user = getCurrent();
+			result = user.IsInRole(role);
+		} catch (Exception e) {
+			result = false;
+			AppLog.error(e.getMessage(), e);
+		}
+		return result;
 	}
 
 }

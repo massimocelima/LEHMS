@@ -43,6 +43,10 @@
                   android:label="@string/app_name" 
                   android:configChanges="orientation" 
                   />
+        <activity android:name="ProgressNoteListActivity"
+                  android:label="@string/app_name" 
+                  android:configChanges="orientation" 
+                  />
         
 		<service android:name="com.lehms.service.GPSLoggerService"/>                  
 		<receiver android:name="com.lehms.receivers.GPSLoggerAlarmReciever"/>            

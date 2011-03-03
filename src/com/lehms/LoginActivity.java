@@ -23,7 +23,7 @@ public class LoginActivity extends RoboActivity {
 	@InjectView(R.id.login_username) protected EditText _usernameEditText;
 	@InjectView(R.id.login_password) protected EditText _passwordEditText;
 
-    @Inject protected IAuthenticationService _authenticationService;
+    @Inject protected IAuthenticationProvider _authenticationService;
     @Inject protected IIdentityProvider _identityProvider;
     @Inject protected IProfileProvider _profileProvider;
     

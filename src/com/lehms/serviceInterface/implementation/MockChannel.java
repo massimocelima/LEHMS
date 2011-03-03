@@ -20,6 +20,7 @@ import android.util.Base64;
 
 import com.lehms.IoC.ContainerFactory;
 import com.lehms.messages.LoginResponse;
+import com.lehms.messages.dataContracts.RoleDataContract;
 import com.lehms.messages.dataContracts.UserDataContract;
 import com.lehms.serviceInterface.IChannel;
 import com.lehms.serviceInterface.IIdentityProvider;
@@ -77,7 +78,9 @@ public class MockChannel implements IChannel {
 		result.User.Department = "LEHMS";
 		result.User.Password = "none";
 		result.User.Username = "none";
-		result.User.Roles.add("Administrator");
+		RoleDataContract r = new RoleDataContract();
+		r.Name = "Care Worker";
+		result.User.Roles.add( r );
 		return result;
 	}
 

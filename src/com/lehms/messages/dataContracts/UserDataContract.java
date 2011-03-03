@@ -7,13 +7,13 @@ public class UserDataContract {
 
 	public UserDataContract()
 	{
-		Roles = new ArrayList<String>();
+		Roles = new ArrayList<RoleDataContract>();
 	}
 	
     public String UserId;
 	public String Username;
 	public String Password;
-	public List<String> Roles;
+	public List<RoleDataContract> Roles;
 	public String Department;
 	
     public String FirstName;
@@ -24,7 +24,16 @@ public class UserDataContract {
 	
 	public Boolean IsInRole(String role)
 	{
-		return Roles.contains(role);
+		Boolean result = false;
+		for(int i = 0; i < Roles.size(); i++)
+		{
+			if(Roles.get(i).Name.equals(role))
+			{
+				result = true;
+				break;
+			}
+		}
+		return result;
 	}
 	
 	public String getUserDetails()

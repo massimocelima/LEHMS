@@ -7,10 +7,8 @@ import android.database.SQLException;
 import com.lehms.messages.dataContracts.JobDetailsDataContract;
 import com.lehms.messages.dataContracts.RosterDataContract;
 
-public interface IRosterRepository {
+public interface IRosterRepository extends IRepository {
 
-	void open() throws Exception;
-	void close();
     long saveRoster(RosterDataContract roster) throws Exception;
     boolean deleteRoster(Date date);
     RosterDataContract fetchRosterFor(Date date) throws Exception;

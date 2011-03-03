@@ -34,6 +34,16 @@ public class Profile {
 		return GetBaseUrl() + "/Clients";
 	}
 
+	public String GetProgressNoteResourceEndPoint()
+	{
+		return GetBaseUrl() + "/ProgressNote";
+	}
+
+	public String GetProgressNotesResourceEndPoint()
+	{
+		return GetBaseUrl() + "/ProgressNotes";
+	}
+	
 	private String GetBaseUrl()
 	{
 		String result = "http://10.0.2.2:7856";
