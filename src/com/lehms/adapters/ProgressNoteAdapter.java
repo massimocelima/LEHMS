@@ -28,7 +28,8 @@ public class ProgressNoteAdapter extends ArrayAdapter<ProgressNoteDataContract> 
 	
 	@Override
 	public long getItemId(int position) {
-		return getItem(position).Id;
+		//return getItem(position).Id.getMostSignificantBits();
+		return position;
 	}
 	
 	@Override

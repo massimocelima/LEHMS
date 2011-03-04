@@ -5,7 +5,7 @@ import java.lang.reflect.Type;
 
 public interface IChannel {
 
-	<T> T Get(int pageIndex, int pageSize, String orderBy, String where, Class<T> responseType) throws Exception;
+	<T> T Get(int skip, int take, String orderBy, String where, Class<T> responseType) throws Exception;
 	<T> T Get(Class<T> responseType) throws Exception;
 	<T> T Get(Object request, Class<T> responseType) throws Exception;
 	<T> T Get(String id, Class<T> responseType) throws Exception;

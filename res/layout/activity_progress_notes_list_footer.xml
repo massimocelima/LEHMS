@@ -7,16 +7,16 @@
 	android:gravity="center"
     style="@style/ListItem">
 
-    <ImageView 
+		<ImageView 
 		  	android:layout_width="wrap_content" 
   			android:layout_height="wrap_content" 
 			android:gravity="center" 
-			android:src="@drawable/ic_menu_add" /> 
+			android:src="@drawable/ic_menu_refresh" /> 
     
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Create Progress Note"
+        android:text="Load More Progress Notes"
         android:gravity="center_vertical"
         style="@style/NoteCreate" />
         

@@ -10,31 +10,45 @@
 	    android:layout_width="fill_parent"
 	    android:layout_height="wrap_content"
 	    style="@style/TextHeader"
+	    android:hint="No Subject"
 	>
 	</TextView>
 
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    >
 
 	<TextView 
 		android:id="@+id/progress_note_item_created_date"
-	    android:layout_width="fill_parent"
+	    android:layout_width="wrap_content"
 	    android:layout_height="wrap_content"
-	    style="@style/TextHeaderTwo"
+	    android:layout_weight="1"
+	    style="@style/FieldsetLabel"
+	    android:textColor="#026802"
 	>
 	</TextView>
 
 	<TextView 
 		android:id="@+id/progress_note_item_created_by"
-	    android:layout_width="fill_parent"
+	    android:layout_width="wrap_content"
 	    android:layout_height="wrap_content"
-	    style="@style/TextHeaderTwo"
+	    style="@style/FieldsetLabel"
+	    android:textColor="#026802"
 	>
 	</TextView>
+    
+</LinearLayout>
 
 	<TextView 
 		android:id="@+id/progress_note_item_note"
 	    android:layout_width="fill_parent"
 	    android:layout_height="wrap_content"
 	    style="@style/TextBody"
+	    android:ellipsize="end"
+	    android:maxLines="3"
+	    android:hint="No Body"
 	>
 	</TextView>
 

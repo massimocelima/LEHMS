@@ -22,8 +22,8 @@ public class ProgressNoteResource implements IProgressNoteResource {
 	}
 
 	@Override
-	public GetProgressNotesResponse Get(long clientId) throws Exception {
-		return GetListChannel().Get(clientId + "", GetProgressNotesResponse.class);
+	public GetProgressNotesResponse Get(long clientId, int skip, int take) throws Exception {
+		return GetListChannel().Get( skip, take, "", "ClientId Eq " + clientId, GetProgressNotesResponse.class);
 	}
 
 	@Override

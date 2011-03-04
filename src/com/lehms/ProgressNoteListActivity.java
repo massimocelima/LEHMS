@@ -1,6 +1,7 @@
 package com.lehms;
 
 import java.util.Date;
+import java.util.UUID;
 
 import com.google.inject.Inject;
 import com.lehms.adapters.JobAdapter;
@@ -47,7 +48,8 @@ public class ProgressNoteListActivity extends RoboListActivity {
 		
 		ListView listView = getListView();
 		listView.setTextFilterEnabled(true);
-        listView.addHeaderView(buildListHeader());		
+        listView.addHeaderView(buildListHeader(), null, true);
+        listView.addFooterView(buildListFooter(), null, true);
 
 		listView.setOnItemClickListener(new ListViewOnItemClickListener());
 		
@@ -73,6 +75,13 @@ public class ProgressNoteListActivity extends RoboListActivity {
         return header;
 	}
 	
+	protected View buildListFooter()
+	{
+        LayoutInflater inflater = getLayoutInflater(); 
+        View header = inflater.inflate( R.layout.activity_progress_notes_list_footer, null, false);
+        return header;
+	}
+	
 	public void onRefreshClick(View view)
 	{
 		fillDataAsync();
@@ -83,9 +92,20 @@ public class ProgressNoteListActivity extends RoboListActivity {
 		NavigationHelper.goHome(this);
 	}
 	
+	public void onFooterClick(View view)
+	{
+		UIHelper.ShowUnderConstructionMessage(ProgressNoteListActivity.this);
+	}
+
+	public void onHeaderClick(View view)
+	{
+		UIHelper.ShowUnderConstructionMessage(ProgressNoteListActivity.this);
+	}
+
 	private void fillDataAsync()
 	{
 		if( ! UIHelper.IsOnline(this))
+			// show empty list of progress notes
 			UIHelper.ShowAlertDialog(this, "Unable to connect to server", "An internet connection could not be established. Please connect this device to the internet and try again.");
 		else
 		{
@@ -101,15 +121,6 @@ public class ProgressNoteListActivity extends RoboListActivity {
 		public void onItemClick(AdapterView<?> arg0, View arg1, int index,
 				long id) {
 			
-			// Add Progress Note Clicked
-			if(index == 0)
-			{
-				
-			}
-			else
-			{
-				
-			}
 			//TODO Show Progress Note
 			UIHelper.ShowUnderConstructionMessage(ProgressNoteListActivity.this);
 		}
@@ -144,12 +155,12 @@ public class ProgressNoteListActivity extends RoboListActivity {
 				
 				try {
 					
-					result = _progressNoteResource.Get(_clientId.longValue());
+					result = _progressNoteResource.Get(_clientId.longValue(), 0, 10);
 					
 				} catch (Exception e) {
 					AppLog.error(e.getMessage());
 					_exception = e;
-				} 
+				}
 				return result;
 			}
 			

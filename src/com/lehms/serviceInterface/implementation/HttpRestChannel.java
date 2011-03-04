@@ -18,6 +18,7 @@ import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 
+import android.net.Uri;
 import android.text.format.DateFormat;
 import android.util.Base64;
 
@@ -105,10 +106,13 @@ public class HttpRestChannel implements IChannel {
 	}
 	
 	@Override
-	public <T> T Get(int pageIndex, int pageSize, String orderBy, String where, Class<T> responseType) throws Exception {
+	public <T> T Get(int skip, int take, String orderBy, String where, Class<T> responseType) throws Exception {
 				
 		// Send GET request to <service>/GetPlates         
-    	HttpGet request = new HttpGet(_url);         
+		
+		String uri = _url + "?skip=" + skip + "&top=" + take + "&filter=" + Uri.encode(where) + "&orderBy=" + Uri.encode(orderBy); 
+		
+    	HttpGet request = new HttpGet(uri);         
     	request.setHeader("Accept", "application/json");         
     	request.setHeader("Content-type", "application/json");
 		AddBasicAuthenticationHeader(request);

@@ -5,7 +5,7 @@ import com.lehms.messages.dataContracts.ProgressNoteDataContract;
 
 public interface IProgressNoteResource {
 
-	GetProgressNotesResponse Get(long clientId) throws Exception;
+	GetProgressNotesResponse Get(long clientId, int skip, int take) throws Exception;
 	ProgressNoteDataContract Create(ProgressNoteDataContract progressNote) throws Exception;
 
 }
