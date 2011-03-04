@@ -1,6 +1,8 @@
 package com.lehms;
 
 
+import java.util.Date;
+
 import com.google.inject.Inject;
 import com.lehms.controls.ActionItem;
 import com.lehms.controls.QuickAction;
@@ -34,7 +36,6 @@ import roboguice.inject.InjectView;
 public class ClientDetailsActivity  extends RoboActivity { //implements AsyncQueryListener 
 
 	public static final String EXTRA_CLIENT_ID = "ClientId";
-	public static final String EXTRA_ROSTER_ID = "RosterId";
 	
 	private GetClientDetailsResponse _clientResponse;
 	private QuickAction _quickAction;
@@ -98,10 +99,19 @@ public class ClientDetailsActivity  extends RoboActivity { //implements AsyncQue
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_client_details);
 		
+		if(savedInstanceState != null && savedInstanceState.get(EXTRA_CLIENT_ID) != null)
+			_clientId = savedInstanceState.getLong(EXTRA_CLIENT_ID);
+		
 		LoadClient();
 		CreateQuickActions();
 	}
 
+    @Override 
+    protected void onSaveInstanceState(Bundle outState) { 
+        super.onSaveInstanceState(outState); 
+        outState.putSerializable(EXTRA_CLIENT_ID, _clientId); 
+    }
+	
 	private void LoadClient(){
 		LoadClientTask task = new LoadClientTask(this);
 		task.execute();

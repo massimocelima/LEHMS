@@ -50,12 +50,14 @@ import android.widget.Toast;
 import roboguice.activity.RoboActivity;
 import roboguice.activity.RoboListActivity;
 import roboguice.inject.InjectView; 
-import roboguice.inject.InjectExtra;; 
+import roboguice.inject.InjectExtra;
 
 public class RosterActivity  extends RoboListActivity 
 { 
+	public final String EXTRA_ROSTER_DATE = "roster_date"; 
+	
 	@InjectView(R.id.title_bar_title) TextView _titleBarTitle;
-	@InjectExtra(value = "roster_date", optional = true) Date _currentDate;
+	@InjectExtra(value = EXTRA_ROSTER_DATE, optional = true) Date _extRosterDate;
 	@InjectView(R.id.activity_roster_title) TextView _title;
 	@InjectView(R.id.activity_roster_sub_title) TextView _subtitle;
 	@InjectView(R.id.activity_roster_last_updated) TextView _lastUpdated;
@@ -73,6 +75,9 @@ public class RosterActivity  extends RoboListActivity
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_roster);
+
+		if(savedInstanceState != null && savedInstanceState.get(EXTRA_ROSTER_DATE) != null)
+			_extRosterDate = (Date)savedInstanceState.get(EXTRA_ROSTER_DATE);
 	
 		_gestureDetector = new GestureDetector(this, new FlingGestureDetector());
 		_gestureListener = new GuestureListener(_gestureDetector);
@@ -98,11 +103,17 @@ public class RosterActivity  extends RoboListActivity
 		fillDataAsync(false);
 	}
 	
+    @Override 
+    protected void onSaveInstanceState(Bundle outState) { 
+        super.onSaveInstanceState(outState); 
+        outState.putSerializable(EXTRA_ROSTER_DATE, _extRosterDate); 
+    }
+	
 	private void ShowJob(int position, long id)
 	{
 		Intent intent = new Intent(this, JobDetailsActivity.class);
-		intent.putExtra(JobDetailsActivity.JOB_ID, id);
-		intent.putExtra(JobDetailsActivity.ROSTER_DATE, _currentDate.getTime());
+		intent.putExtra(JobDetailsActivity.EXTRA_JOB_ID, id);
+		intent.putExtra(JobDetailsActivity.EXTRA_ROSTER_DATE, _extRosterDate.getTime());
 		startActivity(intent);
 	}
 	
@@ -133,8 +144,8 @@ public class RosterActivity  extends RoboListActivity
 		}
 		else
 		{
-			if( _currentDate == null )
-				_currentDate = new Date();
+			if( _extRosterDate == null )
+				_extRosterDate = new Date();
 
 			JobAdapter adapter = (JobAdapter)getListView().getAdapter();
 			if(adapter != null)
@@ -151,7 +162,7 @@ public class RosterActivity  extends RoboListActivity
 	private void initHeader()
 	{
 		_titleBarTitle.setText("Roster");
-		_title.setText(UIHelper.FormatLongDate(_currentDate));
+		_title.setText(UIHelper.FormatLongDate(_extRosterDate));
 		_subtitle.setText(GetUserDetails());
 		_lastUpdated.setText("");
 	}
@@ -170,9 +181,9 @@ public class RosterActivity  extends RoboListActivity
 	{
 		DatePickerDialog dialog = new DatePickerDialog(this,
 				_dateSetListener,
-                _currentDate.getYear() + 1900, 
-                _currentDate.getMonth(), 
-                _currentDate.getDate());
+				_extRosterDate.getYear() + 1900, 
+				_extRosterDate.getMonth(), 
+				_extRosterDate.getDate());
 		dialog.show();
 	}
 	
@@ -182,7 +193,7 @@ public class RosterActivity  extends RoboListActivity
             public void onDateSet(DatePicker view, int year, int monthOfYear,
                     int dayOfMonth) {
             	
-            	_currentDate = new Date(year - 1900, monthOfYear, dayOfMonth);
+            	_extRosterDate = new Date(year - 1900, monthOfYear, dayOfMonth);
             	initHeader();
             	fillDataAsync(false);
             }
@@ -221,7 +232,7 @@ public class RosterActivity  extends RoboListActivity
 			try {
 				_rosterRepository.open();
 				if( ! _reloadFromServer )
-					roster = _rosterRepository.fetchRosterFor(_currentDate);
+					roster = _rosterRepository.fetchRosterFor(_extRosterDate);
 				if( roster == null )
 				{
 					if( ! isOnline() )
@@ -229,7 +240,7 @@ public class RosterActivity  extends RoboListActivity
 								" Please connect this device to the internet and try again");
 					else
 					{
-						roster = _rosterResource.GetRosterFor(_currentDate);
+						roster = _rosterResource.GetRosterFor(_extRosterDate);
 						_rosterRepository.saveRoster(roster);
 						
 						String x = roster.LastUpdatedFromServer.toString();
@@ -307,14 +318,14 @@ public class RosterActivity  extends RoboListActivity
 	            Math.abs(velocityY) < minScaledFlingVelocity ) {
 	
 	        	Calendar calendar = Calendar.getInstance(); 
-	        	calendar.setTime(_currentDate); 
+	        	calendar.setTime(_extRosterDate); 
 	        	
 	            if( velocityX < 0 ) // Move to the next day
 	            	calendar.add(Calendar.DAY_OF_YEAR, 1);
 	            else  // Move to the previous day
 	            	calendar.add(Calendar.DAY_OF_YEAR, -1);
 	            
-	            _currentDate = calendar.getTime();
+	            _extRosterDate = calendar.getTime();
 	            
 	    		initHeader();
 	    		fillDataAsync(false);

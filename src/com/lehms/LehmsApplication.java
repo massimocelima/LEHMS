@@ -36,11 +36,16 @@ public class LehmsApplication extends RoboApplication
 	}
 	
 	@Override
+	public void onTerminate() {
+		super.onTerminate();
+	}
+	
+	@Override
 	protected void addApplicationModules(List<Module> modules) {
 		super.addApplicationModules(modules);
 		modules.add(new ConfigurationModule(this));
 	}
-
+	
 	public void Logout() 
 	{
 		_currentUser = null;

@@ -34,13 +34,14 @@ import roboguice.inject.InjectView;
 
 public class JobDetailsActivity extends RoboActivity {
 
-	public final static String JOB_ID = "job_id";
-	public final static String ROSTER_DATE = "ROSTER_DATE";
+	public final static String EXTRA_JOB_ID = "job_id";
+	public final static String EXTRA_ROSTER_DATE = "ROSTER_DATE";
+	
 	public final static int BEGIN_JOB_ACTION = 1;
 	public final static int END_JOB_ACTION = 2;
 	
-	@InjectExtra(ROSTER_DATE) long _rosterTime;
-	@InjectExtra(JOB_ID) long _jobId;
+	@InjectExtra(EXTRA_ROSTER_DATE) long _rosterTime;
+	@InjectExtra(EXTRA_JOB_ID) long _jobId;
 	@InjectView(R.id.activity_job_details_title) TextView _title;
 	@InjectView(R.id.activity_job_details_sub_title) TextView _subtitle;
 	@InjectView(R.id.activity_job_details_sub_title2) TextView _subtitle2;
@@ -74,6 +75,11 @@ public class JobDetailsActivity extends RoboActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_job_details);
 		
+		if(savedInstanceState != null && savedInstanceState.get(EXTRA_JOB_ID) != null)
+			_jobId = savedInstanceState.getLong(EXTRA_JOB_ID);
+		if(savedInstanceState != null && savedInstanceState.get(EXTRA_ROSTER_DATE) != null)
+			_rosterTime = savedInstanceState.getLong(EXTRA_ROSTER_DATE);
+		
 		JobDetailsDataContract job = GetJob();
 		
 		if(job != null)
@@ -81,6 +87,13 @@ public class JobDetailsActivity extends RoboActivity {
 		
 		CreateQuickActions();
 	}
+	
+    @Override 
+    protected void onSaveInstanceState(Bundle outState) { 
+        super.onSaveInstanceState(outState); 
+        outState.putSerializable(EXTRA_JOB_ID, _jobId); 
+        outState.putSerializable(EXTRA_ROSTER_DATE, _rosterTime); 
+    }
 	
 	private void LoadJob(JobDetailsDataContract job)
 	{
