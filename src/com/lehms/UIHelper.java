@@ -20,13 +20,6 @@ public class UIHelper {
 
 	private UIHelper() {}
 	
-	public static void GoHome(Context context)
-	{
-        final Intent intent = new Intent(context, Dashboard.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        context.startActivity(intent);
-	}
-
 	public static void ShowAlertDialog(Context context, String title, String message)
 	{
 		AlertDialog dialog = new AlertDialog.Builder(context)

@@ -140,7 +140,6 @@
     </style>
 
     <style name="HeaderSubTitleTwo" parent="TextHeaderTwo">
-        <item name="android:textSize">15sp</item>
         <item name="android:textStyle">italic</item>
         <item name="android:textColor">@android:color/secondary_text_light</item>
         <item name="android:textSize">@dimen/text_size_small</item>

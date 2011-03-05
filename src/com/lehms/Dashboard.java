@@ -1,12 +1,11 @@
 package com.lehms;
 
-import java.io.File;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 
 import com.google.inject.Inject;
+import com.lehms.messages.dataContracts.Permission;
 import com.lehms.service.GPSLoggerService;
+import com.lehms.serviceInterface.IAuthorisationProvider;
 import com.lehms.serviceInterface.IIdentityProvider;
 import com.lehms.serviceInterface.IOfficeContactProvider;
 import com.lehms.util.AppLog;
@@ -16,36 +15,25 @@ import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.DialogInterface.OnClickListener;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
-import android.content.res.Configuration;
 import android.database.Cursor;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.GestureDetector.OnGestureListener;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TabHost;
-import android.widget.TabHost.TabSpec;
 import android.widget.TabWidget;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import roboguice.activity.RoboActivity;  
 import roboguice.inject.InjectView;  
@@ -54,6 +42,7 @@ public class Dashboard extends RoboActivity implements OnGestureListener
 {
 	@Inject protected IIdentityProvider _identityProvider;
 	@Inject protected IOfficeContactProvider _officeContactProvider;
+	@Inject protected IAuthorisationProvider _authorisationProvider;
 	@InjectView(R.id.footer_text) protected TextView _footerText;
 	
 	@InjectView(R.id.dashboard_tab_host) protected TabHost _tabHost;
@@ -106,10 +95,12 @@ public class Dashboard extends RoboActivity implements OnGestureListener
 			AppLog.error("Failed to set footer in dashboard");
 		}
 		
-		// Starts the GPS logging
-        Intent serviceIntent = new Intent(this, GPSLoggerService.class);
-        this.startService(serviceIntent);
-        
+		if(_authorisationProvider.isAuthorised(Permission.Track))
+		{
+			// Starts the GPS logging
+	        Intent serviceIntent = new Intent(this, GPSLoggerService.class);
+	        this.startService(serviceIntent);
+		}
 	}
 
 	private void SetTouchEventOnChildViews(ViewGroup viewGroup)
@@ -134,10 +125,7 @@ public class Dashboard extends RoboActivity implements OnGestureListener
 	
 	public void onMyRosterClick(View view)
 	{
-		Intent i = new Intent(getApplicationContext(), RosterActivity.class);
-		Date rosterDate = new Date();
-		i.putExtra("roster_date", rosterDate);
-		startActivity(i);
+		NavigationHelper.openRoster(this, new Date());
 	}
 
 	public void onContactClick(View view)
@@ -177,8 +165,7 @@ public class Dashboard extends RoboActivity implements OnGestureListener
 	
 	public void onClientsClick(View view)
 	{
-		Intent i = new Intent(this, ClientsActivity.class);
-		startActivity(i);
+		NavigationHelper.openClients(this);
 	}
 	
 	public void onMapClick(View view)
@@ -337,7 +324,11 @@ public class Dashboard extends RoboActivity implements OnGestureListener
 	@Override
 	public void onBackPressed() {
 		super.onBackPressed();
-        Intent serviceIntent = new Intent(this, GPSLoggerService.class);
-        this.stopService(serviceIntent);
+		
+		if(_authorisationProvider.isAuthorised(Permission.Track))
+		{
+	        Intent serviceIntent = new Intent(this, GPSLoggerService.class);
+	        this.stopService(serviceIntent);
+		}
 	}
 }

@@ -2,6 +2,7 @@ package com.lehms.serviceInterface.implementation;
 
 import java.lang.reflect.Type;
 import java.util.Date;
+import java.util.UUID;
 
 import org.json.JSONObject;
 
@@ -15,9 +16,16 @@ public class JsonSerializer implements ISerializer {
 
 	@Override
 	public String Serializer(Object o) throws Exception {
+		
 		GsonBuilder gsonb = new GsonBuilder(); 
+		
 		DateDeserializer ds = new DateDeserializer(); 
-		gsonb.registerTypeAdapter(Date.class, ds); 
+		gsonb.registerTypeAdapter(Date.class, ds);
+		
+		UUIDSerializer uidSerializer = new UUIDSerializer();
+		Class<UUID> classUUID = UUID.class;
+		gsonb.registerTypeAdapter( classUUID, uidSerializer); 
+		
 		Gson gson = gsonb.create(); 
 		JSONObject jobject = new JSONObject(gson.toJson(o)); 
 		return jobject.toString();
@@ -26,9 +34,15 @@ public class JsonSerializer implements ISerializer {
 	@Override
 	public <T> T Deserializer(String data, Class<T> type) throws Exception {
 	
-		GsonBuilder gsonb = new GsonBuilder(); 
+		GsonBuilder gsonb = new GsonBuilder();
+		
 		DateDeserializer ds = new DateDeserializer(); 
 		gsonb.registerTypeAdapter(Date.class, ds); 
+		
+		UUIDSerializer uidSerializer = new UUIDSerializer();
+		Class<UUID> classUUID = UUID.class;
+		gsonb.registerTypeAdapter( classUUID, uidSerializer); 
+
 		Gson gson = gsonb.create(); 
 		
 		try {

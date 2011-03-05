@@ -53,11 +53,11 @@ import roboguice.inject.InjectView;
 import roboguice.inject.InjectExtra;
 
 public class RosterActivity  extends RoboListActivity 
-{ 
-	public final String EXTRA_ROSTER_DATE = "roster_date"; 
+{
+	public final static String EXTRA_ROSTER_DATE = "roster_date"; 
 	
 	@InjectView(R.id.title_bar_title) TextView _titleBarTitle;
-	@InjectExtra(value = EXTRA_ROSTER_DATE, optional = true) Date _extRosterDate;
+	@InjectExtra(value = EXTRA_ROSTER_DATE, optional = true) Date _rosterDate;
 	@InjectView(R.id.activity_roster_title) TextView _title;
 	@InjectView(R.id.activity_roster_sub_title) TextView _subtitle;
 	@InjectView(R.id.activity_roster_last_updated) TextView _lastUpdated;
@@ -72,13 +72,12 @@ public class RosterActivity  extends RoboListActivity
     
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_roster);
 
-		if(savedInstanceState != null && savedInstanceState.get(EXTRA_ROSTER_DATE) != null)
-			_extRosterDate = (Date)savedInstanceState.get(EXTRA_ROSTER_DATE);
-	
+		if(savedInstanceState != null && savedInstanceState.get(EXTRA_ROSTER_DATE) != null )
+			_rosterDate = (Date)savedInstanceState.get(EXTRA_ROSTER_DATE);
+		
 		_gestureDetector = new GestureDetector(this, new FlingGestureDetector());
 		_gestureListener = new GuestureListener(_gestureDetector);
 		
@@ -86,8 +85,6 @@ public class RosterActivity  extends RoboListActivity
 		listView.setTextFilterEnabled(true);
 		listView.setOnTouchListener(_gestureListener);
 		
-        //listView.addHeaderView(buildHeader());		
-        //listView.addFooterView(buildFooter(), null, false);
 
 		listView.setOnTouchListener(_gestureListener);
 		
@@ -102,18 +99,18 @@ public class RosterActivity  extends RoboListActivity
 		initHeader();
 		fillDataAsync(false);
 	}
-	
-    @Override 
-    protected void onSaveInstanceState(Bundle outState) { 
-        super.onSaveInstanceState(outState); 
-        outState.putSerializable(EXTRA_ROSTER_DATE, _extRosterDate); 
-    }
+
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+		super.onSaveInstanceState(outState);
+		outState.putSerializable(EXTRA_ROSTER_DATE, _rosterDate);
+	}
 	
 	private void ShowJob(int position, long id)
 	{
 		Intent intent = new Intent(this, JobDetailsActivity.class);
 		intent.putExtra(JobDetailsActivity.EXTRA_JOB_ID, id);
-		intent.putExtra(JobDetailsActivity.EXTRA_ROSTER_DATE, _extRosterDate.getTime());
+		intent.putExtra(JobDetailsActivity.EXTRA_ROSTER_DATE, _rosterDate.getTime());
 		startActivity(intent);
 	}
 	
@@ -144,8 +141,8 @@ public class RosterActivity  extends RoboListActivity
 		}
 		else
 		{
-			if( _extRosterDate == null )
-				_extRosterDate = new Date();
+			if( _rosterDate == null )
+				_rosterDate = new Date();
 
 			JobAdapter adapter = (JobAdapter)getListView().getAdapter();
 			if(adapter != null)
@@ -162,14 +159,14 @@ public class RosterActivity  extends RoboListActivity
 	private void initHeader()
 	{
 		_titleBarTitle.setText("Roster");
-		_title.setText(UIHelper.FormatLongDate(_extRosterDate));
+		_title.setText(UIHelper.FormatLongDate(_rosterDate));
 		_subtitle.setText(GetUserDetails());
 		_lastUpdated.setText("");
 	}
 	
 	public void onHomeClick(View view)
 	{
-		UIHelper.GoHome(this);
+		NavigationHelper.goHome(this);
 	}
 	
 	public void onRefreshClick(View view)
@@ -181,9 +178,9 @@ public class RosterActivity  extends RoboListActivity
 	{
 		DatePickerDialog dialog = new DatePickerDialog(this,
 				_dateSetListener,
-				_extRosterDate.getYear() + 1900, 
-				_extRosterDate.getMonth(), 
-				_extRosterDate.getDate());
+				_rosterDate.getYear() + 1900, 
+				_rosterDate.getMonth(), 
+				_rosterDate.getDate());
 		dialog.show();
 	}
 	
@@ -193,7 +190,7 @@ public class RosterActivity  extends RoboListActivity
             public void onDateSet(DatePicker view, int year, int monthOfYear,
                     int dayOfMonth) {
             	
-            	_extRosterDate = new Date(year - 1900, monthOfYear, dayOfMonth);
+            	_rosterDate = new Date(year - 1900, monthOfYear, dayOfMonth);
             	initHeader();
             	fillDataAsync(false);
             }
@@ -232,7 +229,7 @@ public class RosterActivity  extends RoboListActivity
 			try {
 				_rosterRepository.open();
 				if( ! _reloadFromServer )
-					roster = _rosterRepository.fetchRosterFor(_extRosterDate);
+					roster = _rosterRepository.fetchRosterFor(_rosterDate);
 				if( roster == null )
 				{
 					if( ! isOnline() )
@@ -240,11 +237,8 @@ public class RosterActivity  extends RoboListActivity
 								" Please connect this device to the internet and try again");
 					else
 					{
-						roster = _rosterResource.GetRosterFor(_extRosterDate);
+						roster = _rosterResource.GetRosterFor(_rosterDate);
 						_rosterRepository.saveRoster(roster);
-						
-						String x = roster.LastUpdatedFromServer.toString();
-						
 					}
 				}
 				//_rosterRepository.close();
@@ -318,14 +312,14 @@ public class RosterActivity  extends RoboListActivity
 	            Math.abs(velocityY) < minScaledFlingVelocity ) {
 	
 	        	Calendar calendar = Calendar.getInstance(); 
-	        	calendar.setTime(_extRosterDate); 
+	        	calendar.setTime(_rosterDate); 
 	        	
 	            if( velocityX < 0 ) // Move to the next day
 	            	calendar.add(Calendar.DAY_OF_YEAR, 1);
 	            else  // Move to the previous day
 	            	calendar.add(Calendar.DAY_OF_YEAR, -1);
 	            
-	            _extRosterDate = calendar.getTime();
+	            _rosterDate = calendar.getTime();
 	            
 	    		initHeader();
 	    		fillDataAsync(false);

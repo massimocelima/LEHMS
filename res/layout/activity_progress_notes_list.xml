@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/home_root"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    >
+ 
+   <LinearLayout style="@style/TitleBar">
+        
+		<ImageButton style="@style/TitleBarAction"
+            android:contentDescription="Home"
+            android:src="@drawable/ic_title_home"
+            android:onClick="onHomeClick" />
+        
+        <ImageView style="@style/TitleBarSeparator" />
+        <TextView 
+	        android:id="@+id/title_bar_title"
+        	style="@style/TitleBarText" 
+        	android:text="Progress Notes" />
+        <!-- <View style="@style/TitleBarSpring" /> -->
+
+        <ImageView style="@style/TitleBarSeparator" />
+        <ImageButton style="@style/TitleBarAction"
+            android:contentDescription="Refresh"
+            android:src="@drawable/ic_title_refresh"
+            android:onClick="onRefreshClick" />
+
+    </LinearLayout>
+    
+    <LinearLayout 
+        style="@style/HeaderContainer">
+
+		<ImageView 
+			android:layout_height="wrap_content" 
+			android:layout_width="wrap_content" 
+			android:src="@drawable/dashboard_btn_my_roster_selected"></ImageView>
+			
+	    <LinearLayout 
+		    android:orientation="vertical"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:layout_weight="1"
+		    >
+			
+			<TextView 
+				android:id="@+id/activity_progress_notes_list_title"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:text="Progress Notes"
+		        style="@style/HeaderTitle" />
+	   		<TextView 
+				android:id="@+id/activity_progress_notes_list_sub_title"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        style="@style/HeaderSubTitle" />
+        </LinearLayout>
+
+	</LinearLayout>
+
+<!-- 
+
+	<include layout="@layout/seperator"></include>
+
+    <LinearLayout
+        android:background="@color/background2"
+        android:paddingLeft="14dip"
+        android:paddingRight="14dip"
+        android:paddingTop="10dip"
+        android:paddingBottom="10dip"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+		<TextView 
+			android:id="@+id/activity_roster_last_updated"
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        style="@style/HeaderSubTitleTwo" />
+    </LinearLayout>
+
+	<include layout="@layout/seperator"></include>
+
+ -->
+ 
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        >
+
+ 		<ListView
+ 			android:id="@+id/android:list"
+	        android:layout_width="fill_parent"
+	        android:layout_height="fill_parent" />
+ 
+    </LinearLayout>
+
+  
+</LinearLayout>

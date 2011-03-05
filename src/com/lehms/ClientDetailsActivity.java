@@ -92,7 +92,6 @@ public class ClientDetailsActivity  extends RoboActivity { //implements AsyncQue
 	
 	@InjectView(R.id.activity_client_details_medical_conditions_value) TextView _medicalConditionsTextView;
 	
-	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 
@@ -100,6 +99,9 @@ public class ClientDetailsActivity  extends RoboActivity { //implements AsyncQue
 		setContentView(R.layout.activity_client_details);
 		
 		if(savedInstanceState != null && savedInstanceState.get(EXTRA_CLIENT_ID) != null)
+			_clientId = savedInstanceState.getLong(EXTRA_CLIENT_ID);
+		
+		if(savedInstanceState != null && savedInstanceState.get(EXTRA_CLIENT_ID) != null )
 			_clientId = savedInstanceState.getLong(EXTRA_CLIENT_ID);
 		
 		LoadClient();
@@ -111,7 +113,7 @@ public class ClientDetailsActivity  extends RoboActivity { //implements AsyncQue
         super.onSaveInstanceState(outState); 
         outState.putSerializable(EXTRA_CLIENT_ID, _clientId); 
     }
-	
+		
 	private void LoadClient(){
 		LoadClientTask task = new LoadClientTask(this);
 		task.execute();
@@ -119,7 +121,7 @@ public class ClientDetailsActivity  extends RoboActivity { //implements AsyncQue
 	
 	public void onHomeClick(View view)
 	{
-		UIHelper.GoHome(this);
+		NavigationHelper.goHome(this);
 	}
 	
 	public void onRefreshClick(View view)

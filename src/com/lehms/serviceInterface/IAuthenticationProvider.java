@@ -2,7 +2,7 @@ package com.lehms.serviceInterface;
 
 import com.lehms.messages.LoginResponse;
 
-public interface IAuthenticationService {
+public interface IAuthenticationProvider {
 
 	LoginResponse Login(String username, String password) throws Exception;
 }

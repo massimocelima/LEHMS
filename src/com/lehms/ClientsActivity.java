@@ -48,9 +48,7 @@ public class ClientsActivity  extends RoboListActivity { //implements AsyncQuery
 			    public void onItemClick(AdapterView<?> parent, View view, 
 			        int position, long id) { 
 			    	
-			    	Intent intent = new Intent(ClientsActivity.this, ClientDetailsActivity.class);
-			    	intent.putExtra(ClientDetailsActivity.EXTRA_CLIENT_ID, id);
-			    	ClientsActivity.this.startActivity(intent);
+			    	NavigationHelper.openClient(ClientsActivity.this, id);
 			    	
 			      // When clicked, show a toast with the TextView text 
 			      Toast.makeText(getApplicationContext(), "Client Id: " + id, 
@@ -66,7 +64,7 @@ public class ClientsActivity  extends RoboListActivity { //implements AsyncQuery
 	
 	public void onHomeClick(View view)
 	{
-		UIHelper.GoHome(this);
+		NavigationHelper.goHome(this);
 	}
 	
 	public void onRefreshClick(View view)

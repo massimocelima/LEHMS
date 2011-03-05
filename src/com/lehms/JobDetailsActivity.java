@@ -36,7 +36,6 @@ public class JobDetailsActivity extends RoboActivity {
 
 	public final static String EXTRA_JOB_ID = "job_id";
 	public final static String EXTRA_ROSTER_DATE = "ROSTER_DATE";
-	
 	public final static int BEGIN_JOB_ACTION = 1;
 	public final static int END_JOB_ACTION = 2;
 	
@@ -80,6 +79,11 @@ public class JobDetailsActivity extends RoboActivity {
 		if(savedInstanceState != null && savedInstanceState.get(EXTRA_ROSTER_DATE) != null)
 			_rosterTime = savedInstanceState.getLong(EXTRA_ROSTER_DATE);
 		
+		if(savedInstanceState != null && savedInstanceState.get(EXTRA_ROSTER_DATE) != null )
+			_rosterTime = savedInstanceState.getLong(EXTRA_ROSTER_DATE);
+		if(savedInstanceState != null && savedInstanceState.get(EXTRA_JOB_ID) != null )
+			_jobId = savedInstanceState.getLong(EXTRA_JOB_ID);
+		
 		JobDetailsDataContract job = GetJob();
 		
 		if(job != null)
@@ -88,6 +92,7 @@ public class JobDetailsActivity extends RoboActivity {
 		CreateQuickActions();
 	}
 	
+
     @Override 
     protected void onSaveInstanceState(Bundle outState) { 
         super.onSaveInstanceState(outState); 
@@ -141,7 +146,7 @@ public class JobDetailsActivity extends RoboActivity {
 	
 	public void onHomeClick(View view)
 	{
-		UIHelper.GoHome(this);
+		NavigationHelper.goHome(this);
 	}
 	
 	public void onRefreshClick(View view)
@@ -372,7 +377,7 @@ public class JobDetailsActivity extends RoboActivity {
 		qaProgressNotes.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Toast.makeText(JobDetailsActivity.this, "Progress Notes", Toast.LENGTH_SHORT).show();
+				NavigationHelper.openProgressNotes(JobDetailsActivity.this, Long.parseLong( GetJob().Client.ClientId )); 
 				_quickActions.dismiss();
 			}
 		});

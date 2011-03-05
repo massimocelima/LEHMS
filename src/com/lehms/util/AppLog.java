@@ -13,12 +13,20 @@ public class AppLog {
         return Log.e(APP_TAG, message);
     }
 
+    public static int error(String message, Throwable e){
+        return Log.e(APP_TAG, message, e);
+    }
+
     public static int debug(String message){
         return Log.d(APP_TAG, message);
     }
 
     public static int warn(String message){
         return Log.w(APP_TAG, message);
+    }
+
+    public static int warn(String message, Throwable e){
+        return Log.w(APP_TAG, message, e);
     }
 
     public static int verbose(String message){
