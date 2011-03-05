@@ -7,17 +7,29 @@
 	android:gravity="center"
     style="@style/ListItem">
 
-		<ImageView 
-		  	android:layout_width="wrap_content" 
-  			android:layout_height="wrap_content" 
-			android:gravity="center" 
-			android:src="@drawable/ic_menu_refresh" /> 
+	<ImageView 
+		android:id="@+id/activity_prgress_notes_list_footer_ic_refresh"
+	  	android:layout_width="wrap_content" 
+		android:layout_height="wrap_content" 
+		android:gravity="center" 
+		android:src="@drawable/ic_menu_refresh" /> 
     
     <TextView
+		android:id="@+id/activity_prgress_notes_list_footer_refresh"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Load More Progress Notes"
         android:gravity="center_vertical"
         style="@style/NoteCreate" />
+
+    <TextView
+		android:id="@+id/activity_prgress_notes_list_footer_no_connection"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="A intenet connection could not be found, please get in range of a data connection and try again using the refresh icon in the top right."
+        android:gravity="center_vertical"
+        android:textStyle="italic"
+        android:visibility="gone"
+        />
         
 </LinearLayout>

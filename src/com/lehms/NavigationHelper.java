@@ -10,10 +10,16 @@ public class NavigationHelper {
 
 	private NavigationHelper() {}
 	
-	public static void openProgressNotes(Context context, long clientId)
+	public static void goEmergency(Context context)
+	{
+		
+	}
+	
+	public static void openProgressNotes(Context context, long clientId, String clientName)
 	{
         Intent intent = new Intent(context, ProgressNoteListActivity.class);
         intent.putExtra(ProgressNoteListActivity.EXTRA_CLIENT_ID, clientId);
+        intent.putExtra(ProgressNoteListActivity.EXTRA_CLIENT_NAME, clientName);
         context.startActivity(intent);
 	}
 	
