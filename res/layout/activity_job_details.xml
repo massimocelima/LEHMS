@@ -254,24 +254,7 @@
 		
 				<include layout="@layout/seperator"></include>
 		
-			    <LinearLayout
-			        android:layout_width="fill_parent"
-			        android:layout_height="wrap_content"
-			        android:orientation="horizontal">
-			    
-					<TextView 
-						android:id="@+id/activity_job_details_service_details"
-				        android:text="Service Details:"
-				        style="@style/FieldsetLabel" />
-				
-					<TextView 
-						android:id="@+id/activity_job_details_service_details_value"
-				        style="@style/FieldsetInput" />
-				
-				</LinearLayout>
 
-				<include layout="@layout/seperator"></include>
-		
 			    <LinearLayout
 			        android:layout_width="fill_parent"
 			        android:layout_height="wrap_content"
@@ -362,6 +345,24 @@
 		
 				<include layout="@layout/seperator"></include>
 				
+							    <LinearLayout
+			        android:layout_width="fill_parent"
+			        android:layout_height="wrap_content"
+			        android:orientation="horizontal">
+			    
+					<TextView 
+						android:id="@+id/activity_job_details_service_details"
+				        android:text="Service Details:"
+				        style="@style/FieldsetLabel" />
+				
+					<TextView 
+						android:id="@+id/activity_job_details_service_details_value"
+				        style="@style/FieldsetInput" />
+				
+				</LinearLayout>
+
+				<include layout="@layout/seperator"></include>
+		
 			</LinearLayout>
 		
 		</LinearLayout>

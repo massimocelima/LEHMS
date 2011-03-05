@@ -25,6 +25,12 @@
             android:contentDescription="Refresh"
             android:src="@drawable/ic_title_refresh"
             android:onClick="onRefreshClick" />
+            
+        <ImageView style="@style/TitleBarSeparator" />
+        <ImageButton style="@style/TitleBarAction"
+            android:contentDescription="Emergency"
+            android:src="@drawable/ic_title_emergency"
+            android:onClick="onEmergencyClick" />
 
     </LinearLayout>
     
