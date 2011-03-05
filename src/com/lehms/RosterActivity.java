@@ -24,6 +24,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.format.DateFormat;
@@ -135,7 +136,7 @@ public class RosterActivity  extends RoboListActivity
 	
 	private void fillDataAsync(Boolean reloadFromServer)
 	{
-		if( reloadFromServer && ! isOnline() )
+		if( reloadFromServer && ! UIHelper.IsOnline(this) )
 		{
 			UIHelper.ShowAlertDialog(this, "Unable to connect to server", "An internet connection could not be established. Please connect this device to the internet and try again.");
 		}
@@ -232,7 +233,7 @@ public class RosterActivity  extends RoboListActivity
 					roster = _rosterRepository.fetchRosterFor(_rosterDate);
 				if( roster == null )
 				{
-					if( ! isOnline() )
+					if( ! UIHelper.IsOnline(RosterActivity.this) )
 						throw new Exception("The roster for this date has not been cahced onto the device and a internet connection could not be found." + 
 								" Please connect this device to the internet and try again");
 					else
@@ -287,12 +288,6 @@ public class RosterActivity  extends RoboListActivity
 		
     }
 
-    public boolean isOnline() 
-    {  
-    	ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);  
-    	return cm.getActiveNetworkInfo().isConnectedOrConnecting();  
-    } 
-    
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
 		return _gestureDetector.onTouchEvent(event);

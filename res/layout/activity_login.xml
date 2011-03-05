@@ -9,27 +9,15 @@
 
     <LinearLayout style="@style/TitleBar">
 
-<!--
-        <ImageView style="@style/TitleBarLogo"
-            android:contentDescription="LEHMS V2"
-            android:src="@drawable/title_logo"
-             />
-        
-		<ImageButton style="@style/TitleBarAction"
-            android:contentDescription="Home"
-            android:src="@drawable/ic_title_home"
-            android:onClick="onHomeClick" />
--->     
-        
         <ImageView style="@style/TitleBarSeparator" />
         <TextView style="@style/TitleBarText" android:text="LEHMS V2" />
-        <!-- <View style="@style/TitleBarSpring" /> -->
 
         <ImageView style="@style/TitleBarSeparator" />
         <ImageButton style="@style/TitleBarAction"
             android:contentDescription="Search"
             android:src="@drawable/ic_title_export"
             android:onClick="onSettingsClick" />
+            
     </LinearLayout>
 
 	<ScrollView
@@ -89,7 +77,7 @@
 				    	android:layout_width="fill_parent" 
 					    android:layout_height="wrap_content" 
 					    android:hint="Enter your username"
-					    android:id="@+id/login_username"
+					    android:id="@+id/login_username_edit"
 					    android:singleLine="true"
 					    ></EditText>
 					
@@ -104,7 +92,7 @@
 				    <EditText 
 				    	android:layout_width="fill_parent" 
 					    android:layout_height="wrap_content" 
-					    android:id="@+id/login_password"
+					    android:id="@+id/login_password_edit"
 					    android:hint="Enter your password"
 					    android:password="true"
 					    android:singleLine="true"

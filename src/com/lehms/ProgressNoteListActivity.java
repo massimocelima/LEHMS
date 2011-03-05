@@ -68,7 +68,7 @@ public class ProgressNoteListActivity extends RoboListActivity {
 		listView.setTextFilterEnabled(true);
         listView.addHeaderView(buildListHeader(), null, true);
         listView.addFooterView(buildListFooter(), null, true);
-
+        
 		listView.setOnItemClickListener(new ListViewOnItemClickListener());
 		
 		initHeader();
@@ -125,6 +125,9 @@ public class ProgressNoteListActivity extends RoboListActivity {
 	{
 		if( ! UIHelper.IsOnline(this))
 		{
+			_adapter = new ProgressNoteAdapter(this, R.layout.progress_note_item, new ArrayList<ProgressNoteDataContract>());
+			getListView().setAdapter(_adapter);
+
 			_refreshImageView.setVisibility(View.GONE);
 			_refreshTextView.setVisibility(View.GONE);
 			_noConnectionTextView.setVisibility(View.VISIBLE);
@@ -163,8 +166,8 @@ public class ProgressNoteListActivity extends RoboListActivity {
 			}
 			else
 			{
-				//TODO On Item Click
-				UIHelper.ShowUnderConstructionMessage(ProgressNoteListActivity.this);
+				ProgressNoteDataContract note = _adapter.getItem(index - 1);
+				NavigationHelper.viewProgressNote(ProgressNoteListActivity.this, note.Id);
 			}
 		}
 	}
@@ -194,6 +197,8 @@ public class ProgressNoteListActivity extends RoboListActivity {
 	            });
 	            
 	            _refreshData = refreshData;
+	            if(_refreshData)
+	        		_currentPageIndex = 0;
 	    	}
 	    	
 	    	@Override

@@ -13,6 +13,7 @@ import android.content.DialogInterface.OnClickListener;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.text.format.DateFormat;
 
@@ -120,9 +121,12 @@ public class UIHelper {
 	
 	public static boolean IsOnline(Context context) 
 	{
-		ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);  
-		return cm.getActiveNetworkInfo().isConnectedOrConnecting();  
-	}
+    	Boolean result = false;
+    	ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+    	NetworkInfo ni = cm.getActiveNetworkInfo();
+    	if( ni != null )
+    		result = cm.getActiveNetworkInfo().isConnectedOrConnecting();
+    	return result;	}
 	
 	public static void MakeCall(String phoneNumber, Context context)
 	{

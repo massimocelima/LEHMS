@@ -20,8 +20,8 @@ import android.widget.EditText;
 
 public class LoginActivity extends RoboActivity {
 	
-	@InjectView(R.id.login_username) protected EditText _usernameEditText;
-	@InjectView(R.id.login_password) protected EditText _passwordEditText;
+	@InjectView(R.id.login_username_edit) protected EditText _usernameEditText;
+	@InjectView(R.id.login_password_edit) protected EditText _passwordEditText;
 
     @Inject protected IAuthenticationProvider _authenticationService;
     @Inject protected IIdentityProvider _identityProvider;
@@ -31,7 +31,7 @@ public class LoginActivity extends RoboActivity {
     public void onCreate(Bundle savedInstanceState) {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.login);
+        setContentView(R.layout.activity_login);
         
         _usernameEditText.setText("Test1.t");
         _passwordEditText.setText("utz6");

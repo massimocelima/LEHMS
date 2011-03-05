@@ -1,6 +1,7 @@
 package com.lehms;
 
 import java.util.Date;
+import java.util.UUID;
 
 import android.content.Context;
 import android.content.Intent;
@@ -13,6 +14,19 @@ public class NavigationHelper {
 	public static void goEmergency(Context context)
 	{
 		
+	}
+	
+	public static void viewProgressNote(Context context, UUID progressNoteId)
+	{
+        Intent intent = new Intent(context, ProgressNoteDetailsActivity.class);
+        intent.putExtra(ProgressNoteDetailsActivity.EXTRA_PROGRESS_NOTE_ID, progressNoteId.toString());
+        context.startActivity(intent);
+	}
+
+	public static void createProgressNote(Context context)
+	{
+        Intent intent = new Intent(context, ProgressNoteDetailsActivity.class);
+        context.startActivity(intent);
 	}
 	
 	public static void openProgressNotes(Context context, long clientId, String clientName)

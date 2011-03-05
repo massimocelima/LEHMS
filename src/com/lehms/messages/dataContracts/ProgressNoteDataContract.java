@@ -22,4 +22,9 @@ public class ProgressNoteDataContract {
     public String VoiceMemoFileName;
     public String Transcript;
     
+    public Boolean hasRecordedMessage()
+    {
+    	return VoiceMemoUri != null && ! VoiceMemoUri.equals("");
+    }
+    
 }

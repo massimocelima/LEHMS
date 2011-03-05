@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/home_root"
+<LinearLayout 
+	xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
@@ -45,144 +45,163 @@
 		    >
 			
 			<TextView 
-				android:id="@+id/activity_progress_notes_list_title"
+				android:id="@+id/activity_progress_note_title"
 		        android:layout_width="wrap_content"
 		        android:layout_height="wrap_content"
-		        android:text="Progress Notes"
+		        android:text="Progress Note"
 		        style="@style/HeaderTitle" />
 	   		<TextView 
-				android:id="@+id/activity_progress_notes_list_sub_title"
+				android:id="@+id/activity_progress_note_sub_title"
 		        android:layout_width="wrap_content"
 		        android:layout_height="wrap_content"
+		        android:text=""
+		        style="@style/HeaderSubTitle" />
+	   		<TextView 
+				android:id="@+id/activity_progress_note_author_value"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:text=""
 		        style="@style/HeaderSubTitle" />
         </LinearLayout>
 
 	</LinearLayout>
 
- 
-    <LinearLayout
-        android:orientation="vertical"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        >
+	<ScrollView
+	  android:layout_width="fill_parent"
+	  android:layout_height="wrap_content"
+	  android:layout_weight="1"
+	  >
 
- 		<ListView
- 			android:id="@+id/android:list"
+		<LinearLayout
+			android:id="@+id/activity_progress_note_container"
+	        android:paddingLeft="14dip"
+	        android:paddingRight="14dip"
+	        android:paddingTop="10dip"
+	        android:paddingBottom="10dip"
 	        android:layout_width="fill_parent"
-	        android:layout_height="fill_parent" />
- 
-    </LinearLayout>
+	        android:layout_height="wrap_content"
+	        android:orientation="vertical"
+	        >
+	        
+	
+		    <LinearLayout
+		        android:layout_width="fill_parent"
+		        android:layout_height="wrap_content"
+		        android:orientation="horizontal">
+		    
+				<TextView 
+					android:id="@+id/activity_progress_note_subject"
+			        android:text="Subject:"
+			        android:paddingRight="10dip"
+			        android:layout_width="wrap_content"
+			        style="@style/FieldsetLabel" />
+			
+				<EditText 
+					android:id="@+id/activity_progress_note_subject_edit"
+			        style="@style/FieldsetInput" />
+	
+				<TextView 
+					android:id="@+id/activity_progress_note_subject_value"
+			        style="@style/FieldsetInput" />
+			
+			</LinearLayout>
+	
+			<include layout="@layout/seperator"></include>
+	
+		    <LinearLayout
+		        android:layout_width="fill_parent"
+		        android:layout_height="wrap_content"
+		        android:orientation="vertical"
+		        android:paddingTop="10dip"
+		        >
+		    
+				<TextView 
+					android:id="@+id/activity_progress_note_note"
+			        android:text="Note:"
+			        android:layout_width="fill_parent"
+			        android:layout_height="wrap_content"
+			        style="@style/FieldsetLabel" 
+			        android:paddingBottom="10dip"
+			        />
 
+				<EditText 
+						android:id="@+id/activity_progress_note_note_edit"
+				        android:layout_width="fill_parent"
+				        android:layout_height="wrap_content"
+				        style="@style/FieldsetInput" ></EditText>
+			
+				<TextView 
+					android:id="@+id/activity_progress_note_note_value"
+			        android:layout_width="fill_parent"
+			        android:layout_height="wrap_content"
+			        style="@style/FieldsetInput" />
+			
+			</LinearLayout>
+			
+			<include layout="@layout/seperator"></include>
+			
+			<LinearLayout
+		        android:layout_width="fill_parent"
+		        android:layout_height="wrap_content"
+		        android:orientation="horizontal"
+		        android:paddingTop="10dip"
+		        >
+		        
+				<Button 
+					android:id="@+id/activity_progress_note_record"
+					android:layout_width="wrap_content"
+			        android:layout_height="wrap_content"
+			        android:drawableLeft="@drawable/ic_btn_speak_now"
+			        android:onClick="onRecordClick"
+			        android:text="Record" />
+		        
+				<Button 
+					android:id="@+id/activity_progress_note_play"
+					android:layout_width="wrap_content"
+			        android:layout_height="wrap_content"
+			        android:drawableLeft="@drawable/ic_media_play"
+			        android:onClick="onPlayClick"
+			        android:text="Play Recording" />
+
+				<Button 
+					android:id="@+id/activity_progress_note_stop"
+					android:layout_width="wrap_content"
+			        android:layout_height="wrap_content"
+			        android:drawableLeft="@drawable/ic_media_pause"
+			        android:onClick="onStopClick"
+			        android:text="Stop" />
+
+			</LinearLayout>
+
+			<include layout="@layout/seperator"></include>
+			
+	  </LinearLayout>
+
+	</ScrollView>
+  
+  	<LinearLayout
+			android:id="@+id/activity_progress_note_button_bar"
+			android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:orientation="horizontal"
+	        style="@android:style/ButtonBar"
+	        android:gravity="right"
+	        >
+
+	    <Button 
+			android:id="@+id/activity_progress_note_save"
+			android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:onClick="onSaveClick"
+	        android:text="Save" />
+
+	    <Button 
+			android:id="@+id/activity_progress_note_cancel"
+			android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:onClick="onCancelClick"
+	        android:text="Cancel" />
+	        
+	</LinearLayout>
   
 </LinearLayout>
-
-	<!-- 
-	<LinearLayout
-		android:id="@+id/activity_client_details_doctor_container"
-        android:paddingLeft="14dip"
-        android:paddingRight="14dip"
-        android:paddingTop="10dip"
-        android:paddingBottom="10dip"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:visibility="gone"
-        >
-
-
-	    <LinearLayout
-	        android:layout_width="fill_parent"
-	        android:layout_height="wrap_content"
-	        android:orientation="horizontal">
-	    
-			<TextView 
-				android:id="@+id/activity_client_details_doctor_name"
-		        android:text="Name:"
-		        style="@style/FieldsetLabel" />
-		
-			<TextView 
-				android:id="@+id/activity_client_details_doctor_name_value"
-		        style="@style/FieldsetInput" />
-		
-		</LinearLayout>
-
-		<include layout="@layout/seperator"></include>
-
-	    <LinearLayout
-	        android:layout_width="fill_parent"
-	        android:layout_height="wrap_content"
-	        android:orientation="horizontal">
-	    
-			<TextView 
-				android:id="@+id/activity_client_details_doctor_address"
-		        android:text="Address:"
-		        style="@style/FieldsetLabel" />
-		
-			<TextView 
-				android:id="@+id/activity_client_details_doctor_address_value"
-		        style="@style/FieldsetInput" />
-		
-		</LinearLayout>
-
-		<include layout="@layout/seperator"></include>
-		
-		<LinearLayout
-	        android:layout_width="fill_parent"
-	        android:layout_height="wrap_content"
-	        android:orientation="horizontal">
-	    
-			<TextView 
-				android:id="@+id/activity_client_details_doctor_phone"
-		        android:text="Phone:"
-		        style="@style/FieldsetLabel" />
-		
-			<TextView 
-				android:id="@+id/activity_client_details_doctor_phone_value"
-		        style="@style/FieldsetInput" />
-		
-		</LinearLayout>
-
-		<include layout="@layout/seperator"></include>
-
-		<LinearLayout
-	        android:layout_width="fill_parent"
-	        android:layout_height="wrap_content"
-	        android:orientation="horizontal">
-	    
-			<TextView 
-				android:id="@+id/activity_client_details_doctor_fax"
-		        android:text="Fax:"
-		        style="@style/FieldsetLabel" />
-		
-			<TextView 
-				android:id="@+id/activity_client_details_doctor_fax_value"
-		        style="@style/FieldsetInput" />
-		
-		</LinearLayout>
-		
-		<include layout="@layout/seperator"></include>
-		
-		<LinearLayout
-	        android:layout_width="fill_parent"
-	        android:layout_height="wrap_content"
-	        android:orientation="horizontal">
-	    
-			<TextView 
-				android:id="@+id/activity_client_details_doctor_email"
-		        android:text="Email"
-		        style="@style/FieldsetLabel" />
-		
-			<TextView 
-				android:id="@+id/activity_client_details_doctor_email_value"
-		        style="@style/FieldsetInput" />
-		
-		</LinearLayout>
-		
-		<include layout="@layout/seperator"></include>
-		
-	</LinearLayout>
-	
-</LinearLayout>
-
- -->
