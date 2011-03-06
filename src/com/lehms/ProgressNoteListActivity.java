@@ -154,8 +154,7 @@ public class ProgressNoteListActivity extends RoboListActivity {
 			{
 				if( index == 0 )
 				{
-					// On Header Click
-					UIHelper.ShowUnderConstructionMessage(ProgressNoteListActivity.this);
+					NavigationHelper.createProgressNote(ProgressNoteListActivity.this, _clientId, _clientName );
 				}
 				else
 				{

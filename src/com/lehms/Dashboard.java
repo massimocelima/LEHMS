@@ -63,7 +63,7 @@ public class Dashboard extends RoboActivity implements OnGestureListener
 	protected void onCreate(Bundle savedInstanceState) {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.dashboard);
+		setContentView(R.layout.activity_dashboard);
 		InitAnimations();
 	
 		_gestureDetector = new GestureDetector(this);

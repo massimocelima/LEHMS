@@ -39,12 +39,17 @@ public class Profile {
 		return GetBaseUrl() + "/ProgressNote";
 	}
 
+	public String GetProgressNoteRecordingResourceEndPoint()
+	{
+		return GetBaseUrl() + "/ProgressNoteRecording";
+	}
+
 	public String GetProgressNotesResourceEndPoint()
 	{
 		return GetBaseUrl() + "/ProgressNotes";
 	}
 	
-	private String GetBaseUrl()
+	public String GetBaseUrl()
 	{
 		String result = "http://10.0.2.2:7856";
 		switch(_profileEnvironment)

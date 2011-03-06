@@ -62,6 +62,7 @@
 		        android:layout_height="wrap_content"
 		        android:text=""
 		        style="@style/HeaderSubTitle" />
+		        
         </LinearLayout>
 
 	</LinearLayout>
@@ -143,9 +144,21 @@
 			<LinearLayout
 		        android:layout_width="fill_parent"
 		        android:layout_height="wrap_content"
-		        android:orientation="horizontal"
+		        android:orientation="vertical"
 		        android:paddingTop="10dip"
 		        >
+
+				<TextView 
+					android:id="@+id/activity_progress_note_recording_info"
+			        android:layout_width="fill_parent"
+			        android:layout_height="wrap_content"
+			        style="@style/FieldsetInput" />
+
+			    <ProgressBar android:id="@+id/activity_progress_note_recording_progress_bar"  
+			    	android:layout_width="fill_parent"
+			    	android:layout_height="wrap_content"
+			    	android:layout_alignParentLeft="true"
+			    	style="?android:attr/progressBarStyleHorizontal"/>
 		        
 				<Button 
 					android:id="@+id/activity_progress_note_record"

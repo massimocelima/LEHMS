@@ -23,9 +23,11 @@ public class NavigationHelper {
         context.startActivity(intent);
 	}
 
-	public static void createProgressNote(Context context)
+	public static void createProgressNote(Context context, Long clientId, String clientName)
 	{
         Intent intent = new Intent(context, ProgressNoteDetailsActivity.class);
+        intent.putExtra(ProgressNoteDetailsActivity.EXTRA_CLIENT_ID, clientId);
+        intent.putExtra(ProgressNoteDetailsActivity.EXTRA_CLIENT_NAME, clientName);
         context.startActivity(intent);
 	}
 	
