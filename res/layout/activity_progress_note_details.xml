@@ -158,15 +158,14 @@
 			    	android:layout_width="fill_parent"
 			    	android:layout_height="wrap_content"
 			    	android:layout_alignParentLeft="true"
-			    	style="?android:attr/progressBarStyleHorizontal"/>
-		        
-				<Button 
-					android:id="@+id/activity_progress_note_record"
-					android:layout_width="wrap_content"
-			        android:layout_height="wrap_content"
-			        android:drawableLeft="@drawable/ic_btn_speak_now"
-			        android:onClick="onRecordClick"
-			        android:text="Record" />
+			    	style="?android:attr/progressBarStyleHorizontal"
+			    	/>
+			    
+			    <View 
+			    	android:layout_width="fill_parent"
+			    	android:layout_height="wrap_content"
+			    	android:paddingBottom="10px"
+			    	></View>
 		        
 				<Button 
 					android:id="@+id/activity_progress_note_play"
@@ -198,23 +197,40 @@
 	        android:layout_height="wrap_content"
 	        android:orientation="horizontal"
 	        style="@android:style/ButtonBar"
-	        android:gravity="right"
 	        >
-
-	    <Button 
-			android:id="@+id/activity_progress_note_save"
-			android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:onClick="onSaveClick"
-	        android:text="Save" />
-
-	    <Button 
-			android:id="@+id/activity_progress_note_cancel"
-			android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:onClick="onCancelClick"
-	        android:text="Cancel" />
 	        
-	</LinearLayout>
+			<Button 
+				android:id="@+id/activity_progress_note_record"
+				android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:drawableLeft="@drawable/ic_btn_speak_now"
+		        android:onClick="onRecordClick"
+		        android:text="Record" />
+  
+		  	<LinearLayout
+					android:layout_width="fill_parent"
+			        android:layout_height="wrap_content"
+			        android:orientation="horizontal"
+			        android:layout_weight="1"
+			        android:gravity="right"
+			        >
+		
+			    <Button 
+					android:id="@+id/activity_progress_note_save"
+					android:layout_width="wrap_content"
+			        android:layout_height="wrap_content"
+			        android:onClick="onSaveClick"
+			        android:text="Save" />
+		
+			    <Button 
+					android:id="@+id/activity_progress_note_cancel"
+					android:layout_width="wrap_content"
+			        android:layout_height="wrap_content"
+			        android:onClick="onCancelClick"
+			        android:text="Cancel" />
+			        
+			</LinearLayout>
+			
+		</LinearLayout>
   
 </LinearLayout>

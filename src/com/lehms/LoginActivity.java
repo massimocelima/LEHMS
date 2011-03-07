@@ -33,8 +33,10 @@ public class LoginActivity extends RoboActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         
-        _usernameEditText.setText("Test1.t");
-        _passwordEditText.setText("utz6");
+        //_usernameEditText.setText("Test1.t");
+        //_passwordEditText.setText("utz6");
+        _usernameEditText.setText("claude.r");
+        _passwordEditText.setText("claude.r");
         
     }
 

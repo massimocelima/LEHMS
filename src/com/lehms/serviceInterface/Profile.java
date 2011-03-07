@@ -62,7 +62,7 @@ public class Profile {
 			//result = "http://10.0.2.2:7856";
 			break;
 		case Testing:
-			result = "http://lehms.theinsgroup.com.au:82/INSGateway";
+			result = "http://lehms2.theinsgroup.com.au:82/INSGateway";
 			//result = "https://lehms.theinsgroup.com.au:83/INSGateway";
 			break;
 		case Production:

@@ -1,9 +1,11 @@
 package com.lehms.messages.dataContracts;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.UUID;
 
-public class ProgressNoteDataContract {
+
+public class ProgressNoteDataContract implements Serializable {
 	
 	public ProgressNoteDataContract()
 	{
