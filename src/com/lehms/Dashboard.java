@@ -4,6 +4,7 @@ import java.util.Date;
 
 import com.google.inject.Inject;
 import com.lehms.messages.dataContracts.Permission;
+import com.lehms.receivers.AlarmReceiver;
 import com.lehms.service.GPSLoggerService;
 import com.lehms.serviceInterface.IAuthorisationProvider;
 import com.lehms.serviceInterface.IIdentityProvider;
@@ -11,13 +12,17 @@ import com.lehms.serviceInterface.IOfficeContactProvider;
 import com.lehms.util.AppLog;
 import com.lehms.util.MathUtils;
 
+import android.app.AlarmManager;
 import android.app.AlertDialog;
+import android.app.PendingIntent;
+import android.app.Service;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.provider.MediaStore;
 import android.view.GestureDetector;
 import android.view.GestureDetector.OnGestureListener;
@@ -101,6 +106,8 @@ public class Dashboard extends RoboActivity implements OnGestureListener
 	        Intent serviceIntent = new Intent(this, GPSLoggerService.class);
 	        this.startService(serviceIntent);
 		}
+		
+		StartDataSynchService();
 	}
 
 	private void SetTouchEventOnChildViews(ViewGroup viewGroup)
@@ -330,5 +337,20 @@ public class Dashboard extends RoboActivity implements OnGestureListener
 	        Intent serviceIntent = new Intent(this, GPSLoggerService.class);
 	        this.stopService(serviceIntent);
 		}
+		
+		AlarmManager manager = (AlarmManager)getSystemService(Service.ALARM_SERVICE);
+		PendingIntent loggerIntent = PendingIntent.getBroadcast(this, 0,new Intent(this,AlarmReceiver.class), 0);
+		manager.cancel(loggerIntent);
+	}
+	
+	private void StartDataSynchService()
+	{
+		AlarmManager manager = (AlarmManager)getSystemService(Service.ALARM_SERVICE);
+		PendingIntent loggerIntent = PendingIntent.getBroadcast(this, 0,new Intent(this, AlarmReceiver.class), 0);
+		manager.cancel(loggerIntent);
+			
+		long duration = 1000 * 60;
+		manager.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP,
+				SystemClock.elapsedRealtime(), duration, loggerIntent);
 	}
 }

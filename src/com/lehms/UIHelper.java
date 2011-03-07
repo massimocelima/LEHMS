@@ -16,10 +16,17 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.text.format.DateFormat;
+import android.widget.Toast;
 
 public class UIHelper {
 
 	private UIHelper() {}
+	
+	public static void ShowToast(Context context, String message)
+	{
+		Toast toast = Toast.makeText(context, message, Toast.LENGTH_SHORT);
+		toast.show();
+	}
 	
 	public static void ShowAlertDialog(Context context, String title, String message)
 	{

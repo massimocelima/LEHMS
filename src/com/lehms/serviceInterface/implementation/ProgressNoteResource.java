@@ -3,6 +3,7 @@ package com.lehms.serviceInterface.implementation;
 import java.util.UUID;
 
 import com.google.inject.Inject;
+import com.lehms.messages.CreateProgressNoteRequest;
 import com.lehms.messages.GetProgressNotesResponse;
 import com.lehms.messages.dataContracts.ProgressNoteDataContract;
 import com.lehms.serviceInterface.IChannel;
@@ -29,8 +30,8 @@ public class ProgressNoteResource implements IProgressNoteResource {
 	}
 
 	@Override
-	public ProgressNoteDataContract Create(ProgressNoteDataContract progressNote) throws Exception {
-		return GetChannel().Create(progressNote, ProgressNoteDataContract.class);
+	public ProgressNoteDataContract Create(CreateProgressNoteRequest request) throws Exception {
+		return GetChannel().Create(request, ProgressNoteDataContract.class);
 	}
 	
 	@Override

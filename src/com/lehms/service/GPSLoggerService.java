@@ -74,6 +74,7 @@ public class GPSLoggerService extends Service implements LocationListener, GpsSt
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		if( ! _isRunning )
 		{
+		
 			ShowNotifification("GPS Logger Service", "GPS logging service starting!");
 			//Toast.makeText(this, "GPS logging service starting", Toast.LENGTH_SHORT).show();
 			StartGpsManager();

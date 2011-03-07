@@ -149,7 +149,7 @@ public class HttpRestChannel implements IChannel {
 	@Override
 	public <T> T Create(Object request, Class<T> responseType) throws Exception {
 		
-		HttpPost httpRequest = new HttpPost(_url); 
+		HttpPost httpRequest = new HttpPost(_url + "/");
 		httpRequest.setHeader("Accept", "application/json");             
 		httpRequest.setHeader("Content-type", "application/json"); 
 		AddBasicAuthenticationHeader(httpRequest);
@@ -260,9 +260,13 @@ public class HttpRestChannel implements IChannel {
 		char[] buffer = new char[(int)responseEntity.getContentLength()];
 		InputStream stream = responseEntity.getContent();         
 		InputStreamReader reader = new InputStreamReader(stream);         
-    	int bytesRead = reader.read(buffer);         
-    	while(bytesRead < buffer.length)
-        	bytesRead += reader.read(buffer, bytesRead, buffer.length - bytesRead);
+    	int bytesRead = reader.read(buffer);
+    	int readCount = 0;
+    	while( bytesRead < buffer.length && readCount != -1 ){
+    		readCount = reader.read(buffer, bytesRead, buffer.length - bytesRead);
+    		if(readCount > 0)
+    			bytesRead += readCount;
+    	}
 		stream.close();
 		
 		return new String(buffer);

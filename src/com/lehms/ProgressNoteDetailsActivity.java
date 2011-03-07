@@ -1,9 +1,13 @@
 package com.lehms;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.util.UUID;
 
 import com.google.inject.Inject;
+import com.lehms.messages.CreateProgressNoteRequest;
+import com.lehms.messages.dataContracts.AttachmentDataContract;
 import com.lehms.messages.dataContracts.ProgressNoteDataContract;
 import com.lehms.serviceInterface.IDepartmentProvider;
 import com.lehms.serviceInterface.IIdentityProvider;
@@ -11,6 +15,9 @@ import com.lehms.serviceInterface.IProfileProvider;
 import com.lehms.serviceInterface.IProgressNoteResource;
 import com.lehms.util.AppLog;
 import com.lehms.media.StreamingMediaPlayer;
+import com.lehms.persistence.Event;
+import com.lehms.persistence.EventType;
+import com.lehms.persistence.IEventRepository;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -45,8 +52,7 @@ public class ProgressNoteDetailsActivity extends RoboActivity {
 	public static final String EXTRA_CLIENT_NAME = "client_name";
 	
 	private static final String STATE_PROGRESS_NOTE = "progress_note";
-	
-	
+		
 	@InjectExtra(optional=true, value=EXTRA_PROGRESS_NOTE_ID ) String _progressNoteId; 
 	@InjectExtra(optional=true, value=EXTRA_CLIENT_ID) Long _clientId; 
 	@InjectExtra(optional=true, value=EXTRA_CLIENT_NAME) String _clientName; 
@@ -70,6 +76,7 @@ public class ProgressNoteDetailsActivity extends RoboActivity {
 	@Inject IProfileProvider _profileProvider;
 	@Inject IIdentityProvider _identityProvider;
 	@Inject IDepartmentProvider _departmentProvider;
+	@Inject IEventRepository _eventRepository;
 	
 	private MediaPlayer _mediaPlayer = new MediaPlayer();
 	private MediaRecorder _recorder = new MediaRecorder();
@@ -290,7 +297,32 @@ public class ProgressNoteDetailsActivity extends RoboActivity {
 
 	public void onSaveClick(View view)
 	{
-		
+		_eventRepository.open();
+
+		try
+		{
+			_progressNote.ClientId = _clientId + "";
+			_progressNote.ClientName = _clientName;
+			_progressNote.CreatedBy = _identityProvider.getCurrent().FirstName + " " + _identityProvider.getCurrent().LastName; 
+			_progressNote.Note = _noteEditView.getText().toString();
+			_progressNote.Subject = _subjectEditView.getText().toString();
+			
+			CreateProgressNoteRequest createNoteRequest = new CreateProgressNoteRequest(); 
+			createNoteRequest.ProgressNote =_progressNote;
+			
+			_eventRepository.create(createNoteRequest, EventType.ProgressNoteAdded);
+			UIHelper.ShowToast(this, "Progress Note Saved");
+			this.finish();
+		}
+		catch(Exception ex)
+		{
+			AppLog.error(ex.getMessage(), ex);
+			UIHelper.ShowAlertDialog(this, "Error saving progress note", "An error has occured while saving the progress note: " + ex.getMessage());
+		}
+		finally
+		{
+			_eventRepository.close();
+		}
 	}
 
 	public void onCancelClick(View view)
