@@ -5,6 +5,7 @@ import java.util.UUID;
 import com.google.inject.Inject;
 import com.lehms.messages.CreateProgressNoteRequest;
 import com.lehms.messages.GetProgressNotesResponse;
+import com.lehms.messages.UploadProgressNoteRecordingResponse;
 import com.lehms.messages.dataContracts.ProgressNoteDataContract;
 import com.lehms.serviceInterface.IChannel;
 import com.lehms.serviceInterface.IChannelFactory;
@@ -39,6 +40,12 @@ public class ProgressNoteResource implements IProgressNoteResource {
 	{
 		return GetChannel().Get(progressNoteId.toString(), ProgressNoteDataContract.class);
 	}
+
+	@Override
+	public UploadProgressNoteRecordingResponse UploadRecording(UUID progressNoteId, String fileName, byte[] data) throws Exception 
+	{
+		return GetRecordingChannel().UploadAttachment(progressNoteId.toString(), fileName, data, UploadProgressNoteRecordingResponse.class);
+	}
 	
 	private IChannel GetListChannel()
 	{
@@ -48,5 +55,10 @@ public class ProgressNoteResource implements IProgressNoteResource {
 	private IChannel GetChannel()
 	{
 		return _channelFactory.Create(_profileProvider.getProfile().GetProgressNoteResourceEndPoint());
+	}
+
+	private IChannel GetRecordingChannel()
+	{
+		return _channelFactory.Create(_profileProvider.getProfile().GetProgressNoteRecordingResourceEndPoint());
 	}
 }

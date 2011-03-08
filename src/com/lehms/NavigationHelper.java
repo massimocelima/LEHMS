@@ -13,7 +13,37 @@ public class NavigationHelper {
 	
 	public static void goEmergency(Context context)
 	{
-		
+		UIHelper.ShowUnderConstructionMessage(context);
+	}
+	
+	public static void goContactCallCentre(Context context)
+	{
+		UIHelper.ShowUnderConstructionMessage(context);
+	}
+	
+	public static void goForms(Context context)
+	{
+		UIHelper.ShowUnderConstructionMessage(context);
+	}	
+	
+	public static void goTakePicture(Context context, String clientId)
+	{
+		UIHelper.ShowUnderConstructionMessage(context);
+	}
+	
+	public static void goContact(Context context, String clientId)
+	{
+		UIHelper.ShowUnderConstructionMessage(context);
+	}
+	
+	public static void goCliniclaDetails(Context context, String clientId)
+	{
+		UIHelper.ShowUnderConstructionMessage(context);
+	}
+	
+	public static void goNextService(Context context, Long clientId)
+	{
+		UIHelper.ShowUnderConstructionMessage(context);
 	}
 	
 	public static void viewProgressNote(Context context, UUID progressNoteId)
@@ -31,14 +61,14 @@ public class NavigationHelper {
         context.startActivity(intent);
 	}
 	
-	public static void openProgressNotes(Context context, long clientId, String clientName)
+	public static void viewProgressNotes(Context context, long clientId, String clientName)
 	{
         Intent intent = new Intent(context, ProgressNoteListActivity.class);
         intent.putExtra(ProgressNoteListActivity.EXTRA_CLIENT_ID, clientId);
         intent.putExtra(ProgressNoteListActivity.EXTRA_CLIENT_NAME, clientName);
         context.startActivity(intent);
 	}
-	
+
 	public static void openRoster(Context context, Date rosterDate)
 	{
 		Intent i = new Intent(context, RosterActivity.class);

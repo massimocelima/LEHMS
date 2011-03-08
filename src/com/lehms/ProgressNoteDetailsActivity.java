@@ -9,6 +9,7 @@ import com.google.inject.Inject;
 import com.lehms.messages.CreateProgressNoteRequest;
 import com.lehms.messages.dataContracts.AttachmentDataContract;
 import com.lehms.messages.dataContracts.ProgressNoteDataContract;
+import com.lehms.serviceInterface.IActiveJobProvider;
 import com.lehms.serviceInterface.IDepartmentProvider;
 import com.lehms.serviceInterface.IIdentityProvider;
 import com.lehms.serviceInterface.IProfileProvider;
@@ -50,7 +51,7 @@ public class ProgressNoteDetailsActivity extends RoboActivity {
 	public static final String EXTRA_PROGRESS_NOTE_ID = "progress_note_id";
 	public static final String EXTRA_CLIENT_ID = "client_id";
 	public static final String EXTRA_CLIENT_NAME = "client_name";
-	
+
 	private static final String STATE_PROGRESS_NOTE = "progress_note";
 		
 	@InjectExtra(optional=true, value=EXTRA_PROGRESS_NOTE_ID ) String _progressNoteId; 
@@ -77,6 +78,7 @@ public class ProgressNoteDetailsActivity extends RoboActivity {
 	@Inject IIdentityProvider _identityProvider;
 	@Inject IDepartmentProvider _departmentProvider;
 	@Inject IEventRepository _eventRepository;
+	@Inject IActiveJobProvider _activeJobProvider;
 	
 	private MediaPlayer _mediaPlayer = new MediaPlayer();
 	private MediaRecorder _recorder = new MediaRecorder();
@@ -101,7 +103,7 @@ public class ProgressNoteDetailsActivity extends RoboActivity {
 
 		if(savedInstanceState != null && savedInstanceState.get(STATE_PROGRESS_NOTE) != null )
 			_progressNote = (ProgressNoteDataContract)savedInstanceState.get(STATE_PROGRESS_NOTE);
-		
+
 		_playButton.setVisibility(View.GONE);
 		_stopButton.setVisibility(View.GONE);
 
@@ -309,6 +311,8 @@ public class ProgressNoteDetailsActivity extends RoboActivity {
 			
 			CreateProgressNoteRequest createNoteRequest = new CreateProgressNoteRequest(); 
 			createNoteRequest.ProgressNote =_progressNote;
+			if(_activeJobProvider.get() != null)
+				createNoteRequest.JobId = _activeJobProvider.get().JobId;
 			
 			_eventRepository.create(createNoteRequest, EventType.ProgressNoteAdded);
 			UIHelper.ShowToast(this, "Progress Note Saved");

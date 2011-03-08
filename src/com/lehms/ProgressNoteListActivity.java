@@ -36,7 +36,7 @@ public class ProgressNoteListActivity extends RoboListActivity {
 
 	public static final String EXTRA_CLIENT_ID = "client_id"; 
 	public static final String EXTRA_CLIENT_NAME = "client_name"; 
-	
+
 	private int _currentPageIndex = 0;
 	private static final int PAGE_SIZE = 10;
 	
@@ -154,7 +154,7 @@ public class ProgressNoteListActivity extends RoboListActivity {
 			{
 				if( index == 0 )
 				{
-					NavigationHelper.createProgressNote(ProgressNoteListActivity.this, _clientId, _clientName );
+					NavigationHelper.createProgressNote(ProgressNoteListActivity.this, _clientId, _clientName);
 				}
 				else
 				{

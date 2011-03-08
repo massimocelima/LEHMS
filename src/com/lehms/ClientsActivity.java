@@ -3,6 +3,8 @@ package com.lehms;
 import java.util.Collection;
 import java.util.List;
 
+import com.lehms.controls.*;
+
 import com.google.inject.Inject;
 import com.lehms.adapters.ClientSummaryAdapter;
 import com.lehms.adapters.JobAdapter;
@@ -19,9 +21,11 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
@@ -43,18 +47,77 @@ public class ClientsActivity  extends RoboListActivity { //implements AsyncQuery
 		listView.setTextFilterEnabled(true); 
 		
 		LoadClients();
+
+		listView.setOnItemClickListener(new OnItemClickListener() { 
+		    public void onItemClick(AdapterView<?> parent, View view, int position, long id) { 
+		    	NavigationHelper.openClient(ClientsActivity.this, id);
+		    }}); 
+		
+		/*
+		
+		final ActionItem qaClientDetails = new ActionItem();
+		
+		qaClientDetails.setTitle("Client Details");
+		qaClientDetails.setIcon(getResources().getDrawable(R.drawable.quick_actions_ic_client));
+		qaClientDetails.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Toast.makeText(ClientsActivity.this, "Client Details" , Toast.LENGTH_SHORT).show();
+			}
+		});
+				
+		final ActionItem qaProgressNote = new ActionItem();
+		
+		qaProgressNote.setTitle("Progress Notes");
+		qaProgressNote.setIcon(getResources().getDrawable(R.drawable.quick_actions_ic_progress_notes));
+		qaProgressNote.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Toast.makeText(ClientsActivity.this, "Progress Notes selected", Toast.LENGTH_SHORT).show();
+			}
+		});
+
+		final ActionItem qaProgressNote2 = new ActionItem();
+		
+		qaProgressNote2.setTitle("Progress Notes");
+		qaProgressNote2.setIcon(getResources().getDrawable(R.drawable.quick_actions_ic_progress_notes));
+		qaProgressNote2.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Toast.makeText(ClientsActivity.this, "Progress Notes selected", Toast.LENGTH_SHORT).show();
+			}
+		});
+
+		final ActionItem qaProgressNote3 = new ActionItem();
+		
+		qaProgressNote3.setTitle("Progress Notes");
+		qaProgressNote3.setIcon(getResources().getDrawable(R.drawable.quick_actions_ic_progress_notes));
+		qaProgressNote3.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Toast.makeText(ClientsActivity.this, "Progress Notes selected", Toast.LENGTH_SHORT).show();
+			}
+		});
+
 		
 		listView.setOnItemClickListener(new OnItemClickListener() { 
 			    public void onItemClick(AdapterView<?> parent, View view, 
 			        int position, long id) { 
 			    	
-			    	NavigationHelper.openClient(ClientsActivity.this, id);
+			    	//NavigationHelper.openClient(ClientsActivity.this, id);
 			    	
-			      // When clicked, show a toast with the TextView text 
-			      Toast.makeText(getApplicationContext(), "Client Id: " + id, 
-			          Toast.LENGTH_SHORT).show(); 
-			    } 
+					ListQuickAction qa = new ListQuickAction(view);
+					
+					qa.addActionItem(qaClientDetails);
+					qa.addActionItem(qaProgressNote);
+					qa.addActionItem(qaProgressNote2);
+					qa.addActionItem(qaProgressNote3);
+					qa.setAnimStyle(ListQuickAction.ANIM_AUTO);
+					
+					qa.show();
+			    }
 			  }); 
+			  */
 	}
 
 	private void LoadClients(){
@@ -70,6 +133,11 @@ public class ClientsActivity  extends RoboListActivity { //implements AsyncQuery
 	public void onRefreshClick(View view)
 	{
 		LoadClients();
+	}
+	
+	public void onEmergencyClick(View view)
+	{
+		NavigationHelper.goEmergency(this);
 	}
 	
 	private class LoadClientsTask extends AsyncTask<Void, Void, List<ClientSummaryDataContract>>

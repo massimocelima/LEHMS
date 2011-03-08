@@ -175,6 +175,11 @@ public class RosterActivity  extends RoboListActivity
 		fillDataAsync(true);
 	}
 	
+	public void onEmergencyClick(View view)
+	{
+		NavigationHelper.goEmergency(this);
+	}
+	
 	public void onSpecifyDateClick(View view)
 	{
 		DatePickerDialog dialog = new DatePickerDialog(this,

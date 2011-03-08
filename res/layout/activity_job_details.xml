@@ -22,9 +22,9 @@
 
         <ImageView style="@style/TitleBarSeparator" />
         <ImageButton style="@style/TitleBarAction"
-            android:contentDescription="Refresh"
-            android:src="@drawable/ic_title_refresh"
-            android:onClick="onRefreshClick" />
+            android:contentDescription="Emergency"
+            android:src="@drawable/ic_title_emergency"
+            android:onClick="onEmergencyClick" />
 
     </LinearLayout>
  
@@ -345,18 +345,20 @@
 		
 				<include layout="@layout/seperator"></include>
 				
-							    <LinearLayout
+				<LinearLayout
 			        android:layout_width="fill_parent"
 			        android:layout_height="wrap_content"
-			        android:orientation="horizontal">
+			        android:orientation="vertical">
 			    
 					<TextView 
 						android:id="@+id/activity_job_details_service_details"
 				        android:text="Service Details:"
+				        android:layout_width="fill_parent"
 				        style="@style/FieldsetLabel" />
 				
 					<TextView 
 						android:id="@+id/activity_job_details_service_details_value"
+				        android:layout_width="fill_parent"
 				        style="@style/FieldsetInput" />
 				
 				</LinearLayout>
@@ -364,6 +366,22 @@
 				<include layout="@layout/seperator"></include>
 		
 			</LinearLayout>
+		
+			<Button 
+				android:id="@+id/activity_job_details_begin_job"
+				android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:text="Begin Job"
+		        android:onClick="onBeginJobClick"
+		         />
+		
+		    <Button 
+				android:id="@+id/activity_job_details_end_job"
+				android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:text="End Job" 
+		        android:onClick="onEndJobClick"
+		        />
 		
 		</LinearLayout>
 		
@@ -377,20 +395,19 @@
 	        >
 	        
 	    <Button 
-			android:id="@+id/activity_job_details_begin_job"
+			android:id="@+id/activity_job_details_progress_notes"
 			android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
-	        android:text="Begin Job"
-	        android:onClick="onBeginJobClick"
-	         />
+	        android:drawableLeft="@drawable/quick_actions_ic_progress_notes"
+	        android:text="Progress Notes" />
 
 	    <Button 
-			android:id="@+id/activity_job_details_end_job"
+			android:id="@+id/activity_job_details_forms"
 			android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
-	        android:text="End Job" 
-	        android:onClick="onEndJobClick"
-	        />
+	        android:drawableLeft="@drawable/quick_actions_ic_complete_forms"
+	        android:onClick="onFormsClick"
+	        android:text="Forms" />
 
 	    <Button 
 			android:id="@+id/activity_job_details_view"

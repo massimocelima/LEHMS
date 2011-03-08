@@ -11,6 +11,7 @@ import roboguice.service.RoboService;
 import com.google.inject.Inject;
 import com.lehms.UIHelper;
 import com.lehms.messages.CreateProgressNoteRequest;
+import com.lehms.messages.UploadProgressNoteRecordingResponse;
 import com.lehms.messages.dataContracts.AttachmentDataContract;
 import com.lehms.persistence.Event;
 import com.lehms.persistence.EventStatus;
@@ -43,61 +44,6 @@ public class DataSyncService extends RoboService {
 
 	private final int MAX_ATTEMPTS = 4;
 	
-	/*
-	//private static Boolean _isRunning = false;
-    private Looper _serviceLooper;
-    private ServiceHandler _serviceHandler;
-    
-	// Handler that receives messages from the thread
-	private final class ServiceHandler extends Handler {
-		
-		public ServiceHandler(Looper looper) {
-			super(looper);
-		}
-	  
-		@Override
-		public void handleMessage(Message msg) {
-			try
-			{
-				_eventRepository.open();
-				
-				Thread.sleep(10000);
-				
-				List<Event> eventList = _eventRepository.fetchPending(EventType.ProgressNoteAdded);
-				for(int i = 0; i < eventList.size(); i++)
-				{
-					Event e = eventList.get(i);
-					e.Attempts += 1;
-					
-					try
-					{
-						CreateProgressNoteRequest request = (CreateProgressNoteRequest)e.Data;
-						_progressNoteResource.Create(request);
-						
-						_eventRepository.delete(e);
-					}
-					catch(Exception exception)
-					{
-						e.ErrorMessage = exception.getMessage();
-						if(e.Attempts >= MAX_ATTEMPTS)
-							e.Status = EventStatus.Error;
-						
-						_eventRepository.update(e);
-					}
-				}
-			}
-			catch(Exception ex)
-			{
-				AppLog.error("Error in DataSynchService", ex);
-			}
-			finally
-			{
-				_eventRepository.close();
-			}
-		}
-	}
-	*/
-	
 	@Inject IEventRepository _eventRepository;
 	@Inject IProgressNoteResource _progressNoteResource;
 	
@@ -108,12 +54,6 @@ public class DataSyncService extends RoboService {
     @Override
     public void onCreate() {
     	super.onCreate();
-    	
-        //HandlerThread thread = new HandlerThread("ServiceStartArguments",HandlerThread.NORM_PRIORITY); 
-        //thread.start();
-        
-        //_serviceLooper = thread.getLooper();
-        //_serviceHandler = new ServiceHandler(_serviceLooper);
     }
     
 	@Override
@@ -193,7 +133,9 @@ public class DataSyncService extends RoboService {
 				try
 				{
 					CreateProgressNoteRequest request = (CreateProgressNoteRequest)e.Data;
-					
+
+					_progressNoteResource.Create(request);
+
 					// Attach the recording to the object
 					if( request.ProgressNote.VoiceMemoUri != null && ! request.ProgressNote.VoiceMemoUri.equals(""))
 					{
@@ -201,21 +143,18 @@ public class DataSyncService extends RoboService {
 						if( ! file.exists() )
 							throw new Exception("Unable to find recorded message.");
 						
-						AttachmentDataContract attachment = new AttachmentDataContract();
-						attachment.Id = UUID.randomUUID();
-						attachment.Name = request.ProgressNote.VoiceMemoFileName;
 						FileInputStream stream = new FileInputStream(file);
 
 						byte[] buff = new byte[(int)file.length()];
 						int index = 0;
 						while(index < file.length())
 							index += stream.read(buff);
-						attachment.Data = buff;
-						
-						request.Recording = attachment;
+
+						UploadProgressNoteRecordingResponse response = _progressNoteResource.UploadRecording(
+								request.ProgressNote.Id,
+								request.ProgressNote.VoiceMemoFileName, 
+								buff);
 					}
-					
-					_progressNoteResource.Create(request);
 					
 					//_eventRepository.delete(e);
 				}

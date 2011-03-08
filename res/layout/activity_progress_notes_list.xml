@@ -40,7 +40,7 @@
 		<ImageView 
 			android:layout_height="wrap_content" 
 			android:layout_width="wrap_content" 
-			android:src="@drawable/dashboard_btn_my_roster_selected"></ImageView>
+			android:src="@drawable/dashboard_btn_progress_note_selected"></ImageView>
 			
 	    <LinearLayout 
 		    android:orientation="vertical"

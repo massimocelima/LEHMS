@@ -26,6 +26,12 @@
             android:src="@drawable/ic_title_refresh"
             android:onClick="onRefreshClick" />
 
+		<ImageView style="@style/TitleBarSeparator" />
+        <ImageButton style="@style/TitleBarAction"
+            android:contentDescription="Emergency"
+            android:src="@drawable/ic_title_emergency"
+            android:onClick="onEmergencyClick" />
+            
     </LinearLayout>
  
     <LinearLayout 
@@ -157,7 +163,22 @@
 	        android:orientation="horizontal"
 	        style="@android:style/ButtonBar"
 	        >
-	        
+
+	    <Button 
+			android:id="@+id/activity_client_details_progress_notes"
+			android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:drawableLeft="@drawable/quick_actions_ic_progress_notes"
+	        android:text="Progress Notes" />
+
+	    <Button 
+			android:id="@+id/activity_client_details_forms"
+			android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:drawableLeft="@drawable/quick_actions_ic_complete_forms"
+	        android:onClick="onFormsClick"
+	        android:text="Forms" />
+	        	        
 	    <Button 
 			android:id="@+id/activity_client_details_more"
 			android:layout_width="wrap_content"

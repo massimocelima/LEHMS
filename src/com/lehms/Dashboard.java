@@ -134,7 +134,7 @@ public class Dashboard extends RoboActivity implements OnGestureListener
 	{
 		NavigationHelper.openRoster(this, new Date());
 	}
-
+	
 	public void onContactClick(View view)
 	{
 		AlertDialog dialog = new AlertDialog.Builder(this)
@@ -252,12 +252,12 @@ public class Dashboard extends RoboActivity implements OnGestureListener
 	
 	public void onEmergencyClick(View view)
 	{
-		UIHelper.ShowUnderConstructionMessage(this);
+		NavigationHelper.goEmergency(this);
 	}
 	
 	public void onCallCallCentreClick(View view)
 	{
-		UIHelper.ShowUnderConstructionMessage(this);
+		NavigationHelper.goContactCallCentre(this);
 	}
 	
 	public void onCalendarClick(View view)

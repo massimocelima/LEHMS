@@ -102,5 +102,12 @@ public class MockChannel implements IChannel {
 		return null;
 	}
 
+	@Override
+	public <T> T UploadAttachment(String id, String fileName,
+			byte[] attachment, Class<T> responseType) throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }
 

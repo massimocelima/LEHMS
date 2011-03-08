@@ -6,11 +6,13 @@ import com.google.inject.Inject;
 import com.lehms.controls.*;
 import com.lehms.messages.dataContracts.*;
 import com.lehms.persistence.IRosterRepository;
+import com.lehms.serviceInterface.IActiveJobProvider;
 import com.lehms.util.AppLog;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentSender.OnFinished;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -36,6 +38,7 @@ public class JobDetailsActivity extends RoboActivity {
 
 	public final static String EXTRA_JOB_ID = "job_id";
 	public final static String EXTRA_ROSTER_DATE = "ROSTER_DATE";
+	
 	public final static int BEGIN_JOB_ACTION = 1;
 	public final static int END_JOB_ACTION = 2;
 	
@@ -62,10 +65,13 @@ public class JobDetailsActivity extends RoboActivity {
 	@InjectView(R.id.activity_job_details_begin_job) Button _btnBeginJob;
 	@InjectView(R.id.activity_job_details_end_job) Button _btnEndJob;
 	@InjectView(R.id.activity_job_details_view) Button _btnView;
+	@InjectView(R.id.activity_job_details_progress_notes) Button _btnProgressNote;
 	
 	@Inject IRosterRepository _rosterRepository; 
-	
+	@Inject IActiveJobProvider _activeJobProvider;
+
 	private QuickAction _quickActions;
+	private QuickAction _quickActionsPrgressNotes;
 	
 	private RosterDataContract _roster = null;
 	
@@ -87,7 +93,10 @@ public class JobDetailsActivity extends RoboActivity {
 		JobDetailsDataContract job = GetJob();
 		
 		if(job != null)
+		{
 			LoadJob(job);
+			_activeJobProvider.set(job);
+		}
 		
 		CreateQuickActions();
 	}
@@ -154,6 +163,11 @@ public class JobDetailsActivity extends RoboActivity {
 		
 	}
 	
+	public void onEmergencyClick()
+	{
+		NavigationHelper.goEmergency(this);
+	}
+	
 	public void onBeginJobClick(View view)
 	{
 		ShowKilometersTravelledDialog(JobDetailsActivity.BEGIN_JOB_ACTION);
@@ -167,6 +181,11 @@ public class JobDetailsActivity extends RoboActivity {
 	public void onClientDetailsExpanderClick(View view)
 	{
 		ToggleClientDetailsVisibility();
+	}
+
+	public void onFormsClick(View view)
+	{
+		NavigationHelper.goForms(this);
 	}
 	
 	private void ToggleClientDetailsVisibility()
@@ -218,7 +237,7 @@ public class JobDetailsActivity extends RoboActivity {
         LayoutInflater factory = LayoutInflater.from(this);
         final View navigationLocationDialogView = factory.inflate(R.layout.kilometers_travelled_dialog, null);
         AlertDialog dialog = new AlertDialog.Builder(this)
-            .setTitle("Enter the location you are traveling to:")
+            .setTitle("Enter the kilometers you have traveled:")
             .setView(navigationLocationDialogView)
             .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int whichButton) {
@@ -240,7 +259,6 @@ public class JobDetailsActivity extends RoboActivity {
             .create();
 		
         dialog.show();
-
 	}
 
 	
@@ -346,6 +364,38 @@ public class JobDetailsActivity extends RoboActivity {
 	
 	private void CreateQuickActions()
 	{
+		
+		final ActionItem qaProgressNotes = new ActionItem();
+		
+		qaProgressNotes.setTitle("View Progress Notes");
+		qaProgressNotes.setIcon(getResources().getDrawable(R.drawable.quick_actions_ic_progress_notes));
+		qaProgressNotes.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				NavigationHelper.createProgressNote(
+						JobDetailsActivity.this, 
+						Long.parseLong( GetJob().Client.ClientId ), 
+						GetJob().Client.FirstName + " " + GetJob().Client.LastName); 
+				_quickActionsPrgressNotes.dismiss();
+			}
+		});
+
+		final ActionItem qaProgressNoteNew = new ActionItem();
+		
+		qaProgressNoteNew.setTitle("New Progress Note");
+		qaProgressNoteNew.setIcon(getResources().getDrawable(R.drawable.quick_actions_ic_progress_notes_new));
+		qaProgressNoteNew.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				NavigationHelper.createProgressNote(JobDetailsActivity.this, 
+						Long.parseLong( GetJob().Client.ClientId ), 
+						GetJob().Client.FirstName + " " + GetJob().Client.LastName); 
+				_quickActionsPrgressNotes.dismiss();
+			}
+		});
+
+		
+		
 		final ActionItem qaClient = new ActionItem();
 		
 		qaClient.setTitle("View Client");
@@ -362,36 +412,8 @@ public class JobDetailsActivity extends RoboActivity {
 				}
 				else
 				{
-					Intent intent = new Intent(JobDetailsActivity.this, ClientDetailsActivity.class);
-					intent.putExtra(ClientDetailsActivity.EXTRA_CLIENT_ID, Long.parseLong( JobDetailsActivity.this.GetJob().Client.ClientId));
-					JobDetailsActivity.this.startActivity(intent);
+					NavigationHelper.openClient(JobDetailsActivity.this, Long.parseLong( JobDetailsActivity.this.GetJob().Client.ClientId));
 				}
-				_quickActions.dismiss();
-			}
-		});
-		
-		final ActionItem qaProgressNotes = new ActionItem();
-		
-		qaProgressNotes.setTitle("Progress Notes");
-		qaProgressNotes.setIcon(getResources().getDrawable(R.drawable.quick_actions_ic_progress_notes));
-		qaProgressNotes.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				NavigationHelper.openProgressNotes(JobDetailsActivity.this, 
-						Long.parseLong( GetJob().Client.ClientId ), 
-						GetJob().Client.FirstName + " " + GetJob().Client.LastName); 
-				_quickActions.dismiss();
-			}
-		});
-
-		final ActionItem qaCompleteForms = new ActionItem();
-		
-		qaCompleteForms.setTitle("Complete Forms");
-		qaCompleteForms.setIcon(getResources().getDrawable(R.drawable.quick_actions_ic_complete_forms));
-		qaCompleteForms.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				Toast.makeText(JobDetailsActivity.this, "Complete Forms", Toast.LENGTH_SHORT).show();
 				_quickActions.dismiss();
 			}
 		});
@@ -403,7 +425,7 @@ public class JobDetailsActivity extends RoboActivity {
 		qaTakeAPicture.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Toast.makeText(JobDetailsActivity.this, "Take A Picture", Toast.LENGTH_SHORT).show();
+				NavigationHelper.goTakePicture(JobDetailsActivity.this, GetJob().Client.ClientId);
 				_quickActions.dismiss();
 			}
 		});
@@ -415,7 +437,7 @@ public class JobDetailsActivity extends RoboActivity {
 		qaClinicalDetails.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Toast.makeText(JobDetailsActivity.this, "Clinical Details", Toast.LENGTH_SHORT).show();
+				NavigationHelper.goCliniclaDetails(JobDetailsActivity.this, GetJob().Client.ClientId);
 				_quickActions.dismiss();
 			}
 		});
@@ -427,7 +449,7 @@ public class JobDetailsActivity extends RoboActivity {
 		qaContact.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Toast.makeText(JobDetailsActivity.this, "Contact", Toast.LENGTH_SHORT).show();
+				NavigationHelper.goContact(JobDetailsActivity.this, GetJob().Client.ClientId);
 				_quickActions.dismiss();
 			}
 		});
@@ -451,8 +473,6 @@ public class JobDetailsActivity extends RoboActivity {
 				
 				_quickActions.addActionItem(qaClient);
 				_quickActions.addActionItem(qaClinicalDetails);
-				_quickActions.addActionItem(qaProgressNotes);
-				_quickActions.addActionItem(qaCompleteForms);
 				_quickActions.addActionItem(qaTakeAPicture);
 				_quickActions.addActionItem(qaContact);
 				_quickActions.addActionItem(qaNavigate);
@@ -461,6 +481,33 @@ public class JobDetailsActivity extends RoboActivity {
 
 			}
 		});
+		
+		_btnProgressNote.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+
+				_quickActionsPrgressNotes = new QuickAction(_btnProgressNote);
+				
+				_quickActionsPrgressNotes.addActionItem(qaProgressNotes);
+				_quickActionsPrgressNotes.addActionItem(qaProgressNoteNew);
+
+				_quickActionsPrgressNotes.show();
+
+			}
+		});
 	}
 	
+	@Override
+	public void onBackPressed() {
+		_activeJobProvider.set(null);
+		super.onBackPressed();
+	}
+	
+	@Override
+	protected void onDestroy() {
+		_activeJobProvider.set(null);
+		super.onDestroy();
+	}
+	
+
 }

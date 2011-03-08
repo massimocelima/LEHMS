@@ -8,6 +8,7 @@ import android.preference.PreferenceManager;
 import com.google.inject.Module;
 import com.lehms.IoC.Container;
 import com.lehms.IoC.ContainerFactory;
+import com.lehms.messages.dataContracts.JobDetailsDataContract;
 import com.lehms.messages.dataContracts.Permission;
 import com.lehms.messages.dataContracts.RoleDataContract;
 import com.lehms.messages.dataContracts.UserDataContract;
@@ -22,7 +23,8 @@ public class LehmsApplication extends RoboApplication
 			IDeviceIdentifierProvider, 
 			IDepartmentProvider, 
 			IOfficeContactProvider, 
-			IAuthorisationProvider
+			IAuthorisationProvider,
+			IActiveJobProvider
 {
 	private UserDataContract _currentUser;
 	
@@ -31,6 +33,8 @@ public class LehmsApplication extends RoboApplication
     public static final String KEY_DEPARTMENT_PREF = "application_settings_department_pref";
     public static final String KEY_OFFICE_PHONE_PREF = "application_settings_office_phone_pref";
     public static final String KEY_OFFICE_EMAIL_PREF = "application_settings_office_email_pref";
+    
+    private JobDetailsDataContract _job = null; 
     
 	@Override
 	public void onCreate() {
@@ -151,6 +155,17 @@ public class LehmsApplication extends RoboApplication
 			AppLog.error(e.getMessage(), e);
 		}
 		return result;
+	}
+
+	@Override
+	public JobDetailsDataContract get() {
+		return _job;
+	}
+
+	@Override
+	public void set(JobDetailsDataContract job) {
+		_job = job;
+		
 	}
 
 }

@@ -83,4 +83,14 @@ public class JsonSerializer implements ISerializer {
 		
 	}
 
+	@Override
+	public String GetSerializerContentType() {
+		return "application/json";
+	}
+
+	@Override
+	public String GetDeserializerContentType() {
+		return "application/json";
+	}
+
 }

@@ -7,6 +7,7 @@ public interface IChannel {
 
 	<T> T Get(int skip, int take, String orderBy, String where, Class<T> responseType) throws Exception;
 	<T> T Get(Class<T> responseType) throws Exception;
+	Object Get(Type type) throws Exception; 
 	<T> T Get(Object request, Class<T> responseType) throws Exception;
 	<T> T Get(String id, Class<T> responseType) throws Exception;
 	<T> T ExecuteCommand(Object request, Class<T> responseType) throws Exception;
@@ -14,5 +15,6 @@ public interface IChannel {
 	void Delete(String id) throws Exception;
 	<T> T Update(String id, Object request, Class<T> responseType) throws Exception;
 	
-	Object Get(Type type) throws Exception; 
+	<T> T UploadAttachment(String id, String fileName, byte [] attachment, Class<T> responseType) throws Exception;
+
 }

@@ -8,4 +8,6 @@ public interface ISerializer {
 	<T> T Deserializer(String data, Class<T> type) throws Exception;
 	Object Deserializer(String data, Type type) throws Exception;
 	
+	String GetSerializerContentType();
+	String GetDeserializerContentType();
 }

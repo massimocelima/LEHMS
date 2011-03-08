@@ -15,6 +15,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 
@@ -51,8 +52,8 @@ public class HttpRestChannel implements IChannel {
 
 		// Send GET request to <service>/GetPlates         
     	HttpGet httpRequest = new HttpGet(_url);         
-    	httpRequest.setHeader("Accept", "application/json");         
-    	httpRequest.setHeader("Content-type", "application/json");
+    	httpRequest.setHeader("Accept", _serializer.GetSerializerContentType());         
+    	httpRequest.setHeader("Content-type", _serializer.GetDeserializerContentType());
 		AddBasicAuthenticationHeader(httpRequest);
 
     	DefaultHttpClient httpClient = new DefaultHttpClient();         
@@ -92,8 +93,8 @@ public class HttpRestChannel implements IChannel {
 		
 		// Send GET request to <service>/GetPlates         
     	HttpGet httpRequest = new HttpGet(url);         
-    	httpRequest.setHeader("Accept", "application/json");         
-    	httpRequest.setHeader("Content-type", "application/json");
+    	httpRequest.setHeader("Accept", _serializer.GetSerializerContentType());         
+    	httpRequest.setHeader("Content-type", _serializer.GetDeserializerContentType());
 		AddBasicAuthenticationHeader(httpRequest);
 
     	DefaultHttpClient httpClient = new DefaultHttpClient();         
@@ -113,8 +114,8 @@ public class HttpRestChannel implements IChannel {
 		String uri = _url + "?skip=" + skip + "&top=" + take + "&filter=" + Uri.encode(where) + "&orderBy=" + Uri.encode(orderBy); 
 		
     	HttpGet request = new HttpGet(uri);         
-    	request.setHeader("Accept", "application/json");         
-    	request.setHeader("Content-type", "application/json");
+    	request.setHeader("Accept", _serializer.GetSerializerContentType());         
+    	request.setHeader("Content-type", _serializer.GetDeserializerContentType());
 		AddBasicAuthenticationHeader(request);
 
     	DefaultHttpClient httpClient = new DefaultHttpClient();         
@@ -131,8 +132,8 @@ public class HttpRestChannel implements IChannel {
 		
 		// Send GET request to <service>/GetPlates         
     	HttpGet request = new HttpGet(_url + "/" + id);
-    	request.setHeader("Accept", "application/json");         
-    	request.setHeader("Content-type", "application/json");
+    	request.setHeader("Accept", _serializer.GetSerializerContentType());         
+    	request.setHeader("Content-type", _serializer.GetDeserializerContentType());
 		AddBasicAuthenticationHeader(request);
 
     	DefaultHttpClient httpClient = new DefaultHttpClient();         
@@ -150,8 +151,8 @@ public class HttpRestChannel implements IChannel {
 	public <T> T Create(Object request, Class<T> responseType) throws Exception {
 		
 		HttpPost httpRequest = new HttpPost(_url + "/");
-		httpRequest.setHeader("Accept", "application/json");             
-		httpRequest.setHeader("Content-type", "application/json"); 
+    	httpRequest.setHeader("Accept", _serializer.GetSerializerContentType());         
+    	httpRequest.setHeader("Content-type", _serializer.GetDeserializerContentType());
 		AddBasicAuthenticationHeader(httpRequest);
 
 		String jsonString = _serializer.Serializer(request);
@@ -173,8 +174,8 @@ public class HttpRestChannel implements IChannel {
 	@Override
 	public <T> T ExecuteCommand(Object request, Class<T> responseType) throws Exception {
 		HttpPost httpRequest = new HttpPost(_url); 
-		httpRequest.setHeader("Accept", "application/json");             
-		httpRequest.setHeader("Content-type", "application/json"); 
+    	httpRequest.setHeader("Accept", _serializer.GetSerializerContentType());         
+    	httpRequest.setHeader("Content-type", _serializer.GetDeserializerContentType());
 		AddBasicAuthenticationHeader(httpRequest);
 
 		String jsonString = _serializer.Serializer(request);
@@ -198,8 +199,8 @@ public class HttpRestChannel implements IChannel {
 	public void Delete(String id) throws Exception {
 
 		HttpDelete httpRequest = new HttpDelete(_url + "/" + id); 
-		httpRequest.setHeader("Accept", "application/json");             
-		httpRequest.setHeader("Content-type", "application/json"); 
+    	httpRequest.setHeader("Accept", _serializer.GetSerializerContentType());         
+    	httpRequest.setHeader("Content-type", _serializer.GetDeserializerContentType());
 		AddBasicAuthenticationHeader(httpRequest);
 
 		DefaultHttpClient httpClient = new DefaultHttpClient();
@@ -223,8 +224,8 @@ public class HttpRestChannel implements IChannel {
 	public <T> T Update(String id, Object request, Class<T> responseType) throws Exception {
 		
 		HttpPut httpRequest = new HttpPut(_url + "/" + id); 
-		httpRequest.setHeader("Accept", "application/json");             
-		httpRequest.setHeader("Content-type", "application/json"); 
+    	httpRequest.setHeader("Accept", _serializer.GetSerializerContentType());         
+    	httpRequest.setHeader("Content-type", _serializer.GetDeserializerContentType());
 		AddBasicAuthenticationHeader(httpRequest);
 		
 		String jsonString = _serializer.Serializer(request);
@@ -241,6 +242,30 @@ public class HttpRestChannel implements IChannel {
 		T result = _serializer.Deserializer(jsonStringResponse, responseType);
 		
 		return result;
+	}
+	
+	@Override
+	public <T> T UploadAttachment(String id, String fileName,
+			byte[] attachment, Class<T> responseType) throws Exception {
+		
+		HttpPost httpRequest = new HttpPost(_url + "/" + id + "?fileName=" + fileName); 
+    	httpRequest.setHeader("Accept", _serializer.GetSerializerContentType());
+    	httpRequest.setHeader("Content-type", "text/raw;");
+		AddBasicAuthenticationHeader(httpRequest);
+		
+		ByteArrayEntity entity = new ByteArrayEntity(attachment); 
+		httpRequest.setEntity(entity); 
+		
+		DefaultHttpClient httpClient = new DefaultHttpClient();
+		HttpResponse response = httpClient.execute(httpRequest);
+		   
+		HttpEntity responseEntity =  response.getEntity();
+		   
+    	String jsonStringResponse = GetJsonStringFromStream(responseEntity);
+		T result = _serializer.Deserializer(jsonStringResponse, responseType);
+		
+		return result;
+		
 	}
 	
 	private void AddBasicAuthenticationHeader(HttpUriRequest request) throws Exception

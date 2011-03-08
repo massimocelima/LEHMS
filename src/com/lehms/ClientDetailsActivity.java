@@ -39,6 +39,7 @@ public class ClientDetailsActivity  extends RoboActivity { //implements AsyncQue
 	
 	private GetClientDetailsResponse _clientResponse;
 	private QuickAction _quickAction;
+	private QuickAction _quickActionsPrgressNotes;
 	@Inject protected IClientResource _clientResource;
 	@InjectExtra(EXTRA_CLIENT_ID) protected Long _clientId;
 
@@ -91,7 +92,9 @@ public class ClientDetailsActivity  extends RoboActivity { //implements AsyncQue
 	@InjectView(R.id.activity_client_details_medical_conditions_expander) ImageButton _medicalConditionsContainerExpander;
 	
 	@InjectView(R.id.activity_client_details_medical_conditions_value) TextView _medicalConditionsTextView;
-	
+
+	@InjectView(R.id.activity_client_details_progress_notes) Button _btnProgressNote;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 
@@ -127,6 +130,16 @@ public class ClientDetailsActivity  extends RoboActivity { //implements AsyncQue
 	public void onRefreshClick(View view)
 	{
 		LoadClient();
+	}
+	
+	public void onFormsClick(View view)
+	{
+		NavigationHelper.goForms(this);
+	}
+	
+	public void onEmergencyClick(View view)
+	{
+		NavigationHelper.goEmergency(this);
 	}
 	
 	private class LoadClientTask extends AsyncTask<Void, Void, GetClientDetailsResponse>
@@ -342,25 +355,29 @@ public class ClientDetailsActivity  extends RoboActivity { //implements AsyncQue
 	{
 		final ActionItem qaProgressNotes = new ActionItem();
 		
-		qaProgressNotes.setTitle("Progress Notes");
+		qaProgressNotes.setTitle("View Progress Notes");
 		qaProgressNotes.setIcon(getResources().getDrawable(R.drawable.quick_actions_ic_progress_notes));
 		qaProgressNotes.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Toast.makeText(ClientDetailsActivity.this, "Progress Notes", Toast.LENGTH_SHORT).show();
-				_quickAction.dismiss();
+				NavigationHelper.viewProgressNotes(ClientDetailsActivity.this, 
+						_clientId, 
+						UIHelper.FormatClientName(_clientResponse.Client)); 
+				_quickActionsPrgressNotes.dismiss();
 			}
 		});
 
-		final ActionItem qaCompleteForms = new ActionItem();
+		final ActionItem qaProgressNoteNew = new ActionItem();
 		
-		qaCompleteForms.setTitle("Complete Forms");
-		qaCompleteForms.setIcon(getResources().getDrawable(R.drawable.quick_actions_ic_complete_forms));
-		qaCompleteForms.setOnClickListener(new OnClickListener() {
+		qaProgressNoteNew.setTitle("New Progress Note");
+		qaProgressNoteNew.setIcon(getResources().getDrawable(R.drawable.quick_actions_ic_progress_notes_new));
+		qaProgressNoteNew.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Toast.makeText(ClientDetailsActivity.this, "Complete Forms", Toast.LENGTH_SHORT).show();
-				_quickAction.dismiss();
+				NavigationHelper.createProgressNote(ClientDetailsActivity.this, 
+						_clientId, 
+						UIHelper.FormatClientName(_clientResponse.Client)); 
+				_quickActionsPrgressNotes.dismiss();
 			}
 		});
 
@@ -371,7 +388,7 @@ public class ClientDetailsActivity  extends RoboActivity { //implements AsyncQue
 		qaTakeAPicture.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Toast.makeText(ClientDetailsActivity.this, "Take A Picture", Toast.LENGTH_SHORT).show();
+				NavigationHelper.goTakePicture(ClientDetailsActivity.this, _clientId + "");
 				_quickAction.dismiss();
 			}
 		});
@@ -383,7 +400,7 @@ public class ClientDetailsActivity  extends RoboActivity { //implements AsyncQue
 		qaClinicalDetails.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Toast.makeText(ClientDetailsActivity.this, "Clinical Details", Toast.LENGTH_SHORT).show();
+				NavigationHelper.goCliniclaDetails(ClientDetailsActivity.this, _clientId + "");
 				_quickAction.dismiss();
 			}
 		});
@@ -395,7 +412,7 @@ public class ClientDetailsActivity  extends RoboActivity { //implements AsyncQue
 		qaContact.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Toast.makeText(ClientDetailsActivity.this, "Contact", Toast.LENGTH_SHORT).show();
+				NavigationHelper.goContact(ClientDetailsActivity.this, _clientId + "");
 				_quickAction.dismiss();
 			}
 		});
@@ -412,6 +429,17 @@ public class ClientDetailsActivity  extends RoboActivity { //implements AsyncQue
 			}
 		});
 
+		final ActionItem qaNextService = new ActionItem();
+		
+		qaNextService.setTitle("Jump to next service");
+		qaNextService.setIcon(getResources().getDrawable(R.drawable.quick_actions_ic_roster));
+		qaNextService.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				NavigationHelper.goNextService(ClientDetailsActivity.this, _clientId);
+				_quickAction.dismiss();
+			}
+		});
 		
 		Button btn1 = (Button) this.findViewById(R.id.activity_client_details_more);
 		btn1.setOnClickListener(new View.OnClickListener() {
@@ -421,12 +449,25 @@ public class ClientDetailsActivity  extends RoboActivity { //implements AsyncQue
 				
 				_quickAction.addActionItem(qaClinicalDetails);
 				_quickAction.addActionItem(qaNavigate);
-				_quickAction.addActionItem(qaProgressNotes);
-				_quickAction.addActionItem(qaCompleteForms);
+				_quickAction.addActionItem(qaNextService);
 				_quickAction.addActionItem(qaTakeAPicture);
 				_quickAction.addActionItem(qaContact);
 				
 				_quickAction.show();
+			}
+		});
+		
+		_btnProgressNote.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+
+				_quickActionsPrgressNotes = new QuickAction(_btnProgressNote);
+				
+				_quickActionsPrgressNotes.addActionItem(qaProgressNotes);
+				_quickActionsPrgressNotes.addActionItem(qaProgressNoteNew);
+
+				_quickActionsPrgressNotes.show();
+
 			}
 		});
 	}

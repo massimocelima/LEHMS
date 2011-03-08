@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import com.lehms.messages.dataContracts.AddressDataContract;
+import com.lehms.messages.dataContracts.ClientDataContract;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -124,6 +125,11 @@ public class UIHelper {
 		result += " " + address.Postcode;
 		
 		return result;
+	}
+	
+	public static String FormatClientName(ClientDataContract client)
+	{
+		return client.FirstName + " " + client.LastName;
 	}
 	
 	public static boolean IsOnline(Context context) 
