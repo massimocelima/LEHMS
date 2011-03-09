@@ -17,6 +17,7 @@ import com.lehms.persistence.Event;
 import com.lehms.persistence.EventStatus;
 import com.lehms.persistence.EventType;
 import com.lehms.persistence.IEventRepository;
+import com.lehms.serviceInterface.IEventExecuter;
 import com.lehms.serviceInterface.IProgressNoteResource;
 import com.lehms.util.AppLog;
 
@@ -46,6 +47,7 @@ public class DataSyncService extends RoboService {
 	
 	@Inject IEventRepository _eventRepository;
 	@Inject IProgressNoteResource _progressNoteResource;
+	@Inject IEventExecuter _eventExecuter;
 	
     public DataSyncService() {
         AppLog.info("DataSyncService.DataSyncService().");
@@ -124,39 +126,15 @@ public class DataSyncService extends RoboService {
 		{
 			_eventRepository.open();
 			
-			List<Event> eventList = _eventRepository.fetchPending(EventType.ProgressNoteAdded);
+			List<Event> eventList = _eventRepository.fetchPending();
 			for(int i = 0; i < eventList.size(); i++)
 			{
 				Event e = eventList.get(i);
 				e.Attempts += 1;
-				
 				try
 				{
-					CreateProgressNoteRequest request = (CreateProgressNoteRequest)e.Data;
-
-					_progressNoteResource.Create(request);
-
-					// Attach the recording to the object
-					if( request.ProgressNote.VoiceMemoUri != null && ! request.ProgressNote.VoiceMemoUri.equals(""))
-					{
-						File file = new File(request.ProgressNote.VoiceMemoUri);
-						if( ! file.exists() )
-							throw new Exception("Unable to find recorded message.");
-						
-						FileInputStream stream = new FileInputStream(file);
-
-						byte[] buff = new byte[(int)file.length()];
-						int index = 0;
-						while(index < file.length())
-							index += stream.read(buff);
-
-						UploadProgressNoteRecordingResponse response = _progressNoteResource.UploadRecording(
-								request.ProgressNote.Id,
-								request.ProgressNote.VoiceMemoFileName, 
-								buff);
-					}
-					
-					//_eventRepository.delete(e);
+					_eventExecuter.ExecuteEvent(e);
+					_eventRepository.delete(e);
 				}
 				catch(Exception exception)
 				{
@@ -177,4 +155,5 @@ public class DataSyncService extends RoboService {
 			_eventRepository.close();
 		}
 	}
+
 }

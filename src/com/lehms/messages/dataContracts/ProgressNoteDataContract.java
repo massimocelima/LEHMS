@@ -20,13 +20,13 @@ public class ProgressNoteDataContract implements Serializable {
     public String ClientName;
     public String Note;
     
-    public String VoiceMemoUri;
-    public String VoiceMemoFileName;
     public String Transcript;
+    public UUID AttachmentId;
+    public String VoiceMemoUri;
     
     public Boolean hasRecordedMessage()
     {
-    	return VoiceMemoUri != null && ! VoiceMemoUri.equals("");
+    	return AttachmentId != null && ! AttachmentId.equals(UUID.fromString("00000000-0000-0000-0000-000000000000"));
     }
     
 }

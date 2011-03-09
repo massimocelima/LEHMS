@@ -3,12 +3,17 @@ package com.lehms;
 import java.util.Date;
 import java.util.UUID;
 
+import com.lehms.messages.dataContracts.ProgressNoteDataContract;
+
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.view.View;
 
 public class NavigationHelper {
 
+	public static final int RESULT_CREATE_PROGRESS_NOTE = 0;
+	
 	private NavigationHelper() {}
 	
 	public static void goEmergency(Context context)
@@ -46,19 +51,20 @@ public class NavigationHelper {
 		UIHelper.ShowUnderConstructionMessage(context);
 	}
 	
-	public static void viewProgressNote(Context context, UUID progressNoteId)
+	public static void viewProgressNote(Activity context, ProgressNoteDataContract progressNote)
 	{
         Intent intent = new Intent(context, ProgressNoteDetailsActivity.class);
-        intent.putExtra(ProgressNoteDetailsActivity.EXTRA_PROGRESS_NOTE_ID, progressNoteId.toString());
-        context.startActivity(intent);
+        //intent.putExtra(ProgressNoteDetailsActivity.EXTRA_PROGRESS_NOTE_ID, progressNoteId.toString());
+        intent.putExtra(ProgressNoteDetailsActivity.EXTRA_PROGRESS_NOTE, progressNote);
+        context.startActivityForResult(intent, RESULT_CREATE_PROGRESS_NOTE);
 	}
 
-	public static void createProgressNote(Context context, Long clientId, String clientName)
+	public static void createProgressNote(Activity context, Long clientId, String clientName)
 	{
         Intent intent = new Intent(context, ProgressNoteDetailsActivity.class);
         intent.putExtra(ProgressNoteDetailsActivity.EXTRA_CLIENT_ID, clientId);
         intent.putExtra(ProgressNoteDetailsActivity.EXTRA_CLIENT_NAME, clientName);
-        context.startActivity(intent);
+        context.startActivityForResult(intent, RESULT_CREATE_PROGRESS_NOTE);
 	}
 	
 	public static void viewProgressNotes(Context context, long clientId, String clientName)

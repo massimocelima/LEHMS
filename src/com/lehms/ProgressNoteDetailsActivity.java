@@ -3,6 +3,7 @@ package com.lehms;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.util.Date;
 import java.util.UUID;
 
 import com.google.inject.Inject;
@@ -11,6 +12,7 @@ import com.lehms.messages.dataContracts.AttachmentDataContract;
 import com.lehms.messages.dataContracts.ProgressNoteDataContract;
 import com.lehms.serviceInterface.IActiveJobProvider;
 import com.lehms.serviceInterface.IDepartmentProvider;
+import com.lehms.serviceInterface.IEventExecuter;
 import com.lehms.serviceInterface.IIdentityProvider;
 import com.lehms.serviceInterface.IProfileProvider;
 import com.lehms.serviceInterface.IProgressNoteResource;
@@ -18,6 +20,7 @@ import com.lehms.util.AppLog;
 import com.lehms.media.StreamingMediaPlayer;
 import com.lehms.persistence.Event;
 import com.lehms.persistence.EventType;
+import com.lehms.persistence.IEventFactory;
 import com.lehms.persistence.IEventRepository;
 
 import android.app.Activity;
@@ -44,19 +47,22 @@ import roboguice.activity.RoboActivity;
 import roboguice.inject.*;;
 
 
-public class ProgressNoteDetailsActivity extends RoboActivity {
+public class ProgressNoteDetailsActivity extends RoboActivity implements ISaveEventResultHandler {
 
-	private final int REQUEST_CODE_RECORD = 0;
-	
-	public static final String EXTRA_PROGRESS_NOTE_ID = "progress_note_id";
+	//public static final String EXTRA_PROGRESS_NOTE_ID = "progress_note_id";
 	public static final String EXTRA_CLIENT_ID = "client_id";
 	public static final String EXTRA_CLIENT_NAME = "client_name";
 
-	private static final String STATE_PROGRESS_NOTE = "progress_note";
+	public static final String EXTRA_PROGRESS_NOTE = "progress_note";
+
+	//private static final String STATE_PROGRESS_NOTE = "progress_note";
 		
-	@InjectExtra(optional=true, value=EXTRA_PROGRESS_NOTE_ID ) String _progressNoteId; 
+	//@InjectExtra(optional=true, value=EXTRA_PROGRESS_NOTE_ID ) String _progressNoteId; 
 	@InjectExtra(optional=true, value=EXTRA_CLIENT_ID) Long _clientId; 
 	@InjectExtra(optional=true, value=EXTRA_CLIENT_NAME) String _clientName; 
+
+	@InjectExtra(optional=true, value=EXTRA_PROGRESS_NOTE) ProgressNoteDataContract _progressNote; 
+	//private ProgressNoteDataContract _progressNote;
 
 	@InjectView(R.id.activity_progress_note_button_bar) View _buttonBarView;
 	@InjectView(R.id.activity_progress_note_author_value) TextView _authorTextView;
@@ -77,12 +83,15 @@ public class ProgressNoteDetailsActivity extends RoboActivity {
 	@Inject IProfileProvider _profileProvider;
 	@Inject IIdentityProvider _identityProvider;
 	@Inject IDepartmentProvider _departmentProvider;
-	@Inject IEventRepository _eventRepository;
 	@Inject IActiveJobProvider _activeJobProvider;
+
+	@Inject IEventRepository _eventRepository;
+	@Inject IEventFactory _eventEventFactory;
+	@Inject IEventExecuter _eventExecuter;
+
 	
 	private MediaPlayer _mediaPlayer = new MediaPlayer();
 	private MediaRecorder _recorder = new MediaRecorder();
-	private ProgressNoteDataContract _progressNote;
 	private StreamingMediaPlayer _audioStreamer;
 	private Boolean _recordingMessage = false;
 	
@@ -98,11 +107,14 @@ public class ProgressNoteDetailsActivity extends RoboActivity {
 		if(savedInstanceState != null && savedInstanceState.get(EXTRA_CLIENT_NAME) != null )
 			_clientName = savedInstanceState.getString(EXTRA_CLIENT_NAME);
 
-		if(savedInstanceState != null && savedInstanceState.get(EXTRA_PROGRESS_NOTE_ID) != null )
-			_progressNoteId = savedInstanceState.getString(EXTRA_PROGRESS_NOTE_ID);
+		//if(savedInstanceState != null && savedInstanceState.get(EXTRA_PROGRESS_NOTE_ID) != null )
+		//	_progressNoteId = savedInstanceState.getString(EXTRA_PROGRESS_NOTE_ID);
 
-		if(savedInstanceState != null && savedInstanceState.get(STATE_PROGRESS_NOTE) != null )
-			_progressNote = (ProgressNoteDataContract)savedInstanceState.get(STATE_PROGRESS_NOTE);
+		//if(savedInstanceState != null && savedInstanceState.get(STATE_PROGRESS_NOTE) != null )
+		//	_progressNote = (ProgressNoteDataContract)savedInstanceState.get(STATE_PROGRESS_NOTE);
+
+		if(savedInstanceState != null && savedInstanceState.get(EXTRA_PROGRESS_NOTE) != null )
+			_progressNote = (ProgressNoteDataContract)savedInstanceState.get(EXTRA_PROGRESS_NOTE);
 
 		_playButton.setVisibility(View.GONE);
 		_stopButton.setVisibility(View.GONE);
@@ -155,13 +167,17 @@ public class ProgressNoteDetailsActivity extends RoboActivity {
 		super.onSaveInstanceState(outState);
 		
 		if( isViewingProgressNote())
-			outState.putSerializable(EXTRA_PROGRESS_NOTE_ID, _progressNoteId);
+		{
+			outState.putSerializable(EXTRA_PROGRESS_NOTE, _progressNote);
+			//outState.putSerializable(EXTRA_PROGRESS_NOTE_ID, _progressNoteId);
+		}
 		else
 		{
 			// Need to save the current values from the note
 			outState.putSerializable(EXTRA_CLIENT_ID, _clientId);
 			outState.putSerializable(EXTRA_CLIENT_NAME, _clientName);
-			outState.putSerializable(STATE_PROGRESS_NOTE, _progressNote);
+			//outState.putSerializable(STATE_PROGRESS_NOTE, _progressNote);
+			outState.putSerializable(EXTRA_PROGRESS_NOTE, _progressNote);
 		}
 	}
 	
@@ -190,7 +206,6 @@ public class ProgressNoteDetailsActivity extends RoboActivity {
 	
 	        String path = Environment.getExternalStorageDirectory().getAbsolutePath(); 
 	        path += "/lehms/recording/" + _progressNote.Id.toString() +  ".3gp"; 
-	        _progressNote.VoiceMemoFileName = _progressNote.Id.toString() +  ".3gp";
 	        _progressNote.VoiceMemoUri = path;
 	
 		    // make sure the directory we plan to store the recording in exists
@@ -246,6 +261,7 @@ public class ProgressNoteDetailsActivity extends RoboActivity {
 	{
 		try {
 			
+			// If we are viewing the file and the file store is a external url then run the media streamer
 			if( isViewingProgressNote() )
 			{
 	    		if ( _audioStreamer != null)
@@ -256,8 +272,7 @@ public class ProgressNoteDetailsActivity extends RoboActivity {
 	    		}
 	    		else
 	    		{
-	    			
-					String dataSourceUri = _profileProvider.getProfile().GetProgressNoteRecordingResourceEndPoint() + "/" + _progressNote.VoiceMemoFileName;
+					String dataSourceUri = _profileProvider.getProfile().GetProgressNoteRecordingResourceEndPoint() + "/" + _progressNote.AttachmentId;
 		    		_audioStreamer = new StreamingMediaPlayer(this,
 		    				_identityProvider,
 		    				_departmentProvider,
@@ -286,7 +301,12 @@ public class ProgressNoteDetailsActivity extends RoboActivity {
 	public void onStopClick(View view)
 	{
 		if( isViewingProgressNote() )
-			_audioStreamer.getMediaPlayer().pause();
+		{
+			try
+			{
+				_audioStreamer.getMediaPlayer().pause();
+			} catch(Exception e) {}
+		}
 		else
 		{
 			_mediaPlayer.stop();
@@ -305,7 +325,8 @@ public class ProgressNoteDetailsActivity extends RoboActivity {
 		{
 			_progressNote.ClientId = _clientId + "";
 			_progressNote.ClientName = _clientName;
-			_progressNote.CreatedBy = _identityProvider.getCurrent().FirstName + " " + _identityProvider.getCurrent().LastName; 
+			_progressNote.CreatedBy = _identityProvider.getCurrent().getCreatedByFormat();
+			_progressNote.CreatedDate = new Date();
 			_progressNote.Note = _noteEditView.getText().toString();
 			_progressNote.Subject = _subjectEditView.getText().toString();
 			
@@ -314,9 +335,8 @@ public class ProgressNoteDetailsActivity extends RoboActivity {
 			if(_activeJobProvider.get() != null)
 				createNoteRequest.JobId = _activeJobProvider.get().JobId;
 			
-			_eventRepository.create(createNoteRequest, EventType.ProgressNoteAdded);
-			UIHelper.ShowToast(this, "Progress Note Saved");
-			this.finish();
+			Event event = _eventEventFactory.create(createNoteRequest, EventType.ProgressNoteAdded);
+			UIHelper.SaveEvent(this, this, _eventRepository, _eventExecuter, event, "Progress Note");
 		}
 		catch(Exception ex)
 		{
@@ -329,14 +349,30 @@ public class ProgressNoteDetailsActivity extends RoboActivity {
 		}
 	}
 
+	@Override
+	public void onSuccess(Object data) {
+		// Returns the progress note to the parent activity
+		Intent intent = this.getIntent(); 
+		intent.putExtra(EXTRA_PROGRESS_NOTE, (ProgressNoteDataContract)data); 
+		setResult(RESULT_OK, intent);
+		this.finish();
+	}
+
+	@Override
+	public void onError(Exception e) {
+		// Do nothing
+	}
+	
 	public void onCancelClick(View view)
 	{
+		setResult(RESULT_CANCELED);
 		this.finish();
 	}
 
 	public Boolean isViewingProgressNote()
 	{
-		return _progressNoteId != null && ! _progressNoteId.equals(""); 
+		return _clientId == null;
+		//return _progressNoteId != null && ! _progressNoteId.equals(""); 
 	}
 	
    private class LoadProgressNoteTask extends AsyncTask<Void, Integer, ProgressNoteDataContract>
@@ -378,10 +414,13 @@ public class ProgressNoteDetailsActivity extends RoboActivity {
 		@Override
 		protected ProgressNoteDataContract doInBackground(Void... arg0) {
 			
+			// More efficiant, progress note is loaded from list of progress notes
+			//return _progressNote;
+			
 			ProgressNoteDataContract result = null;
 			
 			try {
-				result = _progressNoteResource.Get(UUID.fromString(_progressNoteId));
+				result = _progressNoteResource.Get(_progressNote.Id);
 			} catch (Exception e) {
 				AppLog.error(e.getMessage());
 				_exception = e;

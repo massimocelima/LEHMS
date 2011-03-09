@@ -59,5 +59,12 @@ public class UserDataContract {
 		String fullUsername = Department + "\\" + Username;
 		return fullUsername;
 	}
-	
+
+	public String getCreatedByFormat()
+	{
+		if( FirstName.equals( "" ) || LastName.equals( "" ) )
+			return Username;
+		else 
+			return LastName +", " + FirstName;
+	}
 }

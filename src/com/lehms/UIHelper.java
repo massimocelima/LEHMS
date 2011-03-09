@@ -5,18 +5,28 @@ import java.util.List;
 
 import com.lehms.messages.dataContracts.AddressDataContract;
 import com.lehms.messages.dataContracts.ClientDataContract;
+import com.lehms.messages.dataContracts.ProgressNoteDataContract;
+import com.lehms.persistence.Event;
+import com.lehms.persistence.IEventRepository;
+import com.lehms.serviceInterface.IEventExecuter;
+import com.lehms.util.AppLog;
 
+import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.DialogInterface.OnCancelListener;
 import android.content.DialogInterface.OnClickListener;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.text.format.DateFormat;
+import android.view.View;
 import android.widget.Toast;
 
 public class UIHelper {
@@ -168,5 +178,25 @@ public class UIHelper {
 		//Uri.parse("file://"+ sPhotoFileName));
 		//emailIntent.putExtra(Intent.EXTRA_STREAM, uri);
 	}
+	
+	public static void SaveEvent(Activity context,
+			ISaveEventResultHandler handler,
+			IEventRepository eventRepository, 
+			IEventExecuter executer, 
+			Event event, 
+			String title) throws Exception
+	{
+		if(IsOnline(context))
+		{
+			SaveEventTask task = new SaveEventTask(context, executer, title, handler);
+			task.execute(event);
+		}
+		else
+		{
+			eventRepository.create(event);
+			UIHelper.ShowToast(context, title + " saved");
+		}
+	}
+	
 
 }

@@ -9,6 +9,7 @@ import java.net.URL;
 import java.util.Date;
 
 import org.apache.http.HttpEntity;
+import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
@@ -56,12 +57,8 @@ public class HttpRestChannel implements IChannel {
     	httpRequest.setHeader("Content-type", _serializer.GetDeserializerContentType());
 		AddBasicAuthenticationHeader(httpRequest);
 
-    	DefaultHttpClient httpClient = new DefaultHttpClient();         
-    	HttpResponse response;
-		response = httpClient.execute(httpRequest);
-    	HttpEntity responseEntity = response.getEntity();
-    	
-    	String jsonStringResponse = GetJsonStringFromStream(responseEntity);
+		String jsonStringResponse = executeRequest(httpRequest);
+		
     	return _serializer.Deserializer(jsonStringResponse, responseType);
 	}
 
@@ -97,12 +94,8 @@ public class HttpRestChannel implements IChannel {
     	httpRequest.setHeader("Content-type", _serializer.GetDeserializerContentType());
 		AddBasicAuthenticationHeader(httpRequest);
 
-    	DefaultHttpClient httpClient = new DefaultHttpClient();         
-    	HttpResponse response;
-		response = httpClient.execute(httpRequest);
-    	HttpEntity responseEntity = response.getEntity();
-    	
-    	String jsonStringResponse = GetJsonStringFromStream(responseEntity);
+		String jsonStringResponse = executeRequest(httpRequest);
+		
     	return _serializer.Deserializer(jsonStringResponse, responseType);
 	}
 	
@@ -118,13 +111,9 @@ public class HttpRestChannel implements IChannel {
     	request.setHeader("Content-type", _serializer.GetDeserializerContentType());
 		AddBasicAuthenticationHeader(request);
 
-    	DefaultHttpClient httpClient = new DefaultHttpClient();         
-    	HttpResponse response;
-		response = httpClient.execute(request);
-    	HttpEntity responseEntity = response.getEntity();
-    	
-    	String jsonStringResponse = GetJsonStringFromStream(responseEntity);
-    	return _serializer.Deserializer(jsonStringResponse, responseType);
+		String jsonStringResponse = executeRequest(request);
+
+		return _serializer.Deserializer(jsonStringResponse, responseType);
 	}
 
 	@Override
@@ -136,12 +125,8 @@ public class HttpRestChannel implements IChannel {
     	request.setHeader("Content-type", _serializer.GetDeserializerContentType());
 		AddBasicAuthenticationHeader(request);
 
-    	DefaultHttpClient httpClient = new DefaultHttpClient();         
-    	HttpResponse response;
-		response = httpClient.execute(request);
-    	HttpEntity responseEntity = response.getEntity();
-    	
-    	String jsonStringResponse = GetJsonStringFromStream(responseEntity);
+		String jsonStringResponse = executeRequest(request);
+		
     	return _serializer.Deserializer(jsonStringResponse, responseType);
     	
         //List<SampleItem> items = gson.fromJson(new String(buffer), new TypeToken<List<SampleItem>>(){}.getType());
@@ -160,12 +145,8 @@ public class HttpRestChannel implements IChannel {
 		StringEntity entity = new StringEntity(jsonString); 
 		httpRequest.setEntity(entity); 
 		
-		DefaultHttpClient httpClient = new DefaultHttpClient();
-		HttpResponse response = httpClient.execute(httpRequest);
-		   
-		HttpEntity responseEntity =  response.getEntity();
-		   
-    	String jsonStringResponse = GetJsonStringFromStream(responseEntity);
+		String jsonStringResponse = executeRequest(httpRequest);
+
 		T result = _serializer.Deserializer(jsonStringResponse, responseType);
 		
 		return result;
@@ -183,12 +164,8 @@ public class HttpRestChannel implements IChannel {
 		StringEntity entity = new StringEntity(jsonString); 
 		httpRequest.setEntity(entity); 
 		
-		DefaultHttpClient httpClient = new DefaultHttpClient();
-		HttpResponse response = httpClient.execute(httpRequest);
-		   
-		HttpEntity responseEntity =  response.getEntity();
-		   
-    	String jsonStringResponse = GetJsonStringFromStream(responseEntity);
+		String jsonStringResponse = executeRequest(httpRequest);
+		
 		T result = _serializer.Deserializer(jsonStringResponse, responseType);
 		
 		return result;
@@ -203,9 +180,8 @@ public class HttpRestChannel implements IChannel {
     	httpRequest.setHeader("Content-type", _serializer.GetDeserializerContentType());
 		AddBasicAuthenticationHeader(httpRequest);
 
-		DefaultHttpClient httpClient = new DefaultHttpClient();
-		HttpResponse response = httpClient.execute(httpRequest);
-		
+		executeRequest(httpRequest);
+
 		// TODO What do we do with the response???
 		
 		//HttpEntity responseEntity =  response.getEntity();
@@ -233,12 +209,8 @@ public class HttpRestChannel implements IChannel {
 		StringEntity entity = new StringEntity(jsonString); 
 		httpRequest.setEntity(entity); 
 		
-		DefaultHttpClient httpClient = new DefaultHttpClient();
-		HttpResponse response = httpClient.execute(httpRequest);
-		   
-		HttpEntity responseEntity =  response.getEntity();
-		   
-    	String jsonStringResponse = GetJsonStringFromStream(responseEntity);
+		String jsonStringResponse = executeRequest(httpRequest);
+		
 		T result = _serializer.Deserializer(jsonStringResponse, responseType);
 		
 		return result;
@@ -256,16 +228,21 @@ public class HttpRestChannel implements IChannel {
 		ByteArrayEntity entity = new ByteArrayEntity(attachment); 
 		httpRequest.setEntity(entity); 
 		
-		DefaultHttpClient httpClient = new DefaultHttpClient();
-		HttpResponse response = httpClient.execute(httpRequest);
-		   
-		HttpEntity responseEntity =  response.getEntity();
-		   
-    	String jsonStringResponse = GetJsonStringFromStream(responseEntity);
+		String jsonStringResponse = executeRequest(httpRequest);
+		
 		T result = _serializer.Deserializer(jsonStringResponse, responseType);
 		
 		return result;
 		
+	}
+	
+	private String executeRequest(HttpUriRequest httpRequest) throws Exception
+	{
+		DefaultHttpClient httpClient = new DefaultHttpClient();
+		HttpResponse response = httpClient.execute(httpRequest);
+		handleErrorReponse(response);
+		HttpEntity responseEntity =  response.getEntity();
+    	return GetJsonStringFromStream(responseEntity);
 	}
 	
 	private void AddBasicAuthenticationHeader(HttpUriRequest request) throws Exception
@@ -295,6 +272,12 @@ public class HttpRestChannel implements IChannel {
 		stream.close();
 		
 		return new String(buffer);
+	}
+	
+	private void handleErrorReponse(HttpResponse response) throws Exception
+	{
+		if( response.getStatusLine().getStatusCode() != 200 )
+			throw new Exception("Error from gateway: " + response.getStatusLine().getReasonPhrase());
 	}
 	
 }

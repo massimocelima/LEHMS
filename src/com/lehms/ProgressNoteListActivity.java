@@ -18,6 +18,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.DialogInterface.OnCancelListener;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -106,6 +107,19 @@ public class ProgressNoteListActivity extends RoboListActivity {
         return header;
 	}
 	
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		
+		 switch (resultCode) {
+		 case  RESULT_OK:
+			 ProgressNoteDataContract newProgressNote = (ProgressNoteDataContract)data.getSerializableExtra(ProgressNoteDetailsActivity.EXTRA_PROGRESS_NOTE);
+			 _adapter.insert(newProgressNote, 0);
+			 getListView().invalidate();
+		 }
+		
+	}
+	
 	public void onRefreshClick(View view)
 	{
 		fillDataAsync(true);
@@ -166,7 +180,8 @@ public class ProgressNoteListActivity extends RoboListActivity {
 			else
 			{
 				ProgressNoteDataContract note = _adapter.getItem(index - 1);
-				NavigationHelper.viewProgressNote(ProgressNoteListActivity.this, note.Id);
+				//NavigationHelper.viewProgressNote(ProgressNoteListActivity.this, note.Id);
+				NavigationHelper.viewProgressNote(ProgressNoteListActivity.this, note);
 			}
 		}
 	}
