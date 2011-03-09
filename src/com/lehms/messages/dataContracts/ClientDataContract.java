@@ -1,8 +1,9 @@
 package com.lehms.messages.dataContracts;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class ClientDataContract {
+public class ClientDataContract implements Serializable {
 	
      public String ClientId;
      public String FirstName;

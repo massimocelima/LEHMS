@@ -52,13 +52,13 @@ public class EventRepository extends RepositoryBase implements IEventRepository 
 		_identityProvider = identityProvider;
 	}
 
-    public long create(Object Data, EventType eventType) throws Exception
+    public long create(Event e) throws Exception
     {
         ContentValues initialValues = new ContentValues();
-        initialValues.put(KEY_EVENT_TYPE, eventType.toString());
-        initialValues.put(KEY_CREATED_DATE, GetDateValue(new Date()));
-        initialValues.put(KEY_DATA, _serializer.Serializer(Data));
-        initialValues.put(KEY_DATA_TYPE, Data.getClass().getName());
+        initialValues.put(KEY_EVENT_TYPE, e.Type.toString());
+        initialValues.put(KEY_CREATED_DATE, GetDateValue( e.CreatedDate));
+        initialValues.put(KEY_DATA, _serializer.Serializer(e.Data));
+        initialValues.put(KEY_DATA_TYPE, e.Data.getClass().getName());
         
         initialValues.put(KEY_STATUS, EventStatus.Pending.toString());
         initialValues.put(KEY_ATTEMPS, 0);

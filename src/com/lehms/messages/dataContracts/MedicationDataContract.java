@@ -1,6 +1,8 @@
 package com.lehms.messages.dataContracts;
 
-public class MedicationDataContract {
+import java.io.Serializable;
+
+public class MedicationDataContract  implements Serializable {
      public long MedicationId;
      public String Code;
      public String Coding;

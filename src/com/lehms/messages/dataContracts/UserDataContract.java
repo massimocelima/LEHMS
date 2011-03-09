@@ -1,9 +1,10 @@
 package com.lehms.messages.dataContracts;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UserDataContract {
+public class UserDataContract implements Serializable {
 
 	public UserDataContract()
 	{
@@ -59,5 +60,12 @@ public class UserDataContract {
 		String fullUsername = Department + "\\" + Username;
 		return fullUsername;
 	}
-	
+
+	public String getCreatedByFormat()
+	{
+		if( FirstName.equals( "" ) || LastName.equals( "" ) )
+			return Username;
+		else 
+			return LastName +", " + FirstName;
+	}
 }

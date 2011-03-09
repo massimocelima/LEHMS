@@ -185,7 +185,7 @@ public class JobDetailsActivity extends RoboActivity {
 
 	public void onFormsClick(View view)
 	{
-		NavigationHelper.goForms(this);
+		NavigationHelper.goForms(this, GetJob().Client);
 	}
 	
 	private void ToggleClientDetailsVisibility()
@@ -372,7 +372,7 @@ public class JobDetailsActivity extends RoboActivity {
 		qaProgressNotes.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				NavigationHelper.createProgressNote(
+				NavigationHelper.viewProgressNotes(
 						JobDetailsActivity.this, 
 						Long.parseLong( GetJob().Client.ClientId ), 
 						GetJob().Client.FirstName + " " + GetJob().Client.LastName); 

@@ -63,7 +63,7 @@ public class ProgressNoteAdapter extends ArrayAdapter<ProgressNoteDataContract> 
 		subjectTextView.setText(note.Subject);
 		noteTextView.setText(note.Note);
 		
-		if(note.VoiceMemoFileName != null && ! note.VoiceMemoFileName.equals(""))
+		if(note.hasRecordedMessage())
 			soundImageView.setVisibility(View.VISIBLE);
 		else
 			soundImageView.setVisibility(View.GONE);

@@ -134,7 +134,7 @@ public class ClientDetailsActivity  extends RoboActivity { //implements AsyncQue
 	
 	public void onFormsClick(View view)
 	{
-		NavigationHelper.goForms(this);
+		NavigationHelper.goForms(this, _clientResponse.Client);
 	}
 	
 	public void onEmergencyClick(View view)

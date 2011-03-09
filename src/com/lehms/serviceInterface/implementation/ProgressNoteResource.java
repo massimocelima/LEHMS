@@ -6,6 +6,7 @@ import com.google.inject.Inject;
 import com.lehms.messages.CreateProgressNoteRequest;
 import com.lehms.messages.GetProgressNotesResponse;
 import com.lehms.messages.UploadProgressNoteRecordingResponse;
+import com.lehms.messages.dataContracts.AttachmentDataContract;
 import com.lehms.messages.dataContracts.ProgressNoteDataContract;
 import com.lehms.serviceInterface.IChannel;
 import com.lehms.serviceInterface.IChannelFactory;
@@ -34,17 +35,31 @@ public class ProgressNoteResource implements IProgressNoteResource {
 	public ProgressNoteDataContract Create(CreateProgressNoteRequest request) throws Exception {
 		return GetChannel().Create(request, ProgressNoteDataContract.class);
 	}
-	
+
+	@Override
+	public ProgressNoteDataContract Create(CreateProgressNoteRequest request, AttachmentDataContract attachment) throws Exception {
+		UploadProgressNoteRecordingResponse response = UploadRecording(request.ProgressNote.ClientId, request.JobId, attachment.Name, attachment.Data);
+		request.DocumentId = response.DocumentId;
+		request.ProgressNote.AttachmentId = response.AttachmentId;
+		ProgressNoteDataContract note = GetChannel().Create(request, ProgressNoteDataContract.class);
+		return note;
+	}
+
 	@Override
 	public ProgressNoteDataContract Get(UUID progressNoteId) throws Exception
 	{
 		return GetChannel().Get(progressNoteId.toString(), ProgressNoteDataContract.class);
 	}
-
-	@Override
-	public UploadProgressNoteRecordingResponse UploadRecording(UUID progressNoteId, String fileName, byte[] data) throws Exception 
+	
+	private UploadProgressNoteRecordingResponse UploadRecording(String clientId, String jobId, String fileName, byte[] data) throws Exception 
 	{
-		return GetRecordingChannel().UploadAttachment(progressNoteId.toString(), fileName, data, UploadProgressNoteRecordingResponse.class);
+		String id = clientId;
+		if( jobId != null && ! jobId.equals(""))
+			id += "_" + jobId;
+		return GetRecordingChannel().UploadAttachment(id, 
+				fileName, 
+				data, 
+				UploadProgressNoteRecordingResponse.class);
 	}
 	
 	private IChannel GetListChannel()

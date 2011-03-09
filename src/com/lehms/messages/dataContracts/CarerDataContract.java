@@ -1,6 +1,8 @@
 package com.lehms.messages.dataContracts;
 
-public class CarerDataContract {
+import java.io.Serializable;
+
+public class CarerDataContract implements Serializable {
 
      public String Name;
      public String Mobile;

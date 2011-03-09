@@ -1,6 +1,8 @@
 package com.lehms.messages.dataContracts;
 
-public class AddressDataContract {
+import java.io.Serializable;
+
+public class AddressDataContract implements Serializable {
 
      public String Appartment;
      public LocationDataContract Location;
