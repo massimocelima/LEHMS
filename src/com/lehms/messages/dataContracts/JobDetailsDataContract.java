@@ -1,8 +1,9 @@
 package com.lehms.messages.dataContracts;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class JobDetailsDataContract {
+public class JobDetailsDataContract implements Serializable {
 
 	public String JobId;
 	public Date ScheduledStartTime;

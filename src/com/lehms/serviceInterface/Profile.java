@@ -49,6 +49,11 @@ public class Profile {
 		return GetBaseUrl() + "/ProgressNotes";
 	}
 	
+	public String GetFormDefinitionsResourceEndPoint()
+	{
+		return GetBaseUrl() + "/FormDefinitions";
+	}
+	
 	public String GetBaseUrl()
 	{
 		String result = "http://10.0.2.2:7856";

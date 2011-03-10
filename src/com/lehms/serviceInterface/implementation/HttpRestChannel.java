@@ -120,7 +120,11 @@ public class HttpRestChannel implements IChannel {
 	public <T> T Get(String id, Class<T> responseType) throws Exception {
 		
 		// Send GET request to <service>/GetPlates         
-    	HttpGet request = new HttpGet(_url + "/" + id);
+    	HttpGet request; 
+    	if( id != null )
+    		request = new HttpGet(_url + "/" + id);
+    	else
+    		request = new HttpGet(_url);
     	request.setHeader("Accept", _serializer.GetSerializerContentType());         
     	request.setHeader("Content-type", _serializer.GetDeserializerContentType());
 		AddBasicAuthenticationHeader(request);

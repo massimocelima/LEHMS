@@ -185,7 +185,7 @@ public class JobDetailsActivity extends RoboActivity {
 
 	public void onFormsClick(View view)
 	{
-		NavigationHelper.goForms(this);
+		NavigationHelper.goForms(this, GetJob().Client);
 	}
 	
 	private void ToggleClientDetailsVisibility()

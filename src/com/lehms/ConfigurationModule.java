@@ -27,9 +27,13 @@ public class ConfigurationModule extends AbstractAndroidModule {
 		bind(IProgressNoteResource.class).to(ProgressNoteResource.class);
 		bind(IEventExecuter.class).to(EventExecuter.class);
 		bind(IEventFactory.class).to(EventFactory.class);
+		bind(IFormDefinitionResource.class).to(FormDefinitionResource.class);
 		
-		bind(IRosterRepository.class).toInstance(new RosterRepository(new XmlSerializer(), _context, _context));
-		bind(IEventRepository.class).toInstance(new EventRepository(_context, new XmlSerializer(),_context));
+		bind(IEventExecuter.class).to(EventExecuter.class);
+		bind(IEventFactory.class).to(EventFactory.class);
+		
+		bind(IRosterRepository.class).toInstance(new RosterRepository(new JsonSerializer(), _context, _context));
+		bind(IEventRepository.class).toInstance(new EventRepository(_context, new JsonSerializer(),_context));
 		
 		bind(IDepartmentProvider.class).toInstance(_context);
 		bind(IDeviceIdentifierProvider.class).toInstance(_context);

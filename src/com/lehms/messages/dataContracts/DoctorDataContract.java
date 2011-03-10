@@ -1,6 +1,8 @@
 package com.lehms.messages.dataContracts;
 
-public class DoctorDataContract {
+import java.io.Serializable;
+
+public class DoctorDataContract implements Serializable {
      public long DoctorId;
      public AddressDataContract Address;
      public String FirstName;

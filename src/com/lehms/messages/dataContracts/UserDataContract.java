@@ -1,9 +1,10 @@
 package com.lehms.messages.dataContracts;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UserDataContract {
+public class UserDataContract implements Serializable {
 
 	public UserDataContract()
 	{

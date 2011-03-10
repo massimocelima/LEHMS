@@ -1,6 +1,8 @@
 package com.lehms.messages.dataContracts;
 
-public class AllergyDataContract {
+import java.io.Serializable;
+
+public class AllergyDataContract implements Serializable {
      public long AllergyId;
      public String Code;
      public String Coding;

@@ -3,6 +3,7 @@ package com.lehms;
 import java.util.Date;
 import java.util.UUID;
 
+import com.lehms.messages.dataContracts.ClientDataContract;
 import com.lehms.messages.dataContracts.ProgressNoteDataContract;
 
 import android.app.Activity;
@@ -26,11 +27,6 @@ public class NavigationHelper {
 		UIHelper.ShowUnderConstructionMessage(context);
 	}
 	
-	public static void goForms(Context context)
-	{
-		UIHelper.ShowUnderConstructionMessage(context);
-	}	
-	
 	public static void goTakePicture(Context context, String clientId)
 	{
 		UIHelper.ShowUnderConstructionMessage(context);
@@ -50,6 +46,13 @@ public class NavigationHelper {
 	{
 		UIHelper.ShowUnderConstructionMessage(context);
 	}
+
+	public static void goForms(Context context, ClientDataContract client)
+	{
+        Intent intent = new Intent(context, FormsActivity.class);
+        intent.putExtra(FormsActivity.EXTRA_CLIENT, client);
+        context.startActivity(intent);
+	}	
 	
 	public static void viewProgressNote(Activity context, ProgressNoteDataContract progressNote)
 	{
