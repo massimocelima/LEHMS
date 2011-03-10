@@ -1,6 +1,8 @@
 package com.lehms.messages.formDefinition;
 
-public class FormElementOption {
+import java.io.Serializable;
+
+public class FormElementOption implements Serializable  {
 
 	public String Name;
 	public String Value;

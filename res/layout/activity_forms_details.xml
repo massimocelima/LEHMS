@@ -17,14 +17,8 @@
         <TextView 
 	        android:id="@+id/title_bar_title"
         	style="@style/TitleBarText" 
-        	android:text="Forms" />
+        	android:text="Complete Form" />
         <!-- <View style="@style/TitleBarSpring" /> -->
-
-        <ImageView style="@style/TitleBarSeparator" />
-        <ImageButton style="@style/TitleBarAction"
-            android:contentDescription="Refresh"
-            android:src="@drawable/ic_title_refresh"
-            android:onClick="onRefreshClick" />
 
 		<ImageView style="@style/TitleBarSeparator" />
         <ImageButton style="@style/TitleBarAction"
@@ -50,18 +44,18 @@
 		    >
 			
 			<TextView 
-				android:id="@+id/activity_forms_title"
+				android:id="@+id/activity_forms_details_title"
 		        android:layout_width="wrap_content"
 		        android:layout_height="wrap_content"
 		        android:text="Forms"
 		        style="@style/HeaderTitle" />
 	   		<TextView 
-				android:id="@+id/activity_forms_sub_title"
+				android:id="@+id/activity_forms_details_sub_title"
 		        android:layout_width="wrap_content"
 		        android:layout_height="wrap_content"
 		        style="@style/HeaderSubTitle" />
 	   		<TextView 
-				android:id="@+id/activity_forms_sub_title2"
+				android:id="@+id/activity_forms_details_sub_title2"
 		        android:layout_width="wrap_content"
 		        android:layout_height="wrap_content"
 		        style="@style/HeaderSubTitle" />
@@ -69,19 +63,53 @@
 
 	</LinearLayout>
 
+	<ScrollView
+	  android:layout_width="fill_parent"
+	  android:layout_height="wrap_content"
+	  android:layout_weight="1"
+	  >
 
-    <LinearLayout
-        android:orientation="vertical"
-        android:layout_width="fill_parent"
+	    <LinearLayout
+	    	android:id="@+id/activity_forms_details_container"
+			android:layout_width="fill_parent"
+		  	android:layout_height="fill_parent"
+		  	android:orientation="vertical">
+		</LinearLayout>
+		
+	</ScrollView>
+
+	
+	<LinearLayout
+		android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:padding="6dip">
- 
-		<ListView android:id="@+id/android:list"
-		   android:layout_width="fill_parent"
-		   android:layout_height="fill_parent"/>
- 
-    </LinearLayout>
+        android:orientation="horizontal"
+        style="@android:style/ButtonBar"
+        >
+
+	    <Button 
+			android:id="@+id/activity_form_details_back"
+			android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:drawableLeft="@drawable/ic_back"
+	        android:onClick="onBackClick"
+	        android:text="Back" />
+
+	    <Button 
+			android:id="@+id/activity_form_details_cancel"
+			android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:onClick="onCancelClick"
+	        android:text="Cancel" />
+
+	    <Button 
+			android:id="@+id/activity_form_details_next"
+			android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:drawableRight="@drawable/ic_next"
+	        android:onClick="onNextClick"
+	        android:text="Next" />
+	        
+	</LinearLayout>
 	
 	
 </LinearLayout>

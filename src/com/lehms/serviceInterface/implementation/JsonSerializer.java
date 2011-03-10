@@ -6,8 +6,7 @@ import java.util.UUID;
 
 import org.json.JSONObject;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import com.google.gson.*;
 import com.lehms.serviceInterface.ISerializer;
 
 import org.json.*;
@@ -17,14 +16,10 @@ public class JsonSerializer implements ISerializer {
 	@Override
 	public String Serializer(Object o) throws Exception {
 		
-		GsonBuilder gsonb = new GsonBuilder(); 
+		GsonBuilder gsonb = new GsonBuilder();
 		
-		DateDeserializer ds = new DateDeserializer(); 
-		gsonb.registerTypeAdapter(Date.class, ds);
-		
-		UUIDSerializer uidSerializer = new UUIDSerializer();
-		Class<UUID> classUUID = UUID.class;
-		gsonb.registerTypeAdapter( classUUID, uidSerializer); 
+		gsonb.registerTypeAdapter(Date.class, new DateDeserializer());
+		gsonb.registerTypeAdapter( UUID.class, new UUIDSerializer()); 
 		
 		Gson gson = gsonb.create(); 
 		JSONObject jobject = new JSONObject(gson.toJson(o)); 
@@ -36,12 +31,8 @@ public class JsonSerializer implements ISerializer {
 	
 		GsonBuilder gsonb = new GsonBuilder();
 		
-		DateDeserializer ds = new DateDeserializer(); 
-		gsonb.registerTypeAdapter(Date.class, ds); 
-		
-		UUIDSerializer uidSerializer = new UUIDSerializer();
-		Class<UUID> classUUID = UUID.class;
-		gsonb.registerTypeAdapter( classUUID, uidSerializer); 
+		gsonb.registerTypeAdapter( Date.class, new DateDeserializer() );
+		gsonb.registerTypeAdapter( UUID.class, new UUIDSerializer() ); 
 
 		Gson gson = gsonb.create(); 
 		

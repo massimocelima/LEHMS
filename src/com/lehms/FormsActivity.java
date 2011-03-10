@@ -13,6 +13,7 @@ import com.lehms.messages.GetFormDefinitionResponse;
 import com.lehms.messages.dataContracts.ClientDataContract;
 import com.lehms.messages.dataContracts.ClientSummaryDataContract;
 import com.lehms.messages.dataContracts.RosterDataContract;
+import com.lehms.messages.formDefinition.FormDefinition;
 import com.lehms.serviceInterface.IClientResource;
 import com.lehms.serviceInterface.IFormDefinitionResource;
 import com.lehms.util.AppLog;
@@ -49,6 +50,9 @@ public class FormsActivity  extends RoboListActivity { //implements AsyncQueryLi
 	@InjectView(R.id.activity_forms_sub_title) TextView _subTitle; 
 	@InjectView(R.id.activity_forms_sub_title2) TextView _subTitle2; 
 	
+	private FormDefinition _selectedFormDefinition;
+	private FormDefinitionAdapter _adapter;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 
@@ -68,29 +72,31 @@ public class FormsActivity  extends RoboListActivity { //implements AsyncQueryLi
 				
 		final ActionItem qaNewForm = new ActionItem();
 		
-		qaNewForm.setTitle("Create Form");
-		qaNewForm.setIcon(getResources().getDrawable(R.drawable.quick_actions_ic_progress_notes_new));
+		qaNewForm.setTitle("Complete Form");
+		qaNewForm.setIcon(getResources().getDrawable(R.drawable.quick_actions_ic_complete_forms_new));
 		qaNewForm.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Toast.makeText(FormsActivity.this, "New Form" , Toast.LENGTH_SHORT).show();
+				NavigationHelper.createFormDetails(FormsActivity.this, _selectedFormDefinition);
 			}
 		});
 				
 		final ActionItem qaViewForms = new ActionItem();
 		
 		qaViewForms.setTitle("View Forms");
-		qaViewForms.setIcon(getResources().getDrawable(R.drawable.quick_actions_ic_roster));
+		qaViewForms.setIcon(getResources().getDrawable(R.drawable.quick_actions_ic_complete_forms));
 		qaViewForms.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Toast.makeText(FormsActivity.this, "View Forms", Toast.LENGTH_SHORT).show();
+				NavigationHelper.viewFormDetailsList(FormsActivity.this, _client, _selectedFormDefinition);
 			}
 		});
 		
 		listView.setOnItemClickListener(new OnItemClickListener() { 
 			    public void onItemClick(AdapterView<?> parent, View view, 
 			        int position, long id) { 
+			    	
+			    	_selectedFormDefinition = _adapter.getItem(position);
 			    	
 					ListQuickAction qa = new ListQuickAction(view);
 					
@@ -179,9 +185,9 @@ public class FormsActivity  extends RoboListActivity { //implements AsyncQueryLi
 			}
 			else
 			{
-				FormDefinitionAdapter adapter = new FormDefinitionAdapter(_context, R.layout.form_definition_item, result.FormDefinitions);
+				_adapter = new FormDefinitionAdapter(_context, R.layout.form_definition_item, result.FormDefinitions);
 				ListView listView = getListView();
-				listView.setAdapter(adapter);
+				listView.setAdapter(_adapter);
 				listView.invalidate();
 			}
 			if( _progressDialog.isShowing() )

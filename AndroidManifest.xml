@@ -59,6 +59,11 @@
                   android:configChanges="orientation" 
                   />
 
+        <activity android:name="FormDetailsActivity"
+                  android:label="@string/app_name" 
+                  android:configChanges="orientation" 
+                  />
+
 		<service android:name="com.lehms.service.GPSLoggerService"/>
 		<service android:name="com.lehms.service.DataSyncService"/>
 		<receiver android:name="com.lehms.receivers.AlarmReceiver"/>

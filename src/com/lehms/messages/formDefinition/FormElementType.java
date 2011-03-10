@@ -1,6 +1,13 @@
 package com.lehms.messages.formDefinition;
 
-public enum FormElementType {
+import java.io.Serializable;
+import java.util.EnumSet;
+import java.util.HashMap;
+import java.util.Map;
+
+
+public enum FormElementType implements Serializable  {
+	
 	TextBox,
 	DropDown,
 	MultilineTextBox,
@@ -10,5 +17,7 @@ public enum FormElementType {
 	Date,
 	Time,
 	DateTime,
-	Label
+	Label;
+  
+
 }

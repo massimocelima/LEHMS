@@ -5,6 +5,8 @@ import java.util.UUID;
 
 import com.lehms.messages.dataContracts.ClientDataContract;
 import com.lehms.messages.dataContracts.ProgressNoteDataContract;
+import com.lehms.messages.formDefinition.FormData;
+import com.lehms.messages.formDefinition.FormDefinition;
 
 import android.app.Activity;
 import android.content.Context;
@@ -52,6 +54,26 @@ public class NavigationHelper {
         Intent intent = new Intent(context, FormsActivity.class);
         intent.putExtra(FormsActivity.EXTRA_CLIENT, client);
         context.startActivity(intent);
+	}
+
+	public static void createFormDetails(Context context, FormDefinition form)
+	{
+        Intent intent = new Intent(context, FormDetailsActivity.class);
+        intent.putExtra(FormDetailsActivity.EXTRA_FORM_DEFINITION, form);
+        context.startActivity(intent);
+	}	
+
+	public static void viewFormDetails(Context context, FormDefinition form, FormData formData)
+	{
+        Intent intent = new Intent(context, FormDetailsActivity.class);
+        intent.putExtra(FormDetailsActivity.EXTRA_FORM_DEFINITION, form);
+        intent.putExtra(FormDetailsActivity.EXTRA_FORM_DATA, formData);
+        context.startActivity(intent);
+	}	
+
+	public static void viewFormDetailsList(Context context, ClientDataContract client, FormDefinition form)
+	{
+		UIHelper.ShowUnderConstructionMessage(context);
 	}	
 	
 	public static void viewProgressNote(Activity context, ProgressNoteDataContract progressNote)
