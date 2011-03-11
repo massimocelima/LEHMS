@@ -26,19 +26,20 @@ public class LehmsApplication extends RoboApplication
 			IAuthorisationProvider,
 			IActiveJobProvider
 {
-	private UserDataContract _currentUser;
-	
     public static final String KEY_PROFILE_PREF = "application_settings_profile_pref";
     public static final String KEY_DEVICE_ID_PREF = "application_settings_device_id_pref";
     public static final String KEY_DEPARTMENT_PREF = "application_settings_department_pref";
     public static final String KEY_OFFICE_PHONE_PREF = "application_settings_office_phone_pref";
     public static final String KEY_OFFICE_EMAIL_PREF = "application_settings_office_email_pref";
-    
+
+    public static final String KEY_USER_JOB = "current_user_pref";
+    public static final String KEY_CURRENT_JOB = "current_job_pref";
+
     private JobDetailsDataContract _job = null; 
+	private UserDataContract _currentUser;
     
 	@Override
 	public void onCreate() {
-		// TODO Auto-generated method stub
 		super.onCreate();
 		PreferenceManager.setDefaultValues(this, R.xml.application_settings, false);
 		
@@ -120,21 +121,24 @@ public class LehmsApplication extends RoboApplication
 		try {
 			UserDataContract user = getCurrent();
 			
-			RoleDataContract role;
-			for(int i=0; i < user.Roles.size(); i++)
+			if( user != null )
 			{
-				role = user.Roles.get(i);
-				for(int j=0; j < role.Permissions.size(); j++)
+				RoleDataContract role;
+				for(int i=0; i < user.Roles.size(); i++)
 				{
-					if( role.Permissions.get(j).equals(permission) )
+					role = user.Roles.get(i);
+					for(int j=0; j < role.Permissions.size(); j++)
 					{
-						result = true;
-						break;
+						if( role.Permissions.get(j).equals(permission) )
+						{
+							result = true;
+							break;
+						}
 					}
+					// We have found the permission, so exit the for loop
+					if(result)
+						break;
 				}
-				// We have found the permission, so exit the for loop
-				if(result)
-					break;
 			}
 			
 		} catch (Exception e) {
@@ -149,7 +153,8 @@ public class LehmsApplication extends RoboApplication
 		Boolean result = false;
 		try {
 			UserDataContract user = getCurrent();
-			result = user.IsInRole(role);
+			if( user != null)
+				result = user.IsInRole(role);
 		} catch (Exception e) {
 			result = false;
 			AppLog.error(e.getMessage(), e);
@@ -165,7 +170,6 @@ public class LehmsApplication extends RoboApplication
 	@Override
 	public void set(JobDetailsDataContract job) {
 		_job = job;
-		
 	}
 
 }

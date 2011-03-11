@@ -3,24 +3,16 @@
     android:orientation="vertical"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-	style="@style/FormItem"
+    style="@style/FormItem"
     >
-
+	
 	<TextView 
-		android:id="@+id/form_textbox_label"
+		android:id="@+id/form_label_label"
 	    android:layout_width="fill_parent"
 	    android:layout_height="wrap_content"
 	  	android:textAppearance="?android:attr/textAppearanceSmall" 
 	  	android:textColor="?android:attr/textColorPrimary" 
 	>
 	</TextView>
-	<EditText 
-		android:id="@+id/form_textbox_edit"
-	    android:layout_width="fill_parent"
-	    android:layout_height="wrap_content"
-	  	android:textAppearance="?android:attr/textAppearanceSmall" 
-	  	android:textColor="?android:attr/textColorPrimary" 
-	>
-	</EditText>
 	
 </LinearLayout>

@@ -8,6 +8,7 @@ import com.lehms.controls.*;
 import com.google.inject.Inject;
 import com.lehms.adapters.ClientSummaryAdapter;
 import com.lehms.adapters.JobAdapter;
+import com.lehms.messages.dataContracts.ClientDataContract;
 import com.lehms.messages.dataContracts.ClientSummaryDataContract;
 import com.lehms.messages.dataContracts.RosterDataContract;
 import com.lehms.serviceInterface.IClientResource;
@@ -36,6 +37,7 @@ import roboguice.activity.RoboListActivity;
 public class ClientsActivity  extends RoboListActivity { //implements AsyncQueryListener 
 
 	@Inject protected IClientResource _clientResource;
+	private ListQuickAction _qa;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {

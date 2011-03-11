@@ -1,5 +1,7 @@
 package com.lehms;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -26,6 +28,7 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.text.format.DateFormat;
+import android.text.format.DateUtils;
 import android.view.View;
 import android.widget.Toast;
 
@@ -101,7 +104,8 @@ public class UIHelper {
 
 	public static String FormatShortDateTime(Date date)
 	{
-		return DateFormat.format("dd/MM/yyyy h:mmaa", date).toString();
+		SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+		return formatter.format(date);
 	}
 
 	public static String FormatLongDate(Date date)
@@ -116,7 +120,8 @@ public class UIHelper {
 
 	public static String FormatTime(Date date)
 	{
-		return DateFormat.format("h:mmaa", date).toString();
+		SimpleDateFormat formatter = new SimpleDateFormat("HH:mm");
+		return formatter.format(date);
 	}
 	
 	public static String FormatAddress(AddressDataContract address)
@@ -198,5 +203,4 @@ public class UIHelper {
 		}
 	}
 	
-
 }

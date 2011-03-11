@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    style="@style/FormItem"
+    >
+
+	<TextView 
+		android:id="@+id/form_datetime_label"
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	  	android:textAppearance="?android:attr/textAppearanceSmall" 
+	  	android:textColor="?android:attr/textColorPrimary" 
+	>
+	</TextView>
+	<TextView 
+		android:id="@+id/form_datetime_edit_date"
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	  	android:textAppearance="?android:attr/textAppearanceSmall" 
+	  	android:textColor="?android:attr/textColorPrimary"
+	  	android:hint="Click here to enter the date" 
+	  	android:padding="8dip"
+	  	android:focusable="true"
+	  	android:inputType="date"
+	  	android:background="@drawable/text_border"
+	>
+	</TextView>
+
+	<TextView 
+		android:layout_marginTop="5dip"
+		android:id="@+id/form_datetime_edit_time"
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	  	android:textAppearance="?android:attr/textAppearanceSmall" 
+	  	android:textColor="?android:attr/textColorPrimary"
+	  	android:hint="Click here to enter the time" 
+	  	android:padding="8dip"
+	  	android:focusable="true"
+	  	android:inputType="time"
+	  	android:background="@drawable/text_border"
+	>
+	  	<!-- android:background="#CCCCCC" -->
+	</TextView>	
+</LinearLayout>

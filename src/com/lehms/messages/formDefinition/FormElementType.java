@@ -17,7 +17,6 @@ public enum FormElementType implements Serializable  {
 	Date,
 	Time,
 	DateTime,
-	Label;
-  
-
+	Label,
+	Checkbox
 }

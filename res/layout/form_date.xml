@@ -3,24 +3,29 @@
     android:orientation="vertical"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-	style="@style/FormItem"
+    style="@style/FormItem"
     >
 
 	<TextView 
-		android:id="@+id/form_textbox_label"
+		android:id="@+id/form_date_label"
 	    android:layout_width="fill_parent"
 	    android:layout_height="wrap_content"
 	  	android:textAppearance="?android:attr/textAppearanceSmall" 
 	  	android:textColor="?android:attr/textColorPrimary" 
 	>
 	</TextView>
-	<EditText 
-		android:id="@+id/form_textbox_edit"
+	<TextView 
+		android:id="@+id/form_date_edit"
 	    android:layout_width="fill_parent"
 	    android:layout_height="wrap_content"
 	  	android:textAppearance="?android:attr/textAppearanceSmall" 
-	  	android:textColor="?android:attr/textColorPrimary" 
+	  	android:textColor="?android:attr/textColorPrimary"
+	  	android:hint="Click here to enter the date" 
+	  	android:padding="8dip"
+	  	android:focusable="true"
+	  	android:inputType="date"
+	  	android:background="@drawable/text_border"
 	>
-	</EditText>
+	</TextView>
 	
 </LinearLayout>

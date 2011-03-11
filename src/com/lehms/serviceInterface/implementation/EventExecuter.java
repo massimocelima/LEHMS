@@ -7,6 +7,7 @@ import java.util.UUID;
 import com.google.inject.Inject;
 import com.lehms.messages.CreateProgressNoteRequest;
 import com.lehms.messages.dataContracts.AttachmentDataContract;
+import com.lehms.messages.dataContracts.ProgressNoteDataContract;
 import com.lehms.persistence.Event;
 import com.lehms.persistence.EventType;
 import com.lehms.persistence.IEventRepository;
@@ -57,7 +58,11 @@ public class EventExecuter implements IEventExecuter {
 			attachment.Data = buff;
 			attachment.Id=  UUID.randomUUID();
 			attachment.Name = attachment.Id.toString();
-			return _progressNoteResource.Create(request, attachment);
+			ProgressNoteDataContract note =  _progressNoteResource.Create(request, attachment);
+			
+			stream.close();
+			file.delete();
+			return note;
 		}
 		else
 			return _progressNoteResource.Create(request);

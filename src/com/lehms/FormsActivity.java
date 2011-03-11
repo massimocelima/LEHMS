@@ -50,6 +50,8 @@ public class FormsActivity  extends RoboListActivity { //implements AsyncQueryLi
 	@InjectView(R.id.activity_forms_sub_title) TextView _subTitle; 
 	@InjectView(R.id.activity_forms_sub_title2) TextView _subTitle2; 
 	
+	private ListQuickAction _qa;
+	
 	private FormDefinition _selectedFormDefinition;
 	private FormDefinitionAdapter _adapter;
 	
@@ -78,6 +80,7 @@ public class FormsActivity  extends RoboListActivity { //implements AsyncQueryLi
 			@Override
 			public void onClick(View v) {
 				NavigationHelper.createFormDetails(FormsActivity.this, _selectedFormDefinition);
+				_qa.dismiss();
 			}
 		});
 				
@@ -89,6 +92,7 @@ public class FormsActivity  extends RoboListActivity { //implements AsyncQueryLi
 			@Override
 			public void onClick(View v) {
 				NavigationHelper.viewFormDetailsList(FormsActivity.this, _client, _selectedFormDefinition);
+				_qa.dismiss();
 			}
 		});
 		
@@ -98,13 +102,13 @@ public class FormsActivity  extends RoboListActivity { //implements AsyncQueryLi
 			    	
 			    	_selectedFormDefinition = _adapter.getItem(position);
 			    	
-					ListQuickAction qa = new ListQuickAction(view);
+					_qa = new ListQuickAction(view);
 					
-					qa.addActionItem(qaNewForm);
-					qa.addActionItem(qaViewForms);
-					qa.setAnimStyle(ListQuickAction.ANIM_AUTO);
+					_qa.addActionItem(qaNewForm);
+					_qa.addActionItem(qaViewForms);
+					_qa.setAnimStyle(ListQuickAction.ANIM_AUTO);
 					
-					qa.show();
+					_qa.show();
 			    }
 			  }); 
 	}
