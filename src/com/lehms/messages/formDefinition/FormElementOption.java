@@ -8,4 +8,10 @@ public class FormElementOption implements Serializable  {
 	public String Value;
 	// Legacy - used to map this item to the older style of form elements
 	public String Code;
+	
+	@Override
+	public String toString()
+	{
+		return Name;
+	}
 }

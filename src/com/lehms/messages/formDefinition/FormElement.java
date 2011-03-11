@@ -22,4 +22,46 @@ public class FormElement implements Serializable  {
 		return Type != FormElementType.Label;
 	}
 	
+	public FormElementOption GetOpionByName(String name)
+	{
+		for(int i = 0; i < Options.size(); i++)
+		{
+			if( Options.get(i).Name.equals(name) )
+				return Options.get(i);
+		}
+		return null;
+	}
+
+	public FormElementOption GetOpion(String value)
+	{
+		for(int i = 0; i < Options.size(); i++)
+		{
+			if( Options.get(i).Value.equals(value) )
+				return Options.get(i);
+		}
+		return null;
+	}
+
+	public int GetIndexByName(String name)
+	{
+		int result = -1;
+		for(int i = 0; i < Options.size(); i++)
+		{
+			if( Options.get(i).Name.equals(name) )
+				return i;
+		}
+		return result;
+	}
+
+	public int GetIndexByValue(String value)
+	{
+		int result = -1;
+		for(int i = 0; i < Options.size(); i++)
+		{
+			if( Options.get(i).Value.equals(value) )
+				return i;
+		}
+		return result;
+	}
+
 }

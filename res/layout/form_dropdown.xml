@@ -19,7 +19,8 @@
 		android:id="@+id/form_dropdown_edit"
 	    android:layout_width="fill_parent"
 	    android:layout_height="wrap_content"
-	  	android:textAppearance="?android:attr/textAppearanceSmall" 
+        android:drawSelectorOnTop="true"
+        android:textAppearance="?android:attr/textAppearanceSmall" 
 	  	android:textColor="?android:attr/textColorPrimary" 
 	>
 	</Spinner>

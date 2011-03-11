@@ -2,42 +2,17 @@ package com.lehms;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.List;
 
-import com.lehms.controls.*;
-
-import com.google.inject.Inject;
-import com.lehms.RosterActivity.FlingGestureDetector;
-import com.lehms.adapters.ClientSummaryAdapter;
-import com.lehms.adapters.FormDefinitionAdapter;
-import com.lehms.adapters.JobAdapter;
-import com.lehms.messages.GetFormDefinitionResponse;
-import com.lehms.messages.dataContracts.ClientDataContract;
-import com.lehms.messages.dataContracts.ClientSummaryDataContract;
-import com.lehms.messages.dataContracts.RosterDataContract;
 import com.lehms.messages.formDefinition.*;
-import com.lehms.serviceInterface.IClientResource;
-import com.lehms.serviceInterface.IFormDefinitionResource;
-import com.lehms.util.AppLog;
 
-import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.DatePickerDialog;
-import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
-import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.provider.Contacts.Intents.UI;
-import android.text.Layout;
 import android.text.format.DateFormat;
-import android.util.AttributeSet;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -46,22 +21,15 @@ import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.View.OnClickListener;
-import android.view.ViewGroup.LayoutParams;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.SimpleCursorAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 import roboguice.activity.RoboActivity;
-import roboguice.activity.RoboListActivity;
 import roboguice.inject.InjectExtra;
 import roboguice.inject.InjectView;
 
@@ -218,6 +186,9 @@ public class FormDetailsActivity extends RoboActivity {
 			case Checkbox:
 				CreateCheckboxView(element);
 				break;
+			case DropDown:
+				CreateDropDownView(element);
+				break;
 			default:
 				CreateTextBoxView(element);
 				break;
@@ -264,12 +235,21 @@ public class FormDetailsActivity extends RoboActivity {
 		Spinner spinner = (Spinner)view.findViewById(R.id.form_dropdown_edit);
 		TextView label = (TextView)view.findViewById(R.id.form_dropdown_label);
 		
+		//ArrayList<String> data = new ArrayList<String>();
+		//for(int i=0; i < element.Options.size(); i++)
+		//	data.add(element.Options.get(i).Name);
+		
+        ArrayAdapter<FormElementOption> adapter = new ArrayAdapter<FormElementOption>( this, android.R.layout.simple_spinner_item, element.Options);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        spinner.setAdapter(adapter);
+
 		if(element.Value != null && ! element.Value.equals(""))
 		{
-			//spinner.setSelection(position)
+			int index = element.GetIndexByValue(element.Value);
+			spinner.setSelection(index);
 		}
-		// Populate spinner values 
-		
+
 		spinner.setId(element.Id);
 		label.setText(element.Label);
 		label.setId(GetNextLabelId());
@@ -443,6 +423,14 @@ public class FormDetailsActivity extends RoboActivity {
 			case Checkbox:
 				CheckBox checkBox = (CheckBox)findViewById(element.Id);
 				element.Value = checkBox.isChecked() ? "true" : "false";
+				break;
+			case DropDown:
+				Spinner spinner = (Spinner)findViewById(element.Id);
+				FormElementOption option = (FormElementOption)spinner.getSelectedItem();
+				if(option != null)
+					element.Value = option.Value;
+				else
+					element.Value = "";
 				break;
 			default:
 				EditText defaultText = (EditText)findViewById(element.Id);
