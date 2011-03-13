@@ -14,5 +14,5 @@ public interface IProgressNoteResource {
 	ProgressNoteDataContract Get(UUID progressNoteId) throws Exception;
 	ProgressNoteDataContract Create(CreateProgressNoteRequest progressNote) throws Exception;
 	ProgressNoteDataContract Create(CreateProgressNoteRequest progressNote, AttachmentDataContract attachment) throws Exception;
-	//UploadProgressNoteRecordingResponse UploadRecording(UUID progressNoteId, String fileName, byte[] data) throws Exception; 
+
 }

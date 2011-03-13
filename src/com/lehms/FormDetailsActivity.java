@@ -1,16 +1,30 @@
 package com.lehms;
 
+import java.text.DateFormatSymbols;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+import com.google.inject.Inject;
+import com.lehms.messages.CreateFormDataRequest;
+import com.lehms.messages.dataContracts.ProgressNoteDataContract;
 import com.lehms.messages.formDefinition.*;
+import com.lehms.persistence.Event;
+import com.lehms.persistence.EventType;
+import com.lehms.persistence.IEventFactory;
+import com.lehms.persistence.IEventRepository;
+import com.lehms.serviceInterface.IActiveJobProvider;
+import com.lehms.serviceInterface.IEventExecuter;
+import com.lehms.serviceInterface.IFormDataResource;
+import com.lehms.controls.*;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.format.DateFormat;
 import android.view.GestureDetector;
@@ -33,7 +47,7 @@ import roboguice.activity.RoboActivity;
 import roboguice.inject.InjectExtra;
 import roboguice.inject.InjectView;
 
-public class FormDetailsActivity extends RoboActivity { 
+public class FormDetailsActivity extends RoboActivity implements ISaveEventResultHandler { 
 
 	public final static String EXTRA_FORM_DEFINITION = "form_definition";
 	public final static String EXTRA_FORM_DATA = "form_data";
@@ -54,6 +68,11 @@ public class FormDetailsActivity extends RoboActivity {
 	@InjectView(R.id.activity_form_details_cancel) Button _cancelButton; 
 	@InjectView(R.id.activity_form_details_next) Button _nextButton; 
 	@InjectView(R.id.activity_form_details_finish) Button _finishButton; 
+	
+	@Inject IEventRepository _eventRepository;
+	@Inject IEventExecuter _eventExecuter;
+	@Inject IEventFactory _eventEventFactory;
+	@Inject IActiveJobProvider _jobProvider;
 	
 	private GestureDetector _gestureDetector;
     private GuestureListener _gestureListener;
@@ -139,10 +158,32 @@ public class FormDetailsActivity extends RoboActivity {
 	{
 		saveFieldData();
 		_form.fillFormData(_formData);
+	
+		CreateFormDataRequest request = new CreateFormDataRequest();
+		request.Data = _formData;
 		
-		// TODO : Save to the persistant store
-		
-		finish();
+		if( _jobProvider.get() != null )
+			request.JobId = _jobProvider.get().JobId;
+			
+		Event event = _eventEventFactory.create(request, EventType.FormCompleted);
+		try {
+			UIHelper.SaveEvent(this, this, _eventRepository, _eventExecuter, event, _form.Title);
+		} catch (Exception e) {
+			onError(e);
+		}
+	}
+	
+	@Override
+	public void onSuccess(Object data) {
+		//Intent intent = this.getIntent(); 
+		//intent.putExtra(EXTRA_FORM_DATA, (CreateFormDataRequest)_formData); 
+		//setResult(RESULT_OK, intent);
+		this.finish();
+	}
+
+	@Override
+	public void onError(Exception e) {
+		UIHelper.ShowAlertDialog(this, "Error saving form data", "Error ssving form data: " + e.getMessage());
 	}
 
 	private void LoadForm(){
@@ -157,6 +198,7 @@ public class FormDetailsActivity extends RoboActivity {
 		
 		_form.loadFormData(_formData);
 		
+		View view = null;
 		FormPage page = _form.Pages.get(_pageIndex);
 		_subTitle.setText(page.Title);
 		_subTitle2.setText("Page " + (_pageIndex + 1) + " of " + _form.Pages.size());
@@ -166,33 +208,37 @@ public class FormDetailsActivity extends RoboActivity {
 			FormElement element = page.Elements.get(i);
 			switch (element.Type) {
 			case TextBox:
-				CreateTextBoxView(element);
+				view = CreateTextBoxView(element);
 				break;
 			case MultilineTextBox:
-				CreateMultilineTextBoxView(element);
+				view = CreateMultilineTextBoxView(element);
 				break;
 			case Date:
-				CreateDateView(element);
+				view = CreateDateView(element);
 				break;
 			case DateTime:
-				CreateDateTimeView(element);
+				view = CreateDateTimeView(element);
 				break;
 			case Time:
-				CreateTimeView(element);
+				view = CreateTimeView(element);
 				break;
 			case Label:
-				CreateLabelView(element);
+				view = CreateLabelView(element);
 				break;
 			case Checkbox:
-				CreateCheckboxView(element);
+				view = CreateCheckboxView(element);
 				break;
 			case DropDown:
-				CreateDropDownView(element);
+				view = CreateDropDownView(element);
 				break;
 			default:
-				CreateTextBoxView(element);
+				view = CreateTextBoxView(element);
 				break;
 			}
+			
+			if( i == 0 && view != null )
+				view.requestFocus();
+
 		}
 		LayoutButtonBar();
 	}
@@ -234,10 +280,6 @@ public class FormDetailsActivity extends RoboActivity {
 
 		Spinner spinner = (Spinner)view.findViewById(R.id.form_dropdown_edit);
 		TextView label = (TextView)view.findViewById(R.id.form_dropdown_label);
-		
-		//ArrayList<String> data = new ArrayList<String>();
-		//for(int i=0; i < element.Options.size(); i++)
-		//	data.add(element.Options.get(i).Name);
 		
         ArrayAdapter<FormElementOption> adapter = new ArrayAdapter<FormElementOption>( this, android.R.layout.simple_spinner_item, element.Options);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -323,7 +365,12 @@ public class FormDetailsActivity extends RoboActivity {
 		label.setId(GetNextLabelId());
 		
 		if( element.Value != null && !element.Value.equals(""))
-			textbox.setText(element.Value);
+		{
+			if(element.Value.equals("Now") )
+				textbox.setText(UIHelper.FormatLongDate(new Date()));
+			else
+				textbox.setText(element.Value);
+		}
 		textbox.setId(element.Id);
 		label.setText(element.Label);
 
@@ -331,7 +378,7 @@ public class FormDetailsActivity extends RoboActivity {
 
 		return view;
 	}
-	
+
 	private View CreateTimeView(FormElement element)
 	{
 		LayoutInflater layoutInflater = (LayoutInflater)this.getSystemService(LAYOUT_INFLATER_SERVICE);
@@ -342,7 +389,9 @@ public class FormDetailsActivity extends RoboActivity {
 		TextView label = (TextView)view.findViewById(R.id.form_time_label);
 		label.setId(GetNextLabelId());
 		
-		if( element.Value != null && !element.Value.equals(""))
+		if(element.Value.equals("Now") )
+			textbox.setText(UIHelper.FormatTime(new Date()));
+		else
 			textbox.setText(element.Value);
 		textbox.setId(element.Id);
 		label.setText(element.Label);
@@ -376,13 +425,22 @@ public class FormDetailsActivity extends RoboActivity {
 		
 		if( element.Value != null && !element.Value.equals(""))
 		{
-			SimpleDateFormat formatter = new SimpleDateFormat("EEEE, MMMM dd, yyyy hh:mm");
-			
-			try {
-				Date date = formatter.parse(element.Value);
+			if(element.Value.equals("Now"))
+			{
+				Date date = new Date();
 				dateTextbox.setText(UIHelper.FormatLongDate(date));
 				timeTextbox.setText(UIHelper.FormatTime(date));
-			} catch (ParseException e) { e.printStackTrace(); }
+			}
+			else
+			{
+				SimpleDateFormat formatter = new SimpleDateFormat("EEEE, MMMM dd, yyyy HH:mm");
+				
+				try {
+					Date date = formatter.parse(element.Value);
+					dateTextbox.setText(UIHelper.FormatLongDate(date));
+					timeTextbox.setText(UIHelper.FormatTime(date));
+				} catch (ParseException e) { e.printStackTrace(); }
+			}
 		}
 		
 		return view;
@@ -451,6 +509,14 @@ public class FormDetailsActivity extends RoboActivity {
 		return _gestureDetector.onTouchEvent(event);
 	}
 
+    // define the listener which is called once a user selected the time.
+    private DateSlider.OnDateSetListener _timeSetListener =
+        new DateSlider.OnDateSetListener() {
+            public void onDateSet(DateSlider view, Calendar selectedDate) {
+            	_currentDateEditor.setText(UIHelper.FormatTime(selectedDate.getTime()));
+            }
+    };    
+	
 	private class TimeClickListener implements OnClickListener
 	{
 		@Override
@@ -470,21 +536,22 @@ public class FormDetailsActivity extends RoboActivity {
 				} catch(Exception ex) {}
 			}
 			
-			TimePickerDialog.OnTimeSetListener dateSetListener = new TimePickerDialog.OnTimeSetListener() 
-			{
-				@Override public void onTimeSet(android.widget.TimePicker arg0, int hour, int minute) 
-				{
-	            	Date date = new Date();
-	            	date.setHours(hour);
-	            	date.setMinutes(minute);
-	            	_currentDateEditor.setText(UIHelper.FormatTime(date));
-				};
-			};
-				
-            TimePickerDialog dialog = new TimePickerDialog( FormDetailsActivity.this, dateSetListener, dt.getHours(), dt.getMinutes(), true );
-			dialog.show();
+			Calendar calendar = Calendar.getInstance();
+			calendar.setTime(dt);
+			
+			TimeSlider timeSlider = new TimeSlider(FormDetailsActivity.this, _timeSetListener, calendar);
+			timeSlider.show();
 		}
 	}
+	
+	
+    // define the listener which is called once a user selected the date.
+    private DateSlider.OnDateSetListener _dateSetListener =
+        new DateSlider.OnDateSetListener() {
+            public void onDateSet(DateSlider view, Calendar selectedDate) {
+            	_currentDateEditor.setText(UIHelper.FormatLongDate(selectedDate.getTime()));            	
+            }
+    };    
 	
 	private class DateClickListener implements OnClickListener
 	{
@@ -496,16 +563,11 @@ public class FormDetailsActivity extends RoboActivity {
 			if( ! _currentDateEditor.getText().toString().equals(""))
 				dt = new Date(_currentDateEditor.getText().toString());
 			
-			DatePickerDialog.OnDateSetListener dateSetListener = new DatePickerDialog.OnDateSetListener() {
-	            public void onDateSet(DatePicker view, int year, int monthOfYear,
-	                    int dayOfMonth) {
-	            	
-	            	Date date = new Date(year - 1900, monthOfYear, dayOfMonth);
-	            	_currentDateEditor.setText(UIHelper.FormatLongDate(date));
-	            }};
-
-			DatePickerDialog dialog = new DatePickerDialog(FormDetailsActivity.this, dateSetListener, dt.getYear() + 1900, dt.getMonth(), dt.getDate());
-			dialog.show();
+			Calendar calendar = Calendar.getInstance();
+			calendar.setTime(dt);
+			
+			DefaultDateSlider dateSlider = new DefaultDateSlider(FormDetailsActivity.this, _dateSetListener, calendar);
+			dateSlider.show();
 		}
 	}
 	
@@ -539,5 +601,6 @@ public class FormDetailsActivity extends RoboActivity {
 			return false;
 		}
 	}
+
 	
 }

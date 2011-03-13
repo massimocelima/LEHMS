@@ -4,5 +4,6 @@ public enum EventType {
 	JobStarted,
 	JobCompleted,
 	ProgressNoteAdded,
-	LocationTracking
+	LocationTracking,
+	FormCompleted
 }

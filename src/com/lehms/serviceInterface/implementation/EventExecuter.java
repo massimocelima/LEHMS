@@ -5,26 +5,32 @@ import java.io.FileInputStream;
 import java.util.UUID;
 
 import com.google.inject.Inject;
+import com.lehms.messages.CreateFormDataRequest;
 import com.lehms.messages.CreateProgressNoteRequest;
 import com.lehms.messages.dataContracts.AttachmentDataContract;
 import com.lehms.messages.dataContracts.ProgressNoteDataContract;
+import com.lehms.messages.formDefinition.FormData;
 import com.lehms.persistence.Event;
 import com.lehms.persistence.EventType;
 import com.lehms.persistence.IEventRepository;
 import com.lehms.serviceInterface.IEventExecuter;
+import com.lehms.serviceInterface.IFormDataResource;
 import com.lehms.serviceInterface.IProgressNoteResource;
 
 public class EventExecuter implements IEventExecuter {
 
 	private IEventRepository _eventRepository;
 	private IProgressNoteResource _progressNoteResource;
+	private IFormDataResource _formDataResource;
 	
 	@Inject
-	public EventExecuter(IProgressNoteResource progressNoteResource, 
+	public EventExecuter(IProgressNoteResource progressNoteResource,
+			IFormDataResource formDataResource,
 			IEventRepository eventRepository)
 	{
 		_progressNoteResource = progressNoteResource;
 		_eventRepository = eventRepository;
+		_formDataResource = formDataResource;
 	}
 	
 	@Override
@@ -32,6 +38,8 @@ public class EventExecuter implements IEventExecuter {
 		
 		if( event.Type == EventType.ProgressNoteAdded)
 			return ExecuteCreateProgressNoteEvent(event);
+		else if(event.Type == EventType.FormCompleted)
+			return ExecuteCreateFormEvent(event);
 		else
 			throw new Exception("Unimplemented event executer for " + event.Type.toString());
 	}
@@ -66,6 +74,12 @@ public class EventExecuter implements IEventExecuter {
 		}
 		else
 			return _progressNoteResource.Create(request);
+	}
+	
+	public Object ExecuteCreateFormEvent(Event event) throws Exception
+	{
+		CreateFormDataRequest request = (CreateFormDataRequest)event.Data;
+		return _formDataResource.Create(request);
 	}
 
 }

@@ -8,6 +8,7 @@ import com.lehms.messages.GetProgressNotesResponse;
 import com.lehms.messages.UploadProgressNoteRecordingResponse;
 import com.lehms.messages.dataContracts.AttachmentDataContract;
 import com.lehms.messages.dataContracts.ProgressNoteDataContract;
+import com.lehms.serviceInterface.IActiveJobProvider;
 import com.lehms.serviceInterface.IChannel;
 import com.lehms.serviceInterface.IChannelFactory;
 import com.lehms.serviceInterface.IProfileProvider;

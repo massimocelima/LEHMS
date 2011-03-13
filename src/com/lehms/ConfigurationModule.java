@@ -26,6 +26,7 @@ public class ConfigurationModule extends AbstractAndroidModule {
 		bind(IClientResource.class).to(ClientResource.class);
 		bind(IProgressNoteResource.class).to(ProgressNoteResource.class);
 		bind(IFormDefinitionResource.class).to(FormDefinitionResource.class);
+		bind(IFormDataResource.class).to(FormDataResource.class);
 		
 		bind(IEventExecuter.class).to(EventExecuter.class);
 		bind(IEventFactory.class).to(EventFactory.class);
