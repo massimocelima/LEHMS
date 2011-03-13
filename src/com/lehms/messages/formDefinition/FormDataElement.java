@@ -16,6 +16,10 @@ public class FormDataElement implements Serializable {
 		Value = value;
 	}
 
+	public FormDataElement()
+	{
+	}
+
 	public String Name;
 	public String Value;
 }

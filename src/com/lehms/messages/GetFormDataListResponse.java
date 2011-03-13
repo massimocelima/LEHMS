@@ -3,14 +3,14 @@ package com.lehms.messages;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.lehms.messages.dataContracts.FormDataSummary;
+import com.lehms.messages.dataContracts.FormDataSummaryDataContract;
 
 public class GetFormDataListResponse {
 	
     public GetFormDataListResponse()
     {
-        FormDataSummaries = new ArrayList<FormDataSummary>();
+        FormDataSummaries = new ArrayList<FormDataSummaryDataContract>();
     }
 
-    public List<FormDataSummary> FormDataSummaries;
+    public List<FormDataSummaryDataContract> FormDataSummaries;
 }

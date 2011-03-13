@@ -203,4 +203,36 @@ public class UIHelper {
 		}
 	}
 	
+	public static Date ParseDateTimeString(String dateTime)
+	{
+		
+		Date date = new Date();
+		
+		if(dateTime.equals("Now"))
+		{
+			return new Date();
+		}
+		else
+		{
+			SimpleDateFormat formatter = new SimpleDateFormat("EEEE, MMMM dd, yyyy HH:mm");
+			SimpleDateFormat formatterLegacy = new SimpleDateFormat("dd/MM/yy h:mm:ss a");
+			SimpleDateFormat formatterLegacy2 = new SimpleDateFormat("dd/MM/yy h:mm a");
+			
+			try {
+				date = formatter.parse(dateTime);
+			} catch (ParseException e) 
+			{ 
+				try {
+					date = formatterLegacy.parse(dateTime);
+				} catch (ParseException el) 
+				{ 
+					try {
+						date = formatterLegacy2.parse(dateTime);
+					} catch (ParseException el2) { }
+				}
+			}
+		}
+		return date;
+	}
+	
 }

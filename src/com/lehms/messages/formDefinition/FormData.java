@@ -18,6 +18,10 @@ public class FormData implements Serializable {
 		CreatedDate = new Date();
 	}
 	
+	public FormData()
+	{
+	}
+	
 	public UUID Id;
     public UUID FormId;
     public String ClientId;

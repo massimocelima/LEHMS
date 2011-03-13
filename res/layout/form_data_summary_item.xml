@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    style="@style/ListItem"
+    >
+
+	<TextView 
+		android:id="@+id/form_item_created_date"
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    android:layout_weight="1"
+	    style="@style/TextHeader"
+	    android:hint="Created Date"
+	>
+	</TextView>
+
+	<TextView 
+		android:id="@+id/form_item_created_by"
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    android:layout_weight="1"
+	    style="@style/FieldsetLabel"
+	    android:hint="Created By"
+	>
+	</TextView>
+
+</LinearLayout>

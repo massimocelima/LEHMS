@@ -56,24 +56,31 @@ public class NavigationHelper {
         context.startActivity(intent);
 	}
 
-	public static void createFormDetails(Context context, FormDefinition form)
+	public static void createFormDetails(Context context, FormDefinition form, ClientDataContract client)
 	{
         Intent intent = new Intent(context, FormDetailsActivity.class);
         intent.putExtra(FormDetailsActivity.EXTRA_FORM_DEFINITION, form);
+        intent.putExtra(FormDetailsActivity.EXTRA_CLIENT, client);
+        intent.putExtra(FormDetailsActivity.EXTRA_IS_NEW, true);
         context.startActivity(intent);
 	}	
 
-	public static void viewFormDetails(Context context, FormDefinition form, FormData formData)
+	public static void viewFormDetails(Context context, FormDefinition form, FormData formData, ClientDataContract client)
 	{
         Intent intent = new Intent(context, FormDetailsActivity.class);
         intent.putExtra(FormDetailsActivity.EXTRA_FORM_DEFINITION, form);
         intent.putExtra(FormDetailsActivity.EXTRA_FORM_DATA, formData);
+        intent.putExtra(FormDetailsActivity.EXTRA_IS_NEW, false);
+        intent.putExtra(FormDetailsActivity.EXTRA_CLIENT, client);
         context.startActivity(intent);
 	}	
 
 	public static void viewFormDetailsList(Context context, ClientDataContract client, FormDefinition form)
 	{
-		UIHelper.ShowUnderConstructionMessage(context);
+        Intent intent = new Intent(context, FormDetailsListActivity.class);
+        intent.putExtra(FormDetailsListActivity.EXTRA_FORM_DEFINITION, form);
+        intent.putExtra(FormDetailsListActivity.EXTRA_CLIENT, client);
+        context.startActivity(intent);
 	}	
 	
 	public static void viewProgressNote(Activity context, ProgressNoteDataContract progressNote)

@@ -11,6 +11,7 @@ import java.util.List;
 
 import com.google.inject.Inject;
 import com.lehms.messages.CreateFormDataRequest;
+import com.lehms.messages.dataContracts.ClientDataContract;
 import com.lehms.messages.dataContracts.ProgressNoteDataContract;
 import com.lehms.messages.formDefinition.*;
 import com.lehms.persistence.Event;
@@ -20,6 +21,7 @@ import com.lehms.persistence.IEventRepository;
 import com.lehms.serviceInterface.IActiveJobProvider;
 import com.lehms.serviceInterface.IEventExecuter;
 import com.lehms.serviceInterface.IFormDataResource;
+import com.lehms.serviceInterface.IIdentityProvider;
 import com.lehms.controls.*;
 
 import android.app.DatePickerDialog;
@@ -49,8 +51,10 @@ import roboguice.inject.InjectView;
 
 public class FormDetailsActivity extends RoboActivity implements ISaveEventResultHandler { 
 
+	public final static String EXTRA_CLIENT = "client";
 	public final static String EXTRA_FORM_DEFINITION = "form_definition";
 	public final static String EXTRA_FORM_DATA = "form_data";
+	public final static String EXTRA_IS_NEW = "is_new";
 	public final static String STATE_PAGE_INDEX = "page_index";
 	
 	@InjectView(R.id.title_bar_title) TextView _bannerTitle; 
@@ -59,8 +63,10 @@ public class FormDetailsActivity extends RoboActivity implements ISaveEventResul
 	@InjectView(R.id.activity_forms_details_sub_title2) TextView _subTitle2; 
 	@InjectView(R.id.activity_forms_details_container) LinearLayout _container; 
 	
+	@InjectExtra(EXTRA_CLIENT) protected ClientDataContract _client;
 	@InjectExtra(EXTRA_FORM_DEFINITION) protected FormDefinition _form;
 	@InjectExtra( value = EXTRA_FORM_DATA, optional = true) protected FormData _formData;
+	@InjectExtra(EXTRA_IS_NEW) protected Boolean _isNew;
 	private int _pageIndex = 0;
 
 	
@@ -69,6 +75,7 @@ public class FormDetailsActivity extends RoboActivity implements ISaveEventResul
 	@InjectView(R.id.activity_form_details_next) Button _nextButton; 
 	@InjectView(R.id.activity_form_details_finish) Button _finishButton; 
 	
+	@Inject IIdentityProvider _identityProvider;
 	@Inject IEventRepository _eventRepository;
 	@Inject IEventExecuter _eventExecuter;
 	@Inject IEventFactory _eventEventFactory;
@@ -94,6 +101,11 @@ public class FormDetailsActivity extends RoboActivity implements ISaveEventResul
 			_pageIndex = savedInstanceState.getInt(STATE_PAGE_INDEX);
 		if(savedInstanceState != null && savedInstanceState.get(EXTRA_FORM_DATA) != null)
 			_formData = (FormData)savedInstanceState.get(EXTRA_FORM_DATA);
+		if(savedInstanceState != null && savedInstanceState.get(EXTRA_CLIENT) != null)
+			_formData = (FormData)savedInstanceState.get(EXTRA_CLIENT);
+		if(savedInstanceState != null && savedInstanceState.get(EXTRA_IS_NEW) != null )
+			_isNew = savedInstanceState.getBoolean(EXTRA_IS_NEW);
+
 		
 		_gestureDetector = new GestureDetector(this, new FlingGestureDetector());
 		_gestureListener = new GuestureListener(_gestureDetector);
@@ -117,6 +129,8 @@ public class FormDetailsActivity extends RoboActivity implements ISaveEventResul
 		outState.putSerializable(EXTRA_FORM_DEFINITION, _form);
 		outState.putInt(STATE_PAGE_INDEX, _pageIndex);
 		outState.putSerializable(EXTRA_FORM_DATA, _formData);
+		outState.putSerializable(EXTRA_CLIENT, _client);
+		outState.putSerializable(EXTRA_IS_NEW, _isNew);
 	}
 	
 	public void onHomeClick(View view)
@@ -156,20 +170,27 @@ public class FormDetailsActivity extends RoboActivity implements ISaveEventResul
 	
 	public void onFinishClick(View view)
 	{
-		saveFieldData();
-		_form.fillFormData(_formData);
-	
-		CreateFormDataRequest request = new CreateFormDataRequest();
-		request.Data = _formData;
+		if( _isNew )
+		{
+			saveFieldData();
+			_form.fillFormData(_formData);
 		
-		if( _jobProvider.get() != null )
-			request.JobId = _jobProvider.get().JobId;
+			CreateFormDataRequest request = new CreateFormDataRequest();
+			request.Data = _formData;
 			
-		Event event = _eventEventFactory.create(request, EventType.FormCompleted);
-		try {
-			UIHelper.SaveEvent(this, this, _eventRepository, _eventExecuter, event, _form.Title);
-		} catch (Exception e) {
-			onError(e);
+			if( _jobProvider.get() != null )
+				request.JobId = _jobProvider.get().JobId;
+				
+			Event event = _eventEventFactory.create(request, EventType.FormCompleted);
+			try {
+				UIHelper.SaveEvent(this, this, _eventRepository, _eventExecuter, event, _form.Title);
+			} catch (Exception e) {
+				onError(e);
+			}
+		}
+		else
+		{
+			finish();			
 		}
 	}
 	
@@ -194,7 +215,16 @@ public class FormDetailsActivity extends RoboActivity implements ISaveEventResul
 		_container.removeAllViews();
 		
 		if( _formData == null )
+		{
 			_formData = new FormData(_form);
+			_formData.CreatedDate = new Date();
+			try {
+				_formData.CreatedBy = _identityProvider.getCurrent().getCreatedByFormat();
+			} catch (Exception e) {
+				_formData.CreatedBy = "Unknown User";
+			}
+			_formData.ClientId = _client.ClientId;
+		}
 		
 		_form.loadFormData(_formData);
 		
@@ -285,6 +315,7 @@ public class FormDetailsActivity extends RoboActivity implements ISaveEventResul
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         spinner.setAdapter(adapter);
+        spinner.setEnabled(_isNew);
 
 		if(element.Value != null && ! element.Value.equals(""))
 		{
@@ -312,6 +343,8 @@ public class FormDetailsActivity extends RoboActivity implements ISaveEventResul
 		label.setText(element.Label);
 		label.setId(GetNextLabelId());
 		
+		textbox.setEnabled(_isNew);
+		
 		return view;
 	}
 
@@ -325,6 +358,8 @@ public class FormDetailsActivity extends RoboActivity implements ISaveEventResul
 		textbox.setGravity(Gravity.TOP);
 		TextView label = (TextView)view.findViewById(R.id.form_textbox_label);
 		label.setId(GetNextLabelId());
+		
+		textbox.setEnabled(_isNew);
 		
 		textbox.setText(element.Value);
 		textbox.setId(element.Id);
@@ -347,7 +382,8 @@ public class FormDetailsActivity extends RoboActivity implements ISaveEventResul
 		checkbox.setChecked(checked);
 		checkbox.setText(element.Label);
 		checkbox.setId(element.Id);
-		
+		checkbox.setEnabled(_isNew);
+
 		return view;
 	}
 
@@ -374,7 +410,8 @@ public class FormDetailsActivity extends RoboActivity implements ISaveEventResul
 		textbox.setId(element.Id);
 		label.setText(element.Label);
 
-		textbox.setOnClickListener(new DateClickListener());
+		if( _isNew )
+			textbox.setOnClickListener(new DateClickListener());
 
 		return view;
 	}
@@ -396,7 +433,8 @@ public class FormDetailsActivity extends RoboActivity implements ISaveEventResul
 		textbox.setId(element.Id);
 		label.setText(element.Label);
 
-		textbox.setOnClickListener(new TimeClickListener());
+		if( _isNew )
+			textbox.setOnClickListener(new TimeClickListener());
 
 		return view;
 	}
@@ -410,11 +448,14 @@ public class FormDetailsActivity extends RoboActivity implements ISaveEventResul
 		dateTextbox.setClickable(true);
 		dateTextbox.setId(element.Id);
 		
-		dateTextbox.setOnClickListener(new DateClickListener());
+		if( _isNew )
+			dateTextbox.setOnClickListener(new DateClickListener());
 		
 		TextView timeTextbox = (TextView)view.findViewById(R.id.form_datetime_edit_time);
 		timeTextbox.setClickable(true);
-		timeTextbox.setOnClickListener(new TimeClickListener());
+		
+		if( _isNew )
+			timeTextbox.setOnClickListener(new TimeClickListener());
 
 		timeTextbox.setId(GetNextLabelId());
 		_editors.put(element.Id, timeTextbox.getId());
@@ -425,22 +466,9 @@ public class FormDetailsActivity extends RoboActivity implements ISaveEventResul
 		
 		if( element.Value != null && !element.Value.equals(""))
 		{
-			if(element.Value.equals("Now"))
-			{
-				Date date = new Date();
-				dateTextbox.setText(UIHelper.FormatLongDate(date));
-				timeTextbox.setText(UIHelper.FormatTime(date));
-			}
-			else
-			{
-				SimpleDateFormat formatter = new SimpleDateFormat("EEEE, MMMM dd, yyyy HH:mm");
-				
-				try {
-					Date date = formatter.parse(element.Value);
-					dateTextbox.setText(UIHelper.FormatLongDate(date));
-					timeTextbox.setText(UIHelper.FormatTime(date));
-				} catch (ParseException e) { e.printStackTrace(); }
-			}
+			Date date = UIHelper.ParseDateTimeString(element.Value);
+			dateTextbox.setText(UIHelper.FormatLongDate(date));
+			timeTextbox.setText(UIHelper.FormatTime(date));
 		}
 		
 		return view;

@@ -79,7 +79,7 @@ public class FormsActivity  extends RoboListActivity { //implements AsyncQueryLi
 		qaNewForm.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				NavigationHelper.createFormDetails(FormsActivity.this, _selectedFormDefinition);
+				NavigationHelper.createFormDetails(FormsActivity.this, _selectedFormDefinition, _client);
 				_qa.dismiss();
 			}
 		});
