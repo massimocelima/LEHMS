@@ -26,6 +26,7 @@ import com.lehms.controls.*;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.format.DateFormat;
@@ -37,12 +38,15 @@ import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.View.OnClickListener;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
 import roboguice.activity.RoboActivity;
@@ -88,6 +92,7 @@ public class FormDetailsActivity extends RoboActivity implements ISaveEventResul
     private final int LABEL_ID_SEED = 277323;
     private int _labelId = LABEL_ID_SEED;
 	private HashMap<Integer, Integer> _editors = new HashMap<Integer, Integer>();
+	private HashMap<String, Integer> _radioButtons = new HashMap<String, Integer>();
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -261,16 +266,31 @@ public class FormDetailsActivity extends RoboActivity implements ISaveEventResul
 			case DropDown:
 				view = CreateDropDownView(element);
 				break;
+			case RadioButtonList:
+				view = CreateRadioButtonListView(element);
+				break;
 			default:
 				view = CreateTextBoxView(element);
 				break;
 			}
 			
-			if( i == 0 && view != null )
+			if( i == 0 && view != null && _isNew )
 				view.requestFocus();
 
 		}
 		LayoutButtonBar();
+		
+		// If we are viewing a form then hide the soft kayboard
+		if( ! _isNew )
+		{
+			InputMethodManager inputManager = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
+			if( inputManager != null )
+			{
+				View focusedView = this.getCurrentFocus();
+				if( focusedView != null )
+					inputManager.hideSoftInputFromWindow(focusedView.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+			}
+		}
 	}
 
 	private void LayoutButtonBar()
@@ -315,7 +335,8 @@ public class FormDetailsActivity extends RoboActivity implements ISaveEventResul
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         spinner.setAdapter(adapter);
-        spinner.setEnabled(_isNew);
+        spinner.setEnabled(_isNew && ! element.IsReadonly);
+        spinner.setFocusable(_isNew && ! element.IsReadonly);
 
 		if(element.Value != null && ! element.Value.equals(""))
 		{
@@ -330,6 +351,50 @@ public class FormDetailsActivity extends RoboActivity implements ISaveEventResul
 		return view;
 	}
 	
+	private View CreateRadioButtonListView(FormElement element)
+	{
+		LayoutInflater layoutInflater = (LayoutInflater)this.getSystemService(LAYOUT_INFLATER_SERVICE);
+		View view = layoutInflater.inflate(R.layout.form_radio_button_list, _container, true);
+
+		//Spinner spinner = (Spinner)view.findViewById(R.id.form_dropdown_edit);
+		TextView label = (TextView)view.findViewById(R.id.form_radio_button_list_label);
+		RadioGroup radioGroup = (RadioGroup)view.findViewById(R.id.form_radio_button_list_edit);
+		
+		for(int i = 0; i < element.Options.size(); i++)
+		{
+			FormElementOption option = element.Options.get(i);
+			
+	        RadioButton newRadioButton = new RadioButton(this);
+	        newRadioButton.setText(option.Name);
+	        newRadioButton.setEnabled(_isNew && ! element.IsReadonly);
+	        newRadioButton.setFocusable(_isNew && ! element.IsReadonly);
+	        
+	        int id = GetNextLabelId();
+	        newRadioButton.setId(id);
+	        _radioButtons.put(element.Name + option.Name, id);
+	        
+	        LinearLayout.LayoutParams layoutParams = new RadioGroup.LayoutParams(
+	                RadioGroup.LayoutParams.WRAP_CONTENT,
+	                RadioGroup.LayoutParams.WRAP_CONTENT);
+	        
+	        radioGroup.addView(newRadioButton, layoutParams);
+	        
+	        if( element.Value != null && element.Value.equals(option.Name))
+	        	newRadioButton.setChecked(true);
+	        else
+	        	newRadioButton.setChecked(false);
+		}
+		
+		radioGroup.setId(element.Id);
+		radioGroup.setEnabled(_isNew && ! element.IsReadonly);
+		radioGroup.setFocusable(_isNew && ! element.IsReadonly);
+		
+		label.setText(element.Label);
+		label.setId(GetNextLabelId());
+		
+		return view;
+	}
+	
 	private View CreateTextBoxView(FormElement element)
 	{
 		LayoutInflater layoutInflater = (LayoutInflater)this.getSystemService(LAYOUT_INFLATER_SERVICE);
@@ -338,12 +403,23 @@ public class FormDetailsActivity extends RoboActivity implements ISaveEventResul
 		EditText textbox = (EditText)view.findViewById(R.id.form_textbox_edit);
 		TextView label = (TextView)view.findViewById(R.id.form_textbox_label);
 		
-		textbox.setText(element.Value);
+		if(element.Value != null && ! element.Value.equals(""))
+		{
+			if(element.Value.equals("[USER]"))
+			{
+				try { textbox.setText(_identityProvider.getCurrent().getCreatedByFormat()); }
+				catch (Exception ex) { textbox.setText(element.Value); }
+			}
+			else
+				textbox.setText(element.Value);
+		}
+		
 		textbox.setId(element.Id);
 		label.setText(element.Label);
 		label.setId(GetNextLabelId());
 		
-		textbox.setEnabled(_isNew);
+		textbox.setEnabled(_isNew && ! element.IsReadonly);
+		textbox.setFocusable(_isNew && ! element.IsReadonly);
 		
 		return view;
 	}
@@ -359,7 +435,8 @@ public class FormDetailsActivity extends RoboActivity implements ISaveEventResul
 		TextView label = (TextView)view.findViewById(R.id.form_textbox_label);
 		label.setId(GetNextLabelId());
 		
-		textbox.setEnabled(_isNew);
+		textbox.setEnabled(_isNew && ! element.IsReadonly);
+		textbox.setFocusable(_isNew && ! element.IsReadonly);
 		
 		textbox.setText(element.Value);
 		textbox.setId(element.Id);
@@ -382,7 +459,8 @@ public class FormDetailsActivity extends RoboActivity implements ISaveEventResul
 		checkbox.setChecked(checked);
 		checkbox.setText(element.Label);
 		checkbox.setId(element.Id);
-		checkbox.setEnabled(_isNew);
+		checkbox.setEnabled(_isNew && ! element.IsReadonly);
+		checkbox.setFocusable(_isNew && ! element.IsReadonly);
 
 		return view;
 	}
@@ -410,7 +488,7 @@ public class FormDetailsActivity extends RoboActivity implements ISaveEventResul
 		textbox.setId(element.Id);
 		label.setText(element.Label);
 
-		if( _isNew )
+		if( _isNew && ! element.IsReadonly )
 			textbox.setOnClickListener(new DateClickListener());
 
 		return view;
@@ -426,14 +504,18 @@ public class FormDetailsActivity extends RoboActivity implements ISaveEventResul
 		TextView label = (TextView)view.findViewById(R.id.form_time_label);
 		label.setId(GetNextLabelId());
 		
-		if(element.Value.equals("Now") )
-			textbox.setText(UIHelper.FormatTime(new Date()));
-		else
-			textbox.setText(element.Value);
+		if( element.Value != null && !element.Value.equals(""))
+		{
+			if(element.Value.equals("Now") )
+				textbox.setText(UIHelper.FormatTime(new Date()));
+			else
+				textbox.setText(element.Value);
+		}
+		
 		textbox.setId(element.Id);
 		label.setText(element.Label);
 
-		if( _isNew )
+		if( _isNew && ! element.IsReadonly )
 			textbox.setOnClickListener(new TimeClickListener());
 
 		return view;
@@ -448,13 +530,13 @@ public class FormDetailsActivity extends RoboActivity implements ISaveEventResul
 		dateTextbox.setClickable(true);
 		dateTextbox.setId(element.Id);
 		
-		if( _isNew )
+		if( _isNew && ! element.IsReadonly )
 			dateTextbox.setOnClickListener(new DateClickListener());
 		
 		TextView timeTextbox = (TextView)view.findViewById(R.id.form_datetime_edit_time);
 		timeTextbox.setClickable(true);
 		
-		if( _isNew )
+		if( _isNew && ! element.IsReadonly )
 			timeTextbox.setOnClickListener(new TimeClickListener());
 
 		timeTextbox.setId(GetNextLabelId());
@@ -518,9 +600,28 @@ public class FormDetailsActivity extends RoboActivity implements ISaveEventResul
 				else
 					element.Value = "";
 				break;
+			case RadioButtonList:
+				element.Value = "";
+				RadioGroup radioGroup = (RadioGroup)findViewById(element.Id);
+				for(int index = 0; index < element.Options.size(); index++ )
+				{
+					FormElementOption elementOption = element.Options.get(index);
+					int readioButtonId = _radioButtons.get(element.Name + elementOption.Name);
+					RadioButton radioButton = (RadioButton)radioGroup.findViewById(readioButtonId);
+					if(radioButton.isChecked())
+						element.Value = elementOption.Value;
+				}
+				break;
+			case Label:
+				// Do nothing - we do not need to save the label data
+				break;
+			case ImageDrawable:
+				break;
+			case ImagePicker:
+				break;
 			default:
-				EditText defaultText = (EditText)findViewById(element.Id);
-				element.Value = defaultText.getText().toString();
+				//EditText defaultText = (EditText)findViewById(element.Id);
+				//element.Value = defaultText.getText().toString();
 				break;
 			}
 		}

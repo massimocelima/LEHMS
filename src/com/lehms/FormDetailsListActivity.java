@@ -184,7 +184,7 @@ public class FormDetailsListActivity extends RoboListActivity  {
 	    		_context = context;
 	    		
 	            _progressDialog = new ProgressDialog(context);
-	            _progressDialog.setMessage("Loading progress notes for client...");
+	            _progressDialog.setMessage("Loading " + _formDefinition.Title + " for client...");
 	            _progressDialog.setIndeterminate(true);
 	            _progressDialog.setCancelable(true);
 	            
@@ -295,7 +295,7 @@ public class FormDetailsListActivity extends RoboListActivity  {
 	    		_context = context;
 	    		
 	            _progressDialog = new ProgressDialog(context);
-	            _progressDialog.setMessage("Loading progress notes for client...");
+	            _progressDialog.setMessage("Loading " + _formDefinition.Title + " details...");
 	            _progressDialog.setIndeterminate(true);
 	            _progressDialog.setCancelable(true);
 	            

@@ -30,6 +30,7 @@ public class FormData implements Serializable {
 
     public Date CreatedDate;
     public String CreatedBy;
+    public UUID AttachmentId;
     
     public FormDataElement getDataElement(String name)
     {

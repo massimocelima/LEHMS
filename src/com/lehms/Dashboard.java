@@ -349,7 +349,7 @@ public class Dashboard extends RoboActivity implements OnGestureListener
 		PendingIntent loggerIntent = PendingIntent.getBroadcast(this, 0,new Intent(this, AlarmReceiver.class), 0);
 		manager.cancel(loggerIntent);
 			
-		long duration = 1000 * 60;
+		long duration = 10000 * 60;
 		manager.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP,
 				SystemClock.elapsedRealtime(), duration, loggerIntent);
 	}

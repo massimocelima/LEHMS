@@ -15,7 +15,13 @@ public class FormElement implements Serializable  {
 	public List<FormElementOption> Options;
 	// Legacy - used to map this item to the older style of form elements
 	public String Code;
-	
+    public Boolean IsReadonly;
+
+    
+    public FormElement()
+    {
+    	IsReadonly = false;
+    }
 	
 	public Boolean IsEditable()
 	{
