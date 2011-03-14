@@ -10,6 +10,8 @@ public class CreateFormDataRequest {
 
      public String JobId;
 
+     public UUID AttachmentId;
+     
      /// <summary>
      /// TODO: remove this when new gateway is created
      /// </summary>

@@ -3,6 +3,7 @@ package com.lehms;
 import java.util.List;
 
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.preference.PreferenceManager;
 
 import com.google.inject.Module;
@@ -32,12 +33,16 @@ public class LehmsApplication extends RoboApplication
     public static final String KEY_OFFICE_PHONE_PREF = "application_settings_office_phone_pref";
     public static final String KEY_OFFICE_EMAIL_PREF = "application_settings_office_email_pref";
 
-    public static final String KEY_USER_JOB = "current_user_pref";
-    public static final String KEY_CURRENT_JOB = "current_job_pref";
+    public static final String KEY_USER = "application_data_user";
+    public static final String KEY_JOB = "application_data_job";
+
+    //public static final String KEY_USER_JOB = "current_user_pref";
+    //public static final String KEY_CURRENT_JOB = "current_job_pref";
 
     private JobDetailsDataContract _job = null; 
 	private UserDataContract _currentUser;
-    
+	private ISerializer _serializer;
+	
 	@Override
 	public void onCreate() {
 		super.onCreate();
@@ -45,6 +50,7 @@ public class LehmsApplication extends RoboApplication
 		
 		// Inits the container for the container factory
 		ContainerFactory.SetContainer(new Container(this));
+		_serializer  = ContainerFactory.Create().resolve(ISerializer.class);
 	}
 	
 	@Override
@@ -58,25 +64,33 @@ public class LehmsApplication extends RoboApplication
 		modules.add(new ConfigurationModule(this));
 	}
 	
-	public void Logout() 
-	{
-		_currentUser = null;
-	}
-
 	@Override
 	public UserDataContract getCurrent() throws Exception {
-		// TODO Auto-generated method stub
+/*		
+		if( _currentUser == null )
+		{
+	        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+			String userString = sharedPref.getString(KEY_USER, null);
+			if( userString != null && ! userString.equals(""))
+				_currentUser = _serializer.Deserializer(userString, UserDataContract.class);
+		}
+*/		
 		return _currentUser;
 	}
 
 	@Override
 	public void setCurrent(UserDataContract user) throws Exception {
 		_currentUser = user;
+/*        Editor editor = PreferenceManager.getDefaultSharedPreferences(this).edit();
+        if( user != null )
+        	editor.putString(KEY_USER, _serializer.Serializer(user));
+        else
+        	editor.putString(KEY_USER, "");*/
 	}
 
 	@Override
 	public void logout() throws Exception {
-		_currentUser = null;
+		setCurrent(null);
 	}
 
 	@Override
@@ -164,12 +178,40 @@ public class LehmsApplication extends RoboApplication
 
 	@Override
 	public JobDetailsDataContract get() {
+		/*
+		if( _job == null )
+		{
+	        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+			String jobString = sharedPref.getString(KEY_JOB, null);
+			if( jobString != null && ! jobString.equals(""))
+			{
+				try {
+					_job = _serializer.Deserializer(jobString, JobDetailsDataContract.class);
+				} catch (Exception e) {
+					_job = null;
+				}
+			}
+		}
+		*/
 		return _job;
 	}
 
 	@Override
 	public void set(JobDetailsDataContract job) {
 		_job = job;
+		/*
+        Editor editor = PreferenceManager.getDefaultSharedPreferences(this).edit();
+        if( job != null )
+        {
+			try {
+				editor.putString(KEY_JOB, _serializer.Serializer(job));
+			} catch (Exception e) {
+	        	editor.putString(KEY_JOB, "");
+			}
+        }
+		else
+        	editor.putString(KEY_JOB, "");
+        	*/
 	}
 
 }

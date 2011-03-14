@@ -329,9 +329,9 @@ public class Dashboard extends RoboActivity implements OnGestureListener
 
 
 	@Override
-	public void onBackPressed() {
-		super.onBackPressed();
-		
+	protected void onDestroy() {
+		super.onDestroy();
+
 		if(_authorisationProvider.isAuthorised(Permission.Track))
 		{
 	        Intent serviceIntent = new Intent(this, GPSLoggerService.class);
@@ -341,6 +341,16 @@ public class Dashboard extends RoboActivity implements OnGestureListener
 		AlarmManager manager = (AlarmManager)getSystemService(Service.ALARM_SERVICE);
 		PendingIntent loggerIntent = PendingIntent.getBroadcast(this, 0,new Intent(this,AlarmReceiver.class), 0);
 		manager.cancel(loggerIntent);
+		
+		try {
+			_identityProvider.setCurrent(null);
+		} catch (Exception e) {}
+	}
+	
+	@Override
+	public void onBackPressed() {
+		super.onBackPressed();
+		onDestroy();
 	}
 	
 	private void StartDataSynchService()

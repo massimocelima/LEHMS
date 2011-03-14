@@ -4,6 +4,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 import com.lehms.messages.dataContracts.AddressDataContract;
 import com.lehms.messages.dataContracts.ClientDataContract;
@@ -35,6 +36,11 @@ import android.widget.Toast;
 public class UIHelper {
 
 	private UIHelper() {}
+	
+	public static UUID EmptyUUID()
+	{
+		return UUID.fromString("00000000-0000-0000-0000-000000000000");
+	}
 	
 	public static void ShowToast(Context context, String message)
 	{

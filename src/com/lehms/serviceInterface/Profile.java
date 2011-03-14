@@ -63,6 +63,11 @@ public class Profile {
 	{
 		return GetBaseUrl() + "/FormDataList";
 	}
+	
+	public String GetFormDataAttachmentResourceEndPoint()
+	{
+		return GetBaseUrl() + "/FormDataAttachment";
+	}
 
 	public String GetBaseUrl()
 	{
