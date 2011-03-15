@@ -7,4 +7,9 @@ public class ClientSummaryDataContract implements Serializable {
      public String ClientId;
      public String FirstName;
      public String LastName;
+     
+    @Override
+    public String toString() {
+    	return FirstName + " " + LastName;
+    }
 }

@@ -425,7 +425,11 @@ public class JobDetailsActivity extends RoboActivity {
 		qaTakeAPicture.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				NavigationHelper.goTakePicture(JobDetailsActivity.this, GetJob().Client.ClientId);
+				ClientSummaryDataContract client = new ClientSummaryDataContract();
+				client.ClientId = GetJob().Client.ClientId;
+				client.FirstName = GetJob().Client.FirstName;
+				client.LastName = GetJob().Client.LastName;
+				NavigationHelper.goTakePicture(JobDetailsActivity.this, client);
 				_quickActions.dismiss();
 			}
 		});

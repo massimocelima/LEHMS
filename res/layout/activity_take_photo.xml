@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/home_root"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    >
+ 
+   <LinearLayout style="@style/TitleBar">
+        
+		<ImageButton style="@style/TitleBarAction"
+            android:contentDescription="Home"
+            android:src="@drawable/ic_title_home"
+            android:onClick="onHomeClick" />
+        
+        <ImageView style="@style/TitleBarSeparator" />
+        <TextView 
+	        android:id="@+id/title_bar_title"
+        	style="@style/TitleBarText" 
+        	android:text="Take a Photo" />
+        <!-- <View style="@style/TitleBarSpring" /> -->
+
+		<ImageView style="@style/TitleBarSeparator" />
+        <ImageButton style="@style/TitleBarAction"
+            android:contentDescription="Emergency"
+            android:src="@drawable/ic_title_emergency"
+            android:onClick="onEmergencyClick" />
+            
+    </LinearLayout>
+ 
+     <LinearLayout 
+        style="@style/HeaderContainer">
+
+		<ImageView 
+			android:layout_height="wrap_content" 
+			android:layout_width="wrap_content" 
+			android:src="@drawable/dashboard_btn_camera_pressed"></ImageView>
+			
+	    <LinearLayout 
+		    android:orientation="vertical"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:layout_weight="1"
+		    >
+			
+			<TextView 
+				android:id="@+id/activity_take_photo_title"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:text="Take a Photo"
+		        android:maxLines="1"
+		        android:ellipsize="end"
+		        style="@style/HeaderTitle" />
+	   		<TextView 
+				android:id="@+id/activity_take_photo_sub_title"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:text="Please select the client and type of photo"
+		        style="@style/HeaderSubTitle" />
+        </LinearLayout>
+
+	</LinearLayout>
+	
+	<ScrollView
+	  android:layout_width="fill_parent"
+	  android:layout_height="wrap_content"
+	  android:layout_weight="1"
+	  android:id="@+id/activity_take_photo_scroll_view"
+	  >
+	  
+	    <LinearLayout
+	    	android:id="@+id/activity_take_photo_container"
+			android:layout_width="fill_parent"
+		  	android:layout_height="fill_parent"
+		  	android:orientation="vertical">
+		  	
+		  	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+			    android:orientation="vertical"
+			    android:layout_width="fill_parent"
+			    android:layout_height="wrap_content"
+				style="@style/FormItem"
+			    >
+			
+				<TextView 
+				    android:layout_width="fill_parent"
+				    android:layout_height="wrap_content"
+				  	android:textAppearance="?android:attr/textAppearanceSmall" 
+				  	android:textColor="?android:attr/textColorPrimary"
+				  	android:text="Please select a client:" 
+				>
+				</TextView>
+				
+				<Spinner
+					android:id="@+id/activity_take_photo_clients"
+				    android:layout_width="fill_parent"
+				    android:layout_height="wrap_content"
+			        android:drawSelectorOnTop="true"
+			        android:textAppearance="?android:attr/textAppearanceSmall" 
+				  	android:textColor="?android:attr/textColorPrimary" 
+				>
+				</Spinner>
+
+				<TextView 
+					android:id="@+id/activity_take_photo_clients_selected"
+				    android:layout_width="fill_parent"
+				    android:layout_height="wrap_content"
+				  	android:textAppearance="?android:attr/textAppearanceSmall" 
+				  	android:textColor="?android:attr/textColorPrimary" 
+				  	android:visibility="gone"
+				>
+				</TextView>
+
+			</LinearLayout>
+
+		  	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+			    android:orientation="vertical"
+			    android:layout_width="fill_parent"
+			    android:layout_height="wrap_content"
+				style="@style/FormItem"
+			    >
+			
+				<TextView 
+				    android:layout_width="fill_parent"
+				    android:layout_height="wrap_content"
+				  	android:textAppearance="?android:attr/textAppearanceSmall" 
+				  	android:textColor="?android:attr/textColorPrimary"
+				  	android:text="Please select the type of photo:" 
+				>
+				</TextView>
+				
+				<Spinner
+					android:id="@+id/activity_take_photo_type"
+				    android:layout_width="fill_parent"
+				    android:layout_height="wrap_content"
+			        android:drawSelectorOnTop="true"
+			        android:textAppearance="?android:attr/textAppearanceSmall" 
+				  	android:textColor="?android:attr/textColorPrimary" 
+				>
+				</Spinner>
+
+			</LinearLayout>
+		  	
+		</LinearLayout>
+			
+	</ScrollView>
+
+	
+	<LinearLayout
+		android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        style="@android:style/ButtonBar"
+        >
+
+
+	    <Button 
+			android:id="@+id/activity_take_photo_cancel"
+			android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:onClick="onCancelClick"
+	        android:text="Cancel" />
+	        
+	    <Button 
+			android:id="@+id/activity_take_photo_take"
+			android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:drawableRight="@drawable/quick_actions_ic_camera"
+	        android:onClick="onTakeClick"
+	        android:text="Take Photo" />
+
+	    <Button 
+			android:id="@+id/activity_take_photo_view_photos"
+			android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:onClick="onViewPhotosClick"
+	        android:text="View Photos" />
+	
+	</LinearLayout>
+	
+	
+</LinearLayout>

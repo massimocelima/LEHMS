@@ -62,8 +62,6 @@ public class Dashboard extends RoboActivity implements OnGestureListener
 	private GestureDetector _gestureDetector;
     private GuestureListener _gestureListener;
 	
-    private int CAPTURE_PICTURE_INTENT = 1;
-    
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -147,13 +145,13 @@ public class Dashboard extends RoboActivity implements OnGestureListener
                 		UIHelper.MakeCall( _officeContactProvider.getOfficePhoneNumber(), Dashboard.this);
                 		break;
                 	case 1:
-                		UIHelper.OpenEmail(Dashboard.this, _officeContactProvider.getOfficeEmail());
+                		NavigationHelper.sendEmail(Dashboard.this, _officeContactProvider.getOfficeEmail());
                 		break;
                 	case 2:
                 		UIHelper.OpenCall(Dashboard.this);
                 		break;
                 	case 3:
-                		UIHelper.OpenEmail(Dashboard.this, null);
+                		NavigationHelper.sendEmail(Dashboard.this, null);
                 		break;
                 	}
                 	
@@ -217,37 +215,10 @@ public class Dashboard extends RoboActivity implements OnGestureListener
 		//UIHelper.ShowUnderConstructionMessage(this);
 	}
 	
-	private Uri _capturedImageURI;
 	
 	public void onCameraClick(View view)
 	{
-		//TODO Get the image and do something with it
-        String fileName = "temp.jpg";
-        ContentValues values = new ContentValues();
-        values.put(MediaStore.Images.Media.TITLE, fileName);
-        _capturedImageURI = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);            
-        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        intent.putExtra(MediaStore.EXTRA_OUTPUT, _capturedImageURI);
-        startActivityForResult(intent, CAPTURE_PICTURE_INTENT);
-	}
-	
-	protected void onActivityResult(int requestCode, int resultCode, Intent data) 
-	{
-
-		if( requestCode == CAPTURE_PICTURE_INTENT)
-		{
-			if( resultCode == -1 )
-			{
-		        String[] projection = { MediaStore.Images.Media.DATA};              
-		        Cursor cursor = managedQuery(_capturedImageURI, projection, null, null, null);              
-		        int column_index_data = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);              
-		        cursor.moveToFirst();              
-		        String capturedImageFilePath = cursor.getString(column_index_data);
-		        
-		        UIHelper.ShowAlertDialog(this, "Picture saved", "The picture was saved to " + capturedImageFilePath);
-			}
-		}
-        
+		NavigationHelper.goTakePicture(this);
 	}
 	
 	public void onEmergencyClick(View view)
@@ -343,7 +314,7 @@ public class Dashboard extends RoboActivity implements OnGestureListener
 		manager.cancel(loggerIntent);
 		
 		try {
-			_identityProvider.setCurrent(null);
+			//_identityProvider.logout();
 		} catch (Exception e) {}
 	}
 	

@@ -2,12 +2,13 @@ package com.lehms.messages;
 
 import java.util.UUID;
 
+import com.lehms.messages.dataContracts.AttachmentDataContract;
 import com.lehms.messages.formDefinition.FormData;
 
 public class CreateFormDataRequest {
 
      public FormData Data;
-
+     
      public String JobId;
 
      public UUID AttachmentId;

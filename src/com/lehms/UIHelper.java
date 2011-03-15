@@ -1,5 +1,6 @@
 package com.lehms;
 
+import java.io.File;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -8,6 +9,8 @@ import java.util.UUID;
 
 import com.lehms.messages.dataContracts.AddressDataContract;
 import com.lehms.messages.dataContracts.ClientDataContract;
+import com.lehms.messages.dataContracts.ClientSummaryDataContract;
+import com.lehms.messages.dataContracts.PhotoType;
 import com.lehms.messages.dataContracts.ProgressNoteDataContract;
 import com.lehms.persistence.Event;
 import com.lehms.persistence.IEventRepository;
@@ -28,6 +31,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Environment;
 import android.text.format.DateFormat;
 import android.text.format.DateUtils;
 import android.view.View;
@@ -40,6 +44,54 @@ public class UIHelper {
 	public static UUID EmptyUUID()
 	{
 		return UUID.fromString("00000000-0000-0000-0000-000000000000");
+	}
+
+	public static String GetPhotoDirectory() throws Exception
+	{
+        String path = Environment.getExternalStorageDirectory().getAbsolutePath(); 
+        path += "/lehms/photos/";
+
+        File directory = new File(path);
+        if( !directory.exists())
+        {
+        	if( ! directory.mkdirs() )
+        		throw new Exception("Could not create file");
+        }
+        return path;
+	}
+	
+	public static String GetClientPhotoDirectory(String clientId, PhotoType type) throws Exception
+	{
+        String path = Environment.getExternalStorageDirectory().getAbsolutePath(); 
+        path += "/lehms/photos/" + clientId + "/" + type.toString();
+
+        File directory = new File(path);
+        if( !directory.exists())
+        {
+        	if( ! directory.mkdirs() )
+        		throw new Exception("Could not create file");
+        }
+        return path;
+	}
+	
+	public static String GetClientPhotoPath(String clientId, UUID photoId, PhotoType type) throws Exception
+	{
+		return GetClientPhotoDirectory(clientId, type) + "/" + photoId.toString() + ".png";
+	}
+
+	public static String GetClientPhotoPath(String clientId, UUID photoId, PhotoType type, String ext) throws Exception
+	{
+		return GetClientPhotoDirectory(clientId, type) + "/" + photoId.toString() + "." + ext;
+	}
+
+	public static String GetFormImagePath(UUID attachmentId)
+	{
+        String path = Environment.getExternalStorageDirectory().getAbsolutePath(); 
+        path += "/lehms/images/" + attachmentId.toString() +  ".png";
+        File directory = new File(path).getParentFile();
+        if( !directory.exists())
+        	directory.mkdirs();
+        return path;
 	}
 	
 	public static void ShowToast(Context context, String message)
@@ -173,21 +225,6 @@ public class UIHelper {
 	{
 		Intent intent = new Intent(Intent.ACTION_CALL_BUTTON);
 		context.startActivity(intent);
-	}
-	
-	public static void OpenEmail(Context context, String recipient)
-	{
-		Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND);
-		emailIntent.setType("plain/text");
-		if( recipient != null && !recipient.equals(""))
-			emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL, new String[]{recipient} ); //new String[]{"to@email.com"});
-		emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "");   
-		emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, "");
-		context.startActivity(Intent.createChooser(emailIntent, "Send mail..."));
-		
-		//Uri uri = Uri.fromFile(new File(Environment.getExternalStorageDirectory(), FILENAME));
-		//Uri.parse("file://"+ sPhotoFileName));
-		//emailIntent.putExtra(Intent.EXTRA_STREAM, uri);
 	}
 	
 	public static void SaveEvent(Activity context,

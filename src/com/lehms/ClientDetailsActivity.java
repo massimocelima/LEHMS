@@ -8,6 +8,7 @@ import com.lehms.controls.ActionItem;
 import com.lehms.controls.QuickAction;
 import com.lehms.messages.GetClientDetailsResponse;
 import com.lehms.messages.dataContracts.ClientDataContract;
+import com.lehms.messages.dataContracts.ClientSummaryDataContract;
 import com.lehms.serviceInterface.IClientResource;
 import com.lehms.util.AppLog;
 
@@ -388,7 +389,11 @@ public class ClientDetailsActivity  extends RoboActivity { //implements AsyncQue
 		qaTakeAPicture.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				NavigationHelper.goTakePicture(ClientDetailsActivity.this, _clientId + "");
+				ClientSummaryDataContract client = new ClientSummaryDataContract();
+				client.ClientId = _clientResponse.Client.ClientId;
+				client.FirstName = _clientResponse.Client.FirstName;
+				client.LastName = _clientResponse.Client.LastName;
+				NavigationHelper.goTakePicture(ClientDetailsActivity.this, client);
 				_quickAction.dismiss();
 			}
 		});

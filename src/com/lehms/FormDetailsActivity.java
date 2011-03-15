@@ -1,6 +1,9 @@
 package com.lehms;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.text.DateFormatSymbols;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -13,6 +16,7 @@ import java.util.UUID;
 
 import com.google.inject.Inject;
 import com.lehms.messages.CreateFormDataRequest;
+import com.lehms.messages.dataContracts.AttachmentDataContract;
 import com.lehms.messages.dataContracts.ClientDataContract;
 import com.lehms.messages.dataContracts.ProgressNoteDataContract;
 import com.lehms.messages.formDefinition.*;
@@ -21,9 +25,11 @@ import com.lehms.persistence.EventType;
 import com.lehms.persistence.IEventFactory;
 import com.lehms.persistence.IEventRepository;
 import com.lehms.serviceInterface.IActiveJobProvider;
+import com.lehms.serviceInterface.IDepartmentProvider;
 import com.lehms.serviceInterface.IEventExecuter;
 import com.lehms.serviceInterface.IFormDataResource;
 import com.lehms.serviceInterface.IIdentityProvider;
+import com.lehms.serviceInterface.IProfileProvider;
 import com.lehms.controls.*;
 
 import android.app.DatePickerDialog;
@@ -31,7 +37,10 @@ import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Paint;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.text.format.DateFormat;
 import android.view.GestureDetector;
 import android.view.Gravity;
@@ -48,6 +57,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -85,8 +95,9 @@ public class FormDetailsActivity extends RoboActivity implements ISaveEventResul
 	@InjectView(R.id.activity_form_details_finish) Button _finishButton; 
 	@InjectView(R.id.activity_forms_details_scroll_view) ScrollView _scroll;
 
-	
 	@Inject IIdentityProvider _identityProvider;
+	@Inject IDepartmentProvider _departmentProvider;
+	@Inject IProfileProvider _profileProvider;
 	@Inject IEventRepository _eventRepository;
 	@Inject IEventExecuter _eventExecuter;
 	@Inject IEventFactory _eventEventFactory;
@@ -192,7 +203,7 @@ public class FormDetailsActivity extends RoboActivity implements ISaveEventResul
 			
 			if( _jobProvider.get() != null )
 				request.JobId = _jobProvider.get().JobId;
-				
+			
 			Event event = _eventEventFactory.create(request, EventType.FormCompleted);
 			try {
 				UIHelper.SaveEvent(this, this, _eventRepository, _eventExecuter, event, _form.Title);
@@ -481,14 +492,23 @@ public class FormDetailsActivity extends RoboActivity implements ISaveEventResul
 	{
 		LayoutInflater layoutInflater = (LayoutInflater)this.getSystemService(LAYOUT_INFLATER_SERVICE);
 		View view = layoutInflater.inflate(R.layout.form_image_drawable, _container, true);
-		View container = findViewById(R.id.activity_forms_details_container);
 		
 		_imageDrawableView = (ImageDrawableView)view.findViewById(R.id.form_image_drawable_edit);
+		ImageView img =  (ImageView)view.findViewById(R.id.form_image_drawable_view);
 		
-		// Disable Scrolling by setting up an OnTouchListener
-		view.setOnTouchListener(new DisableOnTouchListenerWhenDrawing());
+		// Disable Scrolling when drawing by setting up an OnTouchListener of the scroll view to bubble the event to the image view
 		_scroll.setOnTouchListener(new DisableOnTouchListenerWhenDrawing());
-		container.setOnTouchListener(new DisableOnTouchListenerWhenDrawing());
+		
+		if( _isNew )
+		{
+			_imageDrawableView.setVisibility(View.VISIBLE);
+			img.setVisibility(View.GONE);
+		}
+		else
+		{
+			_imageDrawableView.setVisibility(View.GONE);
+			img.setVisibility(View.VISIBLE);
+		}
 		
 		if( _formData.AttachmentId == null || _formData.AttachmentId.equals(UIHelper.EmptyUUID()) )
 		{
@@ -496,11 +516,20 @@ public class FormDetailsActivity extends RoboActivity implements ISaveEventResul
 		}
 		else
 		{
-			String fileName = _formData.AttachmentId.toString() + ".png";
-			try {
-				_imageDrawableView.open(this, fileName);
-			} catch (FileNotFoundException e) {
-				_imageDrawableView.open(this, R.drawable.observation_male_female);
+			if( _isNew )
+			{
+				String path = UIHelper.GetFormImagePath(_formData.AttachmentId);
+				try {
+					_imageDrawableView.open(path);
+				} catch (FileNotFoundException e) {
+					_imageDrawableView.open(this, R.drawable.observation_male_female);
+				}
+			}
+			else
+			{
+				String url = _profileProvider.getProfile().GetFormDataAttachmentResourceEndPoint() + "/" + _formData.AttachmentId.toString();
+				DrawableManager dManager = new DrawableManager(_identityProvider, _departmentProvider);
+				dManager.fetchDrawableOnThread(url, img);
 			}
 		}
 
@@ -697,13 +726,18 @@ public class FormDetailsActivity extends RoboActivity implements ISaveEventResul
 				// Do nothing - we do not need to save the label data
 				break;
 			case ImageDrawable:
-				_formData.AttachmentId = UUID.randomUUID();
-				String fileName = _formData.AttachmentId.toString() + ".png";
-
-				try {
-					_imageDrawableView.save(this, fileName);
-				} catch (Exception e) {
-					UIHelper.ShowAlertDialog(this, "Error creating image", "Error creating image: "  + e.getMessage());
+				if( _isNew )
+				{
+					if( _formData.AttachmentId == null )
+						_formData.AttachmentId = UUID.randomUUID();
+					
+					String path = UIHelper.GetFormImagePath(_formData.AttachmentId);
+	
+					try {
+						_imageDrawableView.save(path);
+					} catch (Exception e) {
+						UIHelper.ShowAlertDialog(this, "Error creating image", "Error creating image: "  + e.getMessage());
+					}
 				}
 				break;
 			case ImagePicker:

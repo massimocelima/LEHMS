@@ -2,10 +2,13 @@ package com.lehms.serviceInterface.implementation;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.UUID;
 
 import com.google.inject.Inject;
+import com.lehms.UIHelper;
 import com.lehms.messages.CreateFormDataRequest;
+import com.lehms.messages.CreateFormDataResponse;
 import com.lehms.messages.CreateProgressNoteRequest;
 import com.lehms.messages.dataContracts.AttachmentDataContract;
 import com.lehms.messages.dataContracts.ProgressNoteDataContract;
@@ -16,6 +19,7 @@ import com.lehms.persistence.IEventRepository;
 import com.lehms.serviceInterface.IEventExecuter;
 import com.lehms.serviceInterface.IFormDataResource;
 import com.lehms.serviceInterface.IProgressNoteResource;
+import com.lehms.util.AppLog;
 
 public class EventExecuter implements IEventExecuter {
 
@@ -79,7 +83,53 @@ public class EventExecuter implements IEventExecuter {
 	public Object ExecuteCreateFormEvent(Event event) throws Exception
 	{
 		CreateFormDataRequest request = (CreateFormDataRequest)event.Data;
-		return _formDataResource.Create(request);
+		CreateFormDataResponse response = null;
+		
+		if( request.Data.AttachmentId != null )
+		{
+			AttachmentDataContract attachment = new AttachmentDataContract();
+			attachment.Name = request.Data.AttachmentId.toString();
+			attachment.Id = request.Data.AttachmentId;
+			try {
+				String path = UIHelper.GetFormImagePath(request.Data.AttachmentId);
+				attachment.Data = ReadToEnd(path);
+				response = _formDataResource.Create(request, attachment);
+				
+				File file = new File(path);
+				file.delete();
+				
+			} catch (Exception e) {
+				AppLog.error("Error getting attachemtn for form", e);
+				response = _formDataResource.Create(request);
+			}
+		}
+		else
+			response = _formDataResource.Create(request);
+		
+		return response;
+	}
+	
+	
+	private byte[] ReadToEnd(String filename) throws IOException
+	{
+		FileInputStream stream = new FileInputStream(filename);
+
+		File file = new File(filename);
+		byte[] buff = new byte[(int)file.length()];
+		int index = 0;
+		int read = 0;
+		
+		index = stream.read(buff);
+		
+		while(index < file.length())
+		{
+			read = stream.read(buff);
+			if(read == -1)
+				break;
+			index += read;
+		}
+
+		return buff;
 	}
 
 }

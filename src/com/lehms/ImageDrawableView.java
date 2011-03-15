@@ -1,8 +1,10 @@
 package com.lehms;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -73,17 +75,27 @@ public class ImageDrawableView extends View {
         mCanvas = new Canvas(mBitmap);
     }
 
-    public void open(Context context, String filename) throws FileNotFoundException
+    public void open(String filename) throws FileNotFoundException
     {
-        FileInputStream in = context.openFileInput(filename);
+        FileInputStream in = new FileInputStream(filename); //context.openFileInput(filename);
         mBitmap = BitmapFactory.decodeStream(in);
         mBitmap = mBitmap.copy(Bitmap.Config.ARGB_8888, true);
         mCanvas = new Canvas(mBitmap);
     }
 
-    public void save(Context context, String filename) throws FileNotFoundException
+    public void save(String filename) throws IOException
     {
-        FileOutputStream out = context.openFileOutput(filename, Context.MODE_PRIVATE);
+	    // make sure the directory we plan to store the recording in exists
+	    File directory = new File(filename).getParentFile();
+	    if (!directory.exists())
+	    	directory.mkdirs();
+    	
+    	File file = new File(filename);
+    	if(file.exists())
+    		file.delete();
+   		file.createNewFile();
+    	
+        FileOutputStream out = new FileOutputStream(filename); // context.openFileOutput(filename, Context.MODE_PRIVATE);
         mBitmap.compress(Bitmap.CompressFormat.PNG, 90, out);
     }
     
@@ -94,11 +106,13 @@ public class ImageDrawableView extends View {
     
     @Override
     protected void onDraw(Canvas canvas) {
-        canvas.drawColor(0xFFAAAAAA);
+        canvas.drawColor(0xFFFFFFFF);
         
-        canvas.drawBitmap(mBitmap, 0, 0, mBitmapPaint);
-        
-        canvas.drawPath(mPath, mPaint);
+        if( mBitmap != null )
+        {
+        	canvas.drawBitmap(mBitmap, 0, 0, mBitmapPaint);
+        	canvas.drawPath(mPath, mPaint);
+        }
     }
     
     private float mX, mY;
