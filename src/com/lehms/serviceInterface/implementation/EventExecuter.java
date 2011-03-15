@@ -11,6 +11,7 @@ import com.lehms.messages.CreateFormDataRequest;
 import com.lehms.messages.CreateFormDataResponse;
 import com.lehms.messages.CreateProgressNoteRequest;
 import com.lehms.messages.dataContracts.AttachmentDataContract;
+import com.lehms.messages.dataContracts.PhotoType;
 import com.lehms.messages.dataContracts.ProgressNoteDataContract;
 import com.lehms.messages.formDefinition.FormData;
 import com.lehms.persistence.Event;
@@ -92,6 +93,9 @@ public class EventExecuter implements IEventExecuter {
 			attachment.Id = request.Data.AttachmentId;
 			try {
 				String path = UIHelper.GetFormImagePath(request.Data.AttachmentId);
+				if( ! new File(path).exists() )
+					path = UIHelper.GetClientPhotoPath(request.Data.ClientId, request.Data.AttachmentId, PhotoType.Wound);
+				
 				attachment.Data = ReadToEnd(path);
 				response = _formDataResource.Create(request, attachment);
 				

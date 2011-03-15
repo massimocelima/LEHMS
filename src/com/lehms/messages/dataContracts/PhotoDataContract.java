@@ -13,4 +13,9 @@ public class PhotoDataContract {
 	public String toString() {
 		return Name;
 	}
+	
+	public String GetId()
+	{
+		return Name.substring(0, Name.indexOf("."));
+	}
 }

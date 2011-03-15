@@ -13,6 +13,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 
 import com.lehms.FormDetailsListActivity;
 import com.lehms.NavigationHelper;
+import com.lehms.UIHelper;
 import com.lehms.messages.dataContracts.UserDataContract;
 import com.lehms.messages.formDefinition.FormData;
 import com.lehms.serviceInterface.IDepartmentProvider;
@@ -57,9 +58,9 @@ public class DrawableManager {
 			InputStream is = fetch(urlString);             
 			Drawable drawable = Drawable.createFromStream(is, "src");             
 			_drawableMap.put(urlString, drawable);             
-			AppLog.debug("got a thumbnail drawable: " + drawable.getBounds() + ", "                     
-					+ drawable.getIntrinsicHeight() + "," + drawable.getIntrinsicWidth() + ", "                     
-					+ drawable.getMinimumHeight() + "," + drawable.getMinimumWidth());             
+			//AppLog.debug("got a thumbnail drawable: " + drawable.getBounds() + ", "                     
+			//		+ drawable.getIntrinsicHeight() + "," + drawable.getIntrinsicWidth() + ", "                     
+			//		+ drawable.getMinimumHeight() + "," + drawable.getMinimumWidth());             
 			return drawable;         
 		} catch (MalformedURLException e) {             
 			Log.e(this.getClass().getSimpleName(), "fetchDrawable failed", e);             
@@ -165,7 +166,14 @@ public class DrawableManager {
 						createDialog("Error", "Error retriving image");
 				}
 				
-				_imageView.setImageDrawable(result);
+				try
+				{
+					_imageView.setImageDrawable(result);
+				}
+				catch(Exception e)
+				{
+					UIHelper.ShowAlertDialog(_context, "Error retriving image", "Error retriving image: " + e);
+				}
 				
 				if( _progressDialog.isShowing() )
 					_progressDialog.dismiss();

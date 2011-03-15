@@ -1,6 +1,8 @@
 package com.lehms;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -27,6 +29,9 @@ import android.content.DialogInterface.OnCancelListener;
 import android.content.DialogInterface.OnClickListener;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Bitmap.CompressFormat;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -276,6 +281,14 @@ public class UIHelper {
 			}
 		}
 		return date;
+	}
+	
+	public static void CompressImage(File file) throws FileNotFoundException
+	{
+		Bitmap bitmap = BitmapFactory.decodeFile(file.toString());
+		file.delete();
+		bitmap = Bitmap.createScaledBitmap(bitmap, bitmap.getWidth() / 2, bitmap.getHeight() / 2, false);
+		bitmap.compress(CompressFormat.JPEG, 60, new FileOutputStream(file));
 	}
 	
 }

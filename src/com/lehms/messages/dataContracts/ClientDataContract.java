@@ -16,4 +16,13 @@ public class ClientDataContract implements Serializable {
      public String EmergencyContact;
      
      public CarerDataContract Carer;
+     
+     public ClientSummaryDataContract createSummary()
+     {
+    	 ClientSummaryDataContract result = new ClientSummaryDataContract();
+    	 result.ClientId = ClientId;
+    	 result.FirstName = FirstName;
+    	 result.LastName = LastName;
+    	 return result;
+     }
 }

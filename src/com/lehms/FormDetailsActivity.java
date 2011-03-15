@@ -76,7 +76,7 @@ import roboguice.activity.RoboActivity;
 import roboguice.inject.InjectExtra;
 import roboguice.inject.InjectView;
 
-public class FormDetailsActivity extends RoboActivity implements ISaveEventResultHandler { 
+public class FormDetailsActivity extends RoboActivity implements ISaveEventResultHandler, IViewIdGenerator { 
 
 	public final static String EXTRA_CLIENT = "client";
 	public final static String EXTRA_FORM_DEFINITION = "form_definition";
@@ -350,7 +350,7 @@ public class FormDetailsActivity extends RoboActivity implements ISaveEventResul
 		View view = layoutInflater.inflate(R.layout.form_label, _container, true);
 		TextView label = (TextView)view.findViewById(R.id.form_label_label);
 		label.setText(element.Label);
-		label.setId(GetNextLabelId());
+		label.setId(getNextId());
 		
 		return view;
 	}
@@ -378,7 +378,7 @@ public class FormDetailsActivity extends RoboActivity implements ISaveEventResul
 
 		spinner.setId(element.Id);
 		label.setText(element.Label);
-		label.setId(GetNextLabelId());
+		label.setId(getNextId());
 		
 		return view;
 	}
@@ -401,7 +401,7 @@ public class FormDetailsActivity extends RoboActivity implements ISaveEventResul
 	        newRadioButton.setEnabled(_isNew && ! element.IsReadonly);
 	        newRadioButton.setFocusable(_isNew && ! element.IsReadonly);
 	        
-	        int id = GetNextLabelId();
+	        int id = getNextId();
 	        newRadioButton.setId(id);
 	        _radioButtons.put(element.Name + option.Name, id);
 	        
@@ -422,7 +422,7 @@ public class FormDetailsActivity extends RoboActivity implements ISaveEventResul
 		radioGroup.setFocusable(_isNew && ! element.IsReadonly);
 		
 		label.setText(element.Label);
-		label.setId(GetNextLabelId());
+		label.setId(getNextId());
 		
 		return view;
 	}
@@ -448,7 +448,7 @@ public class FormDetailsActivity extends RoboActivity implements ISaveEventResul
 		
 		textbox.setId(element.Id);
 		label.setText(element.Label);
-		label.setId(GetNextLabelId());
+		label.setId(getNextId());
 		
 		textbox.setEnabled(_isNew && ! element.IsReadonly);
 		textbox.setFocusable(_isNew && ! element.IsReadonly);
@@ -456,128 +456,38 @@ public class FormDetailsActivity extends RoboActivity implements ISaveEventResul
 		return view;
 	}
 
-	private File _imagePickerFile;
-	
+	private ImagePickerView _imagePickerView = null;
 
 	private View CreateImagePickerView(FormElement element)
 	{
-		LayoutInflater layoutInflater = (LayoutInflater)this.getSystemService(LAYOUT_INFLATER_SERVICE);
-		View view = layoutInflater.inflate(R.layout.form_image_picker, _container, true);
-
-		Spinner spinner = (Spinner)view.findViewById(R.id.form_image_picker_edit);
-		TextView label = (TextView)view.findViewById(R.id.form_image_picker_label);
-		final ImageView image = (ImageView)view.findViewById(R.id.form_image_picker_image);
-		
-		spinner.setOnItemSelectedListener(new OnItemSelectedListener() {
-			@Override
-			public void onItemSelected(AdapterView<?> arg0, View arg1,
-					int position, long arg3) {
-				try {
-					PhotoDataContract photo = (PhotoDataContract)arg0.getItemAtPosition(position);
-					String path = UIHelper.GetClientPhotoDirectory(_client.ClientId, PhotoType.Wound) + "/" + photo.Name;
-					_formData.AttachmentId = UUID.fromString( photo.Name.substring(0, photo.Name.indexOf(".")));
-					image.setImageURI(Uri.fromFile(new File( path) ));
-					image.setVisibility(View.VISIBLE);
-				} catch (Exception e) {
-					UIHelper.ShowAlertDialog(FormDetailsActivity.this, "Error geting photo", "Error geting photo: " + e);
-				}
-			}
-			@Override
-			public void onNothingSelected(AdapterView<?> arg0) {
-				image.setVisibility(View.GONE);
-			}
-		});
-		
 		try {
-			ArrayAdapter<PhotoDataContract> adapter = new ArrayAdapter<PhotoDataContract>( this, android.R.layout.simple_spinner_item, GetPhotos(PhotoType.Wound));
-			adapter.insert(null, 0);
-	        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-			spinner.setAdapter(adapter);
-			
-			if( _formData.AttachmentId != null )
-			{
-				if( _isNew )
-				{
-					String path = UIHelper.GetClientPhotoPath(_client.ClientId, _formData.AttachmentId, PhotoType.Wound);
-					image.setImageURI(Uri.fromFile(new File(path)));
-				}
-				else
-				{
-					String url = _profileProvider.getProfile().GetFormDataAttachmentResourceEndPoint() + "/" + _formData.AttachmentId.toString();
-					DrawableManager dManager = new DrawableManager(_identityProvider, _departmentProvider);
-					dManager.fetchDrawableOnThread(url, image);
-					image.setVisibility(View.VISIBLE);
-					spinner.setVisibility(View.GONE);
-				}
-			}
-			
-			spinner.setId(element.Id);
-			label.setText(element.Label);
-			label.setId(GetNextLabelId());
-			
-			spinner.setEnabled(_isNew && ! element.IsReadonly);
-			spinner.setFocusable(_isNew && ! element.IsReadonly);
-
-		} catch (Exception e) {
-			UIHelper.ShowAlertDialog(FormDetailsActivity.this, "Error geting photo", "Error geting photo: " + e);
-			AppLog.error("Error geting photo", e);
-		}
-
-		return view;
-	}
 		
-	private ArrayList<PhotoDataContract> GetPhotos(PhotoType type) throws Exception
-	{
-		ArrayList<PhotoDataContract> photoList = new ArrayList<PhotoDataContract>();
-		File file = new File( UIHelper.GetClientPhotoDirectory(_client.ClientId.toString(), type));
-		for(int i = 0; i < file.listFiles().length; i++)
-		{
-			PhotoDataContract photo = new PhotoDataContract();
-			photo.ClientId = _client.ClientId;
-			photo.CreatedDate = new Date( file.listFiles()[i].lastModified() );
-			photo.Name = file.listFiles()[i].getName();
-			photo.Type = type;
-			photoList.add(photo);
+			DrawableManager dManager = new DrawableManager(_identityProvider, _departmentProvider);
+			_imagePickerView = new ImagePickerView(this, 
+					this, 
+					_container, 
+					_client.createSummary(), 
+					_profileProvider, 
+					dManager);
+
+			_imagePickerView.LoadElement(element, element.IsReadonly || ! _isNew, PhotoType.Wound);
+			_imagePickerView.setSelectedFromFormData(_formData, _isNew);
+			
+		} catch (Exception e) {
+			UIHelper.ShowAlertDialog(FormDetailsActivity.this, "Error creating photo picker", "Error creating photo picker: " + e);
+			AppLog.error("Error creating photo picker", e);
 		}
 		
-		return photoList;
+		return _imagePickerView.getView();
 	}
-	
-	protected void onTakeImageClick()
-	{
-		ClientSummaryDataContract client = new ClientSummaryDataContract();
-		client.ClientId = _client.ClientId;
-		client.LastName = _client.LastName;
-		client.FirstName = _client.FirstName;
-		try {
-			_imagePickerFile = NavigationHelper.goTakePicture(this, client, PhotoType.Wound);
-		} catch (Exception e) {
-			UIHelper.ShowAlertDialog(this, "Error tring to take photo", "Error tring to take photo: " + e);
-			AppLog.error("Error tring to take photo", e);
-		}
-	}
-	
 
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) 
 	{
 		if( requestCode == TakePhotoActivity.CAPTURE_PICTURE_INTENT)
 		{
-			if( resultCode == Activity.RESULT_OK )
-			{
-				if( _imagePickerFile.exists() )
-				{
-			        UIHelper.ShowToast(this.getApplicationContext(), "Photo saved to " + _imagePickerFile.toString());
-			        finish();
-				}
-				else
-					UIHelper.ShowToast(this.getApplicationContext(), "Photo has not been saved");
-			}
-			else
-				_imagePickerFile = null;
+			_imagePickerView.onActivityResult(requestCode, resultCode, data);
 		}
-        
 	}
-	
 	
 	private View CreateMultilineTextBoxView(FormElement element)
 	{
@@ -588,7 +498,7 @@ public class FormDetailsActivity extends RoboActivity implements ISaveEventResul
 		textbox.setMinLines(3);
 		textbox.setGravity(Gravity.TOP);
 		TextView label = (TextView)view.findViewById(R.id.form_textbox_label);
-		label.setId(GetNextLabelId());
+		label.setId(getNextId());
 		
 		textbox.setEnabled(_isNew && ! element.IsReadonly);
 		textbox.setFocusable(_isNew && ! element.IsReadonly);
@@ -722,7 +632,7 @@ public class FormDetailsActivity extends RoboActivity implements ISaveEventResul
 		TextView textbox = (TextView)view.findViewById(R.id.form_date_edit);
 		textbox.setClickable(true);
 		TextView label = (TextView)view.findViewById(R.id.form_date_label);
-		label.setId(GetNextLabelId());
+		label.setId(getNextId());
 		
 		if( element.Value != null && !element.Value.equals(""))
 		{
@@ -748,7 +658,7 @@ public class FormDetailsActivity extends RoboActivity implements ISaveEventResul
 		TextView textbox = (TextView)view.findViewById(R.id.form_time_edit);
 		textbox.setClickable(true);
 		TextView label = (TextView)view.findViewById(R.id.form_time_label);
-		label.setId(GetNextLabelId());
+		label.setId(getNextId());
 		
 		if( element.Value != null && !element.Value.equals(""))
 		{
@@ -785,11 +695,11 @@ public class FormDetailsActivity extends RoboActivity implements ISaveEventResul
 		if( _isNew && ! element.IsReadonly )
 			timeTextbox.setOnClickListener(new TimeClickListener());
 
-		timeTextbox.setId(GetNextLabelId());
+		timeTextbox.setId(getNextId());
 		_editors.put(element.Id, timeTextbox.getId());
 
 		TextView label = (TextView)view.findViewById(R.id.form_datetime_label);
-		label.setId(GetNextLabelId());
+		label.setId(getNextId());
 		label.setText(element.Label);
 		
 		if( element.Value != null && !element.Value.equals(""))
@@ -877,6 +787,11 @@ public class FormDetailsActivity extends RoboActivity implements ISaveEventResul
 				}
 				break;
 			case ImagePicker:
+				PhotoDataContract photo = _imagePickerView.getSelectedPhoto();
+				if( photo == null )
+					_formData.AttachmentId = null;
+				else
+					_formData.AttachmentId = UUID.fromString(photo.GetId()); 
 				break;
 			default:
 				//EditText defaultText = (EditText)findViewById(element.Id);
@@ -885,9 +800,10 @@ public class FormDetailsActivity extends RoboActivity implements ISaveEventResul
 			}
 		}
 	}
-	
-	private int GetNextLabelId()
-	{
+
+
+	@Override
+	public int getNextId() {
 		_labelId += 1;
 		return _labelId;
 	}
@@ -989,6 +905,5 @@ public class FormDetailsActivity extends RoboActivity implements ISaveEventResul
 			return false;
 		}
 	}
-
 	
 }

@@ -53,7 +53,7 @@
 				android:id="@+id/activity_client_details_title"
 		        android:layout_width="wrap_content"
 		        android:layout_height="wrap_content"
-		        android:text="Job Details"
+		        android:text="Client Details"
 		        style="@style/HeaderTitle" />
 	   		<TextView 
 				android:id="@+id/activity_client_details_sub_title"
