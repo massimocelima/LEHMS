@@ -76,7 +76,7 @@ public class UIHelper {
 	
 	public static String GetClientPhotoPath(String clientId, UUID photoId, PhotoType type) throws Exception
 	{
-		return GetClientPhotoDirectory(clientId, type) + "/" + photoId.toString() + ".png";
+		return GetClientPhotoDirectory(clientId, type) + "/" + photoId.toString() + ".jpg";
 	}
 
 	public static String GetClientPhotoPath(String clientId, UUID photoId, PhotoType type, String ext) throws Exception

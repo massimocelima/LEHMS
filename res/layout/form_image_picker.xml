@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+	style="@style/FormItem"
+    >
+
+	<TextView 
+		android:id="@+id/form_image_picker_label"
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	  	android:textAppearance="?android:attr/textAppearanceSmall" 
+	  	android:textColor="?android:attr/textColorPrimary" 
+	>
+	</TextView>
+	
+	<Spinner
+		android:id="@+id/form_image_picker_edit"
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+        android:drawSelectorOnTop="true"
+        android:textAppearance="?android:attr/textAppearanceSmall" 
+	  	android:textColor="?android:attr/textColorPrimary" 
+	>
+	</Spinner>
+	
+	<Button 
+		android:id="@+id/form_image_picker_take"
+	    android:drawableLeft="@drawable/quick_actions_ic_camera"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:text="Take Photo"
+	    ></Button>
+
+	<ImageView 
+		android:id="@+id/form_image_picker_image"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"></ImageView>
+	
+</LinearLayout>

@@ -18,6 +18,9 @@ import com.google.inject.Inject;
 import com.lehms.messages.CreateFormDataRequest;
 import com.lehms.messages.dataContracts.AttachmentDataContract;
 import com.lehms.messages.dataContracts.ClientDataContract;
+import com.lehms.messages.dataContracts.ClientSummaryDataContract;
+import com.lehms.messages.dataContracts.PhotoDataContract;
+import com.lehms.messages.dataContracts.PhotoType;
 import com.lehms.messages.dataContracts.ProgressNoteDataContract;
 import com.lehms.messages.formDefinition.*;
 import com.lehms.persistence.Event;
@@ -30,8 +33,11 @@ import com.lehms.serviceInterface.IEventExecuter;
 import com.lehms.serviceInterface.IFormDataResource;
 import com.lehms.serviceInterface.IIdentityProvider;
 import com.lehms.serviceInterface.IProfileProvider;
+import com.lehms.util.AppLog;
 import com.lehms.controls.*;
 
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
@@ -52,6 +58,8 @@ import android.view.ViewConfiguration;
 import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -288,7 +296,10 @@ public class FormDetailsActivity extends RoboActivity implements ISaveEventResul
 				view = CreateRadioButtonListView(element);
 				break;
 			case ImageDrawable:
-				CreateImageDrawableView(element);
+				view = CreateImageDrawableView(element);
+				break;
+			case ImagePicker:
+				view = CreateImagePickerView(element);
 				break;
 			default:
 				view = CreateTextBoxView(element);
@@ -445,6 +456,129 @@ public class FormDetailsActivity extends RoboActivity implements ISaveEventResul
 		return view;
 	}
 
+	private File _imagePickerFile;
+	
+
+	private View CreateImagePickerView(FormElement element)
+	{
+		LayoutInflater layoutInflater = (LayoutInflater)this.getSystemService(LAYOUT_INFLATER_SERVICE);
+		View view = layoutInflater.inflate(R.layout.form_image_picker, _container, true);
+
+		Spinner spinner = (Spinner)view.findViewById(R.id.form_image_picker_edit);
+		TextView label = (TextView)view.findViewById(R.id.form_image_picker_label);
+		final ImageView image = (ImageView)view.findViewById(R.id.form_image_picker_image);
+		
+		spinner.setOnItemSelectedListener(new OnItemSelectedListener() {
+			@Override
+			public void onItemSelected(AdapterView<?> arg0, View arg1,
+					int position, long arg3) {
+				try {
+					PhotoDataContract photo = (PhotoDataContract)arg0.getItemAtPosition(position);
+					String path = UIHelper.GetClientPhotoDirectory(_client.ClientId, PhotoType.Wound) + "/" + photo.Name;
+					_formData.AttachmentId = UUID.fromString( photo.Name.substring(0, photo.Name.indexOf(".")));
+					image.setImageURI(Uri.fromFile(new File( path) ));
+					image.setVisibility(View.VISIBLE);
+				} catch (Exception e) {
+					UIHelper.ShowAlertDialog(FormDetailsActivity.this, "Error geting photo", "Error geting photo: " + e);
+				}
+			}
+			@Override
+			public void onNothingSelected(AdapterView<?> arg0) {
+				image.setVisibility(View.GONE);
+			}
+		});
+		
+		try {
+			ArrayAdapter<PhotoDataContract> adapter = new ArrayAdapter<PhotoDataContract>( this, android.R.layout.simple_spinner_item, GetPhotos(PhotoType.Wound));
+			adapter.insert(null, 0);
+	        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+			spinner.setAdapter(adapter);
+			
+			if( _formData.AttachmentId != null )
+			{
+				if( _isNew )
+				{
+					String path = UIHelper.GetClientPhotoPath(_client.ClientId, _formData.AttachmentId, PhotoType.Wound);
+					image.setImageURI(Uri.fromFile(new File(path)));
+				}
+				else
+				{
+					String url = _profileProvider.getProfile().GetFormDataAttachmentResourceEndPoint() + "/" + _formData.AttachmentId.toString();
+					DrawableManager dManager = new DrawableManager(_identityProvider, _departmentProvider);
+					dManager.fetchDrawableOnThread(url, image);
+					image.setVisibility(View.VISIBLE);
+					spinner.setVisibility(View.GONE);
+				}
+			}
+			
+			spinner.setId(element.Id);
+			label.setText(element.Label);
+			label.setId(GetNextLabelId());
+			
+			spinner.setEnabled(_isNew && ! element.IsReadonly);
+			spinner.setFocusable(_isNew && ! element.IsReadonly);
+
+		} catch (Exception e) {
+			UIHelper.ShowAlertDialog(FormDetailsActivity.this, "Error geting photo", "Error geting photo: " + e);
+			AppLog.error("Error geting photo", e);
+		}
+
+		return view;
+	}
+		
+	private ArrayList<PhotoDataContract> GetPhotos(PhotoType type) throws Exception
+	{
+		ArrayList<PhotoDataContract> photoList = new ArrayList<PhotoDataContract>();
+		File file = new File( UIHelper.GetClientPhotoDirectory(_client.ClientId.toString(), type));
+		for(int i = 0; i < file.listFiles().length; i++)
+		{
+			PhotoDataContract photo = new PhotoDataContract();
+			photo.ClientId = _client.ClientId;
+			photo.CreatedDate = new Date( file.listFiles()[i].lastModified() );
+			photo.Name = file.listFiles()[i].getName();
+			photo.Type = type;
+			photoList.add(photo);
+		}
+		
+		return photoList;
+	}
+	
+	protected void onTakeImageClick()
+	{
+		ClientSummaryDataContract client = new ClientSummaryDataContract();
+		client.ClientId = _client.ClientId;
+		client.LastName = _client.LastName;
+		client.FirstName = _client.FirstName;
+		try {
+			_imagePickerFile = NavigationHelper.goTakePicture(this, client, PhotoType.Wound);
+		} catch (Exception e) {
+			UIHelper.ShowAlertDialog(this, "Error tring to take photo", "Error tring to take photo: " + e);
+			AppLog.error("Error tring to take photo", e);
+		}
+	}
+	
+
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) 
+	{
+		if( requestCode == TakePhotoActivity.CAPTURE_PICTURE_INTENT)
+		{
+			if( resultCode == Activity.RESULT_OK )
+			{
+				if( _imagePickerFile.exists() )
+				{
+			        UIHelper.ShowToast(this.getApplicationContext(), "Photo saved to " + _imagePickerFile.toString());
+			        finish();
+				}
+				else
+					UIHelper.ShowToast(this.getApplicationContext(), "Photo has not been saved");
+			}
+			else
+				_imagePickerFile = null;
+		}
+        
+	}
+	
+	
 	private View CreateMultilineTextBoxView(FormElement element)
 	{
 		LayoutInflater layoutInflater = (LayoutInflater)this.getSystemService(LAYOUT_INFLATER_SERVICE);
@@ -527,13 +661,15 @@ public class FormDetailsActivity extends RoboActivity implements ISaveEventResul
 			}
 			else
 			{
-				String url = _profileProvider.getProfile().GetFormDataAttachmentResourceEndPoint() + "/" + _formData.AttachmentId.toString();
-				DrawableManager dManager = new DrawableManager(_identityProvider, _departmentProvider);
-				dManager.fetchDrawableOnThread(url, img);
+				if( _formData.AttachmentId != null )
+				{
+					String url = _profileProvider.getProfile().GetFormDataAttachmentResourceEndPoint() + "/" + _formData.AttachmentId.toString();
+					DrawableManager dManager = new DrawableManager(_identityProvider, _departmentProvider);
+					dManager.fetchDrawableOnThread(url, img);
+				}
 			}
 		}
 
-		
         return view;
 	}
 	

@@ -8,5 +8,9 @@ public class PhotoDataContract {
 	public Date CreatedDate;
 	public PhotoType Type;
 	public String ClientId;
-	
+
+	@Override
+	public String toString() {
+		return Name;
+	}
 }
