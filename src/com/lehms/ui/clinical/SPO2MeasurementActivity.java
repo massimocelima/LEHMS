@@ -24,7 +24,7 @@ public class SPO2MeasurementActivity  extends RoboActivity {
 	
 	@InjectView(R.id.activity_title) TextView _title;
 	@InjectView(R.id.activity_sub_title) TextView _subtitle;
-	@InjectView(R.id.activity_sub_title2) TextView _subtitle2;
+	//@InjectView(R.id.activity_sub_title2) TextView _subtitle2;
 
 	@InjectView(R.id.activity_measurment_spo2_edit) EditText _oxegenEdit;
 	@InjectView(R.id.activity_measurment_spo2_pulse_edit) EditText _pulseEdit;
@@ -39,7 +39,7 @@ public class SPO2MeasurementActivity  extends RoboActivity {
 			_client = (ClientSummaryDataContract)savedInstanceState.get(EXTRA_CLIENT);
 		
 		_subtitle.setText(_client.FirstName + " " + _client.LastName);
-		_subtitle2.setText(_client.ClientId);
+		//_subtitle2.setText(_client.ClientId);
 	}
 	
 	@Override

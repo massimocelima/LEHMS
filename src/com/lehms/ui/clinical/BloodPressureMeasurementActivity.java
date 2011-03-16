@@ -23,7 +23,7 @@ public class BloodPressureMeasurementActivity  extends RoboActivity {
 	
 	@InjectView(R.id.activity_title) TextView _title;
 	@InjectView(R.id.activity_sub_title) TextView _subtitle;
-	@InjectView(R.id.activity_sub_title2) TextView _subtitle2;
+	//@InjectView(R.id.activity_sub_title2) TextView _subtitle2;
 
 	@InjectView(R.id.activity_measurment_blood_pressure_systolic_edit) EditText _systolicEdit;
 	@InjectView(R.id.activity_measurment_blood_pressure_diastolic_edit) EditText _diastolicEdit;
@@ -38,7 +38,7 @@ public class BloodPressureMeasurementActivity  extends RoboActivity {
 			_client = (ClientSummaryDataContract)savedInstanceState.get(EXTRA_CLIENT);
 		
 		_subtitle.setText(_client.FirstName + " " + _client.LastName);
-		_subtitle2.setText(_client.ClientId);
+		//_subtitle2.setText(_client.ClientId);
 	}
 	
 	@Override

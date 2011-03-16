@@ -44,7 +44,7 @@
 				android:id="@+id/activity_title"
 		        android:layout_width="wrap_content"
 		        android:layout_height="wrap_content"
-		        android:text="Temperature Measurement"
+		        android:text="Temperature"
 		        style="@style/HeaderTitle" />
 	   		<TextView 
 				android:id="@+id/activity_sub_title"

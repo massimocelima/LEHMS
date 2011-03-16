@@ -24,42 +24,7 @@
             android:onClick="onEmergencyClick" />
             
     </LinearLayout>
-  
-    <LinearLayout 
-        style="@style/HeaderContainer">
 
-		<ImageView 
-			android:layout_height="wrap_content" 
-			android:layout_width="wrap_content" 
-			android:src="@drawable/dashboard_btn_clinical_details_device"></ImageView>
-			
-	    <LinearLayout 
-		    android:orientation="vertical"
-		    android:layout_width="wrap_content"
-		    android:layout_height="wrap_content"
-		    android:layout_weight="1"
-		    >
-			
-			<TextView 
-				android:id="@+id/activity_title"
-		        android:layout_width="wrap_content"
-		        android:layout_height="wrap_content"
-		        android:text="Blood Suger Level Measurement"
-		        style="@style/HeaderTitle" />
-	   		<TextView 
-				android:id="@+id/activity_sub_title"
-		        android:layout_width="wrap_content"
-		        android:layout_height="wrap_content"
-		        style="@style/HeaderSubTitle" />
-	   		<TextView 
-				android:id="@+id/activity_sub_title2"
-		        android:layout_width="wrap_content"
-		        android:layout_height="wrap_content"
-		        style="@style/HeaderSubTitle" />
-        </LinearLayout>
-
-	</LinearLayout>
-	
   	<ScrollView
 	  android:layout_width="fill_parent"
 	  android:layout_height="wrap_content"
@@ -67,96 +32,138 @@
 	  android:id="@+id/activity_scroll_view"
 	  >
 	  
-		<LinearLayout
-		   	android:id="@+id/activity_container"
-			android:layout_width="fill_parent"
-		  	android:layout_height="fill_parent"
-		  	android:orientation="vertical">
-		  	
-		  	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-			    android:orientation="vertical"
-			    android:layout_width="fill_parent"
-			    android:layout_height="wrap_content"
-				style="@style/FormItem"
-			    >
-			
-				<TextView 
-					android:id="@+id/activity_measurment_blood_suger_level_label"
-				    android:layout_width="fill_parent"
+		<LinearLayout 
+	        android:layout_height="fill_parent" 
+			android:layout_width="fill_parent" 
+		    android:orientation="vertical"
+	        >
+  
+		    <LinearLayout 
+		        style="@style/HeaderContainer">
+		
+				<ImageView 
+					android:layout_height="wrap_content" 
+					android:layout_width="wrap_content" 
+					android:src="@drawable/dashboard_btn_clinical_details_device"></ImageView>
+					
+			    <LinearLayout 
+				    android:orientation="vertical"
+				    android:layout_width="wrap_content"
 				    android:layout_height="wrap_content"
-				  	android:textAppearance="?android:attr/textAppearanceSmall" 
-				  	android:textColor="?android:attr/textColorPrimary" 
-				  	android:text="BSL (mmol/l)"
-				>
-				</TextView>
-				<EditText 
-					android:id="@+id/activity_measurment_blood_suger_level_edit"
-				    android:layout_width="fill_parent"
-				    android:layout_height="wrap_content"
-				  	android:textAppearance="?android:attr/textAppearanceSmall" 
-				  	android:textColor="?android:attr/textColorPrimary" 
-				  	android:inputType="number"
-				>
-				</EditText>
-				
+				    android:layout_weight="1"
+				    >
+					
+					<TextView 
+						android:id="@+id/activity_title"
+				        android:layout_width="wrap_content"
+				        android:layout_height="wrap_content"
+				        android:text="Blood Suger Level"
+				        style="@style/HeaderTitle" />
+			   		<TextView 
+						android:id="@+id/activity_sub_title"
+				        android:layout_width="wrap_content"
+				        android:layout_height="wrap_content"
+				        style="@style/HeaderSubTitle" />
+			   		<TextView 
+						android:id="@+id/activity_sub_title2"
+				        android:layout_width="wrap_content"
+				        android:layout_height="wrap_content"
+				        style="@style/HeaderSubTitle" />
+		        </LinearLayout>
+		
 			</LinearLayout>
-
-		  	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-			    android:orientation="vertical"
-			    android:layout_width="fill_parent"
-			    android:layout_height="wrap_content"
-				style="@style/FormItem"
-			    >
-			
-				<TextView 
+	
+			<LinearLayout
+			   	android:id="@+id/activity_container"
+				android:layout_width="fill_parent"
+			  	android:layout_height="fill_parent"
+			  	android:orientation="vertical">
+			  	
+			  	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+				    android:orientation="vertical"
 				    android:layout_width="fill_parent"
 				    android:layout_height="wrap_content"
-				  	android:textAppearance="?android:attr/textAppearanceSmall" 
-				  	android:textColor="?android:attr/textColorPrimary" 
-				  	android:text="Insulin (UI/mL)"
-				>
-				</TextView>
-				<EditText 
-					android:id="@+id/activity_measurment_blood_suger_level_insulin_edit"
-				    android:layout_width="fill_parent"
-				    android:layout_height="wrap_content"
-				  	android:textAppearance="?android:attr/textAppearanceSmall" 
-				  	android:textColor="?android:attr/textColorPrimary" 
-				  	android:inputType="number"
-				>
-				</EditText>
+					style="@style/FormItem"
+				    >
 				
-			</LinearLayout>
-
-		  	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-			    android:orientation="vertical"
-			    android:layout_width="fill_parent"
-			    android:layout_height="wrap_content"
-				style="@style/FormItem"
-			    >
-			
-				<TextView 
+					<TextView 
+						android:id="@+id/activity_measurment_blood_suger_level_label"
+					    android:layout_width="fill_parent"
+					    android:layout_height="wrap_content"
+					  	android:textAppearance="?android:attr/textAppearanceSmall" 
+					  	android:textColor="?android:attr/textColorPrimary" 
+					  	android:text="BSL (mmol/l)"
+					>
+					</TextView>
+					<EditText 
+						android:id="@+id/activity_measurment_blood_suger_level_edit"
+					    android:layout_width="fill_parent"
+					    android:layout_height="wrap_content"
+					  	android:textAppearance="?android:attr/textAppearanceSmall" 
+					  	android:textColor="?android:attr/textColorPrimary" 
+					  	android:inputType="number"
+					>
+					</EditText>
+					
+				</LinearLayout>
+	
+			  	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+				    android:orientation="vertical"
 				    android:layout_width="fill_parent"
 				    android:layout_height="wrap_content"
-				  	android:textAppearance="?android:attr/textAppearanceSmall" 
-				  	android:textColor="?android:attr/textColorPrimary" 
-				  	android:text="Insulin Type"
-				>
-				</TextView>
-				<Spinner 
-					android:id="@+id/activity_measurment_blood_suger_level_insulin_type_edit"
-				    android:layout_width="fill_parent"
-				    android:layout_height="wrap_content"
-				  	android:textAppearance="?android:attr/textAppearanceSmall" 
-				  	android:textColor="?android:attr/textColorPrimary" 
-				>
-				</Spinner>
+					style="@style/FormItem"
+				    >
 				
+					<TextView 
+					    android:layout_width="fill_parent"
+					    android:layout_height="wrap_content"
+					  	android:textAppearance="?android:attr/textAppearanceSmall" 
+					  	android:textColor="?android:attr/textColorPrimary" 
+					  	android:text="Insulin (UI/mL)"
+					>
+					</TextView>
+					<EditText 
+						android:id="@+id/activity_measurment_blood_suger_level_insulin_edit"
+					    android:layout_width="fill_parent"
+					    android:layout_height="wrap_content"
+					  	android:textAppearance="?android:attr/textAppearanceSmall" 
+					  	android:textColor="?android:attr/textColorPrimary" 
+					  	android:inputType="number"
+					>
+					</EditText>
+					
+				</LinearLayout>
+	
+			  	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+				    android:orientation="vertical"
+				    android:layout_width="fill_parent"
+				    android:layout_height="wrap_content"
+					style="@style/FormItem"
+				    >
+				
+					<TextView 
+					    android:layout_width="fill_parent"
+					    android:layout_height="wrap_content"
+					  	android:textAppearance="?android:attr/textAppearanceSmall" 
+					  	android:textColor="?android:attr/textColorPrimary" 
+					  	android:text="Insulin Type"
+					>
+					</TextView>
+					<Spinner 
+						android:id="@+id/activity_measurment_blood_suger_level_insulin_type_edit"
+					    android:layout_width="fill_parent"
+					    android:layout_height="wrap_content"
+					  	android:textAppearance="?android:attr/textAppearanceSmall" 
+					  	android:textColor="?android:attr/textColorPrimary" 
+					>
+					</Spinner>
+					
+				</LinearLayout>
+	
 			</LinearLayout>
-
-		  	
-		</LinearLayout>
 	  
+		  </LinearLayout>
+		  
 	</ScrollView>
 	
 	<LinearLayout

@@ -25,7 +25,7 @@ public class INRMeasurementActivity  extends RoboActivity {
 	
 	@InjectView(R.id.activity_title) TextView _title;
 	@InjectView(R.id.activity_sub_title) TextView _subtitle;
-	@InjectView(R.id.activity_sub_title2) TextView _subtitle2;
+	//@InjectView(R.id.activity_sub_title2) TextView _subtitle2;
 
 	@InjectView(R.id.activity_measurment_inr_edit) EditText _inrEdit;
 
@@ -39,7 +39,7 @@ public class INRMeasurementActivity  extends RoboActivity {
 			_client = (ClientSummaryDataContract)savedInstanceState.get(EXTRA_CLIENT);
 		
 		_subtitle.setText(_client.FirstName + " " + _client.LastName);
-		_subtitle2.setText(_client.ClientId);
+		//_subtitle2.setText(_client.ClientId);
 	}
 	
 	@Override

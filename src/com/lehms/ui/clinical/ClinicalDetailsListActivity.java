@@ -1,46 +1,34 @@
 package com.lehms.ui.clinical;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.Set;
 
 import com.lehms.NavigationHelper;
 import com.lehms.R;
 import com.lehms.controls.*;
 
-import com.google.inject.Inject;
-import com.lehms.R.drawable;
-import com.lehms.R.id;
-import com.lehms.R.layout;
-import com.lehms.adapters.ClientSummaryAdapter;
-import com.lehms.adapters.JobAdapter;
-import com.lehms.messages.dataContracts.ClientDataContract;
+import com.lehms.UIHelper;
 import com.lehms.messages.dataContracts.ClientSummaryDataContract;
-import com.lehms.messages.dataContracts.RosterDataContract;
-import com.lehms.serviceInterface.IClientResource;
 import com.lehms.ui.clinical.model.MeasurementType;
 import com.lehms.ui.clinical.model.MeasurementTypeAdapter;
 import com.lehms.ui.clinical.model.MeasurementTypeEnum;
-import com.lehms.util.AppLog;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.ProgressDialog;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothSocket;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ListView;
-import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
-import android.widget.Toast;
-import roboguice.activity.RoboActivity;
 import roboguice.activity.RoboListActivity;
 import roboguice.inject.InjectExtra;
 import roboguice.inject.InjectView;
@@ -49,6 +37,8 @@ public class ClinicalDetailsListActivity  extends RoboListActivity { //implement
 
 	public static final String EXTRA_CLIENT = "client";
 	public static final int REQUEST_CODE_MEASUREMENT = 0; 
+	public static final int REQUEST_ENABLE_BT = 1; 
+	public static final int REQUEST_CONNECT_DEVICE = 2; 
 	
 	@InjectExtra(EXTRA_CLIENT) ClientSummaryDataContract _client;
 	
@@ -60,6 +50,10 @@ public class ClinicalDetailsListActivity  extends RoboListActivity { //implement
 	
 	private ListQuickAction _qa;
 	private MeasurementType _selectedMeasurmentType;
+	private BluetoothAdapter _bluetoothAdapter;
+	
+	private BluetoothDevice _device;
+	//private ArrayAdapter _bluetoothDeviceListAdapter;;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -77,7 +71,9 @@ public class ClinicalDetailsListActivity  extends RoboListActivity { //implement
 
 		_subtitle.setText(_client.FirstName + " " + _client.LastName);
 		_subtitle2.setText(_client.ClientId);
-		
+
+		_bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+		//_bluetoothDeviceListAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item);
 		
 		final ActionItem qaViewMeasurments = new ActionItem();
 		
@@ -109,6 +105,10 @@ public class ClinicalDetailsListActivity  extends RoboListActivity { //implement
 		qaTakeAutoMeasurment.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
+				if( ! UIHelper.HasBluetoth() )
+					UIHelper.ShowAlertDialog(ClinicalDetailsListActivity.this, "No bluetooth found on device", "No bluetooth found on device");
+				else
+					openAutoEntryForm();		
 				_qa.dismiss();
 			}
 		});
@@ -173,12 +173,120 @@ public class ClinicalDetailsListActivity  extends RoboListActivity { //implement
 			this.startActivityForResult(intent, REQUEST_CODE_MEASUREMENT);
 	}
 	
+	public void openAutoEntryForm()
+	{
+		if ( !_bluetoothAdapter.isEnabled()) { 
+
+			Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE); 
+		    startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT); 
+		    
+		    //Intent discoverableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE); 
+		    //discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 300); 
+		    //startActivity(discoverableIntent);
+		}
+		else
+		{
+			_device = null;
+			
+			Set<BluetoothDevice> pairedDevices = _bluetoothAdapter.getBondedDevices();
+		    for (BluetoothDevice device : pairedDevices) {
+		    	// If you have already paird with this device then you are good to go
+		    	_device = device;
+		    	//_bluetoothDeviceListAdapter.add(device.getName() + "\n" + device.getAddress());
+		    } 
+
+		    // If we do not have a pared device then initiate descovery
+		    if( _device == null )
+		    {
+	            Intent serverIntent = new Intent(this, DeviceListActivity.class);
+	            startActivityForResult(serverIntent, REQUEST_CONNECT_DEVICE);
+	            
+		    	// Register the BroadcastReceiver 
+		    	//IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND); 
+		    	//registerReceiver(_receiver, filter); // Don't forget to unregister during onDestroy
+		    }
+		}
+	}
+	
+	private void GetDataDromDevice(BluetoothDevice device)
+	{
+		try {
+			
+			BluetoothSocket socket = device.createRfcommSocketToServiceRecord(UIHelper.getApplicationUUID());
+			
+			// In case this is running
+	        _bluetoothAdapter.cancelDiscovery();
+	        
+	        socket.connect(); 
+	        
+	        InputStream socketInputStream = socket.getInputStream(); 
+	        byte[] buffer = new byte[1024];  
+	        int bytes;
+	        while (true) { 
+	            try { 
+	                // Read from the InputStream 
+	                bytes = socketInputStream.read(buffer); 
+	                // Send the obtained bytes to the UI Activity 
+	                //mHandler.obtainMessage(MESSAGE_READ, bytes, -1, buffer) 
+	                        //.sendToTarget(); 
+	            } catch (IOException e) { 
+	                break; 
+	            } 
+	        } 
+	        
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	@Override 
+	protected void onDestroy() {
+		unregisterReceiver(_receiver);
+	};
+
+	// Create a BroadcastReceiver for ACTION_FOUND 
+	private final BroadcastReceiver _receiver = new BroadcastReceiver() { 
+	    public void onReceive(Context context, Intent intent) { 
+	        String action = intent.getAction(); 
+	        // When discovery finds a device 
+	        if (BluetoothDevice.ACTION_FOUND.equals(action)) { 
+	            // Get the BluetoothDevice object from the Intent 
+	            BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE); 
+	            // If this is the device we are looking for then 
+	            // 1dd the name and address to an array adapter to show in a ListView 
+	            //_bluetoothDeviceListAdapter.add(device.getName() + "\n" + device.getAddress());
+	            _device = device;
+	        } 
+	    } 
+	}; 
+
+	
 	@Override
 		protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 			super.onActivityResult(requestCode, resultCode, data);
 			if( requestCode == REQUEST_CODE_MEASUREMENT)
 			{
 				// do something with this result
+			}
+			else if( requestCode == REQUEST_ENABLE_BT )
+			{
+				if(resultCode == RESULT_OK)
+				{
+					openAutoEntryForm();
+				}
+			}
+			else if(requestCode == REQUEST_CONNECT_DEVICE)
+			{
+	            if (resultCode == Activity.RESULT_OK) {
+	                // Get the device MAC address
+	                String address = data.getExtras().getString(DeviceListActivity.EXTRA_DEVICE_ADDRESS);
+	                // Get the BLuetoothDevice object
+	                BluetoothDevice device = _bluetoothAdapter.getRemoteDevice(address);
+	                GetDataDromDevice(device);
+	                // Attempt to connect to the device
+	                //mChatService.connect(device);
+	            }
 			}
 		}
 	

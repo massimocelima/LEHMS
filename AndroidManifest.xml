@@ -123,6 +123,11 @@
                   android:label="@string/app_name" 
                   android:configChanges="orientation" 
                   />
+                  
+		<activity android:name="com.lehms.ui.clinical.DeviceListActivity"
+                  android:label="@string/app_name"
+                  android:theme="@android:style/Theme.Dialog"
+                  android:configChanges="orientation|keyboardHidden" />
 
 		<service android:name="com.lehms.service.GPSLoggerService"/>
 		<service android:name="com.lehms.service.DataSyncService"/>
@@ -139,5 +144,7 @@
     <uses-permission android:name="android.permission.CALL_PHONE" />
 	<uses-permission android:name="android.permission.RECORD_AUDIO"/>
 	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-
+	<uses-permission android:name="android.permission.BLUETOOTH" />
+	<uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+	 
 </manifest>

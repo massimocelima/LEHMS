@@ -22,6 +22,7 @@ import com.lehms.util.AppLog;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -217,7 +218,13 @@ public class UIHelper {
     	NetworkInfo ni = cm.getActiveNetworkInfo();
     	if( ni != null )
     		result = cm.getActiveNetworkInfo().isConnectedOrConnecting();
-    	return result;	}
+    	return result;	
+    }
+	
+	public static Boolean HasBluetoth()
+	{
+		return BluetoothAdapter.getDefaultAdapter() != null; 
+	}
 	
 	public static void MakeCall(String phoneNumber, Context context)
 	{
@@ -289,6 +296,14 @@ public class UIHelper {
 		file.delete();
 		bitmap = Bitmap.createScaledBitmap(bitmap, bitmap.getWidth() / 2, bitmap.getHeight() / 2, false);
 		bitmap.compress(CompressFormat.JPEG, 60, new FileOutputStream(file));
+	}
+	
+	private static UUID _applicationUUID;
+	public static UUID getApplicationUUID()
+	{
+		if( _applicationUUID == null )
+			_applicationUUID = UUID.randomUUID(); 
+		return _applicationUUID;
 	}
 	
 }

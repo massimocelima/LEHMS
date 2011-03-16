@@ -28,7 +28,7 @@ public class BloodSugerLevelMeasurementActivity  extends RoboActivity {
 	
 	@InjectView(R.id.activity_title) TextView _title;
 	@InjectView(R.id.activity_sub_title) TextView _subtitle;
-	@InjectView(R.id.activity_sub_title2) TextView _subtitle2;
+	//@InjectView(R.id.activity_sub_title2) TextView _subtitle2;
 
 	@InjectView(R.id.activity_measurment_blood_suger_level_edit) EditText _bslEdit;
 	@InjectView(R.id.activity_measurment_blood_suger_level_insulin_edit) EditText _insulinEdit;
@@ -44,7 +44,7 @@ public class BloodSugerLevelMeasurementActivity  extends RoboActivity {
 			_client = (ClientSummaryDataContract)savedInstanceState.get(EXTRA_CLIENT);
 		
 		_subtitle.setText(_client.FirstName + " " + _client.LastName);
-		_subtitle2.setText(_client.ClientId);
+		//_subtitle2.setText(_client.ClientId);
 		
         ArrayAdapter<BloodSugerLevelInsulinType> adapter = new ArrayAdapter<BloodSugerLevelInsulinType>( this, android.R.layout.simple_spinner_item, BloodSugerLevelInsulinType.values());
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
