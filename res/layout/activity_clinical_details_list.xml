@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/home_root"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    >
+ 
+   <LinearLayout style="@style/TitleBar">
+        
+		<ImageButton style="@style/TitleBarAction"
+            android:contentDescription="Home"
+            android:src="@drawable/ic_title_home"
+            android:onClick="onHomeClick" />
+        
+        <ImageView style="@style/TitleBarSeparator" />
+        <TextView style="@style/TitleBarText" android:text="Clinical Care Details" />
+        <!-- <View style="@style/TitleBarSpring" /> -->
+
+		<ImageView style="@style/TitleBarSeparator" />
+        <ImageButton style="@style/TitleBarAction"
+            android:contentDescription="Emergency"
+            android:src="@drawable/ic_title_emergency"
+            android:onClick="onEmergencyClick" />
+            
+    </LinearLayout>
+ 
+ 
+    <LinearLayout 
+        style="@style/HeaderContainer">
+
+		<ImageView 
+			android:layout_height="wrap_content" 
+			android:layout_width="wrap_content" 
+			android:src="@drawable/dashboard_btn_clinical_details_pressed"></ImageView>
+			
+	    <LinearLayout 
+		    android:orientation="vertical"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:layout_weight="1"
+		    >
+			
+			<TextView 
+				android:id="@+id/activity_clinical_details_list_title"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:text="Clinical Care Details"
+		        style="@style/HeaderTitle" />
+	   		<TextView 
+				android:id="@+id/activity_clinical_details_list_sub_title"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        style="@style/HeaderSubTitle" />
+	   		<TextView 
+				android:id="@+id/activity_clinical_details_list_sub_title2"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        style="@style/HeaderSubTitle" />
+        </LinearLayout>
+
+	</LinearLayout>
+ 
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:padding="6dip">
+ 
+	     <ListView android:id="@+id/android:list"
+	        android:layout_width="fill_parent"
+	        android:layout_height="fill_parent">
+	     </ListView>
+ 
+    </LinearLayout>
+
+	<LinearLayout
+			android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:orientation="horizontal"
+	        style="@android:style/ButtonBar"
+	        >
+	        
+	    <Button 
+			android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:drawableLeft="@drawable/quick_actions_ic_send"
+	        android:text="Send Measurments To..."
+	        android:onClick="onSendMeasurementsToClick" />
+
+	</LinearLayout>
+  
+</LinearLayout>

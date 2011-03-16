@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    style="@style/ListItem"
+    >
+
+	<ImageView
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+		android:src="@drawable/dashboard_btn_clinical_details_default"
+		android:id="@+id/clinical_measurment_type_item_image"
+	></ImageView>
+
+	<LinearLayout 
+	    android:orientation="vertical"
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    >
+	
+		<TextView 
+			android:id="@+id/clinical_measurment_type_item_name"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		  	android:textAppearance="?android:attr/textAppearanceLarge" 
+		  	android:textColor="?android:attr/textColorPrimary" 
+		>
+		</TextView>
+			
+		<TextView 
+			android:id="@+id/clinical_measurment_type_item_description"
+		    android:layout_width="fill_parent"
+		    android:layout_height="wrap_content"
+		  	style="@style/ListItemDescription"
+		>
+		</TextView>
+			
+	</LinearLayout>
+	
+</LinearLayout>

@@ -10,6 +10,7 @@ import com.lehms.messages.dataContracts.PhotoType;
 import com.lehms.messages.dataContracts.ProgressNoteDataContract;
 import com.lehms.messages.formDefinition.FormData;
 import com.lehms.messages.formDefinition.FormDefinition;
+import com.lehms.ui.clinical.ClinicalDetailsListActivity;
 
 import android.app.Activity;
 import android.content.Context;
@@ -39,14 +40,16 @@ public class NavigationHelper {
 		UIHelper.ShowUnderConstructionMessage(context);
 	}
 	
-	public static void goCliniclaDetails(Context context, String clientId)
-	{
-		UIHelper.ShowUnderConstructionMessage(context);
-	}
-	
 	public static void goNextService(Context context, Long clientId)
 	{
 		UIHelper.ShowUnderConstructionMessage(context);
+	}
+
+	public static void goCliniclaDetails(Context context, ClientSummaryDataContract client)
+	{
+        Intent intent = new Intent(context, ClinicalDetailsListActivity.class);
+        intent.putExtra(ClinicalDetailsListActivity.EXTRA_CLIENT, client);
+        context.startActivity(intent);
 	}
 
 	public static void viewPictures(Context context, ClientSummaryDataContract client)

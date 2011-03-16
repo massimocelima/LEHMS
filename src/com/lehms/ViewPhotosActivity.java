@@ -66,7 +66,7 @@ public class ViewPhotosActivity  extends RoboListActivity { //implements AsyncQu
 	{
 		@Override
 		public int compare(PhotoDataContract arg0, PhotoDataContract arg1) {
-			return arg0.CreatedDate.compareTo(arg1.CreatedDate);
+			return arg1.CreatedDate.compareTo(arg0.CreatedDate);
 		}
 	}
 	

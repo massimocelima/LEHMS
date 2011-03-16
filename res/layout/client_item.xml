@@ -57,8 +57,7 @@
 			android:id="@+id/client_item_client_id"
 		    android:layout_width="fill_parent"
 		    android:layout_height="wrap_content"
-		  	android:textAppearance="?android:attr/textAppearanceSmall" 
-		  	android:textColor="?android:attr/textColorSecondary" 
+		  	style="@style/ListItemDescription"
 		>
 		</TextView>
 			

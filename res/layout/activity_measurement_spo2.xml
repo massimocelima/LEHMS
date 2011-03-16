@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/home_root"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    >
+ 
+   <LinearLayout style="@style/TitleBar">
+        
+		<ImageButton style="@style/TitleBarAction"
+            android:contentDescription="Home"
+            android:src="@drawable/ic_title_home"
+            android:onClick="onHomeClick" />
+        
+        <ImageView style="@style/TitleBarSeparator" />
+        <TextView style="@style/TitleBarText" android:text="Clinical Care Details" />
+        <!-- <View style="@style/TitleBarSpring" /> -->
+
+		<ImageView style="@style/TitleBarSeparator" />
+        <ImageButton style="@style/TitleBarAction"
+            android:contentDescription="Emergency"
+            android:src="@drawable/ic_title_emergency"
+            android:onClick="onEmergencyClick" />
+            
+    </LinearLayout>
+  
+    <LinearLayout 
+        style="@style/HeaderContainer">
+
+		<ImageView 
+			android:layout_height="wrap_content" 
+			android:layout_width="wrap_content" 
+			android:src="@drawable/dashboard_btn_clinical_details_o2"></ImageView>
+			
+	    <LinearLayout 
+		    android:orientation="vertical"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:layout_weight="1"
+		    >
+			
+			<TextView 
+				android:id="@+id/activity_title"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:text="SPO2 Measurement"
+		        style="@style/HeaderTitle" />
+	   		<TextView 
+				android:id="@+id/activity_sub_title"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        style="@style/HeaderSubTitle" />
+	   		<TextView 
+				android:id="@+id/activity_sub_title2"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        style="@style/HeaderSubTitle" />
+        </LinearLayout>
+
+	</LinearLayout>
+	
+  	<ScrollView
+	  android:layout_width="fill_parent"
+	  android:layout_height="wrap_content"
+	  android:layout_weight="1"
+	  android:id="@+id/activity_scroll_view"
+	  >
+	  
+		<LinearLayout
+		   	android:id="@+id/activity_container"
+			android:layout_width="fill_parent"
+		  	android:layout_height="fill_parent"
+		  	android:orientation="vertical">
+		  	
+		  	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+			    android:orientation="vertical"
+			    android:layout_width="fill_parent"
+			    android:layout_height="wrap_content"
+				style="@style/FormItem"
+			    >
+			
+				<TextView 
+				    android:layout_width="fill_parent"
+				    android:layout_height="wrap_content"
+				  	android:textAppearance="?android:attr/textAppearanceSmall" 
+				  	android:textColor="?android:attr/textColorPrimary" 
+				  	android:text="SPO2 (%)"
+				>
+				</TextView>
+				<EditText 
+					android:id="@+id/activity_measurment_spo2_edit"
+				    android:layout_width="fill_parent"
+				    android:layout_height="wrap_content"
+				  	android:textAppearance="?android:attr/textAppearanceSmall" 
+				  	android:textColor="?android:attr/textColorPrimary" 
+				  	android:inputType="numberDecimal"
+				>
+				</EditText>
+				
+			</LinearLayout>
+
+		  	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+			    android:orientation="vertical"
+			    android:layout_width="fill_parent"
+			    android:layout_height="wrap_content"
+				style="@style/FormItem"
+			    >
+			
+				<TextView 
+				    android:layout_width="fill_parent"
+				    android:layout_height="wrap_content"
+				  	android:textAppearance="?android:attr/textAppearanceSmall" 
+				  	android:textColor="?android:attr/textColorPrimary" 
+				  	android:text="Pulse (bpm)"
+				>
+				</TextView>
+				<EditText 
+					android:id="@+id/activity_measurment_spo2_pulse_edit"
+				    android:layout_width="fill_parent"
+				    android:layout_height="wrap_content"
+				  	android:textAppearance="?android:attr/textAppearanceSmall" 
+				  	android:textColor="?android:attr/textColorPrimary" 
+				  	android:inputType="number"
+				>
+				</EditText>
+				
+			</LinearLayout>
+		  	
+		</LinearLayout>
+	  
+	</ScrollView>
+	
+	<LinearLayout
+			android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:orientation="horizontal"
+	        style="@android:style/ButtonBar"
+	        >
+	        
+	    <Button 
+			android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:text="Cancel"
+	        android:onClick="onCancelClick" />
+
+	    <Button 
+			android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:text="Save"
+	        android:onClick="onSaveClick" />
+
+	</LinearLayout>
+  
+</LinearLayout>

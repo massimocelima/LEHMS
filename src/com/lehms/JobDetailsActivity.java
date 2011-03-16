@@ -441,7 +441,7 @@ public class JobDetailsActivity extends RoboActivity {
 		qaClinicalDetails.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				NavigationHelper.goCliniclaDetails(JobDetailsActivity.this, GetJob().Client.ClientId);
+				NavigationHelper.goCliniclaDetails(JobDetailsActivity.this, GetJob().Client.createSummary());
 				_quickActions.dismiss();
 			}
 		});
