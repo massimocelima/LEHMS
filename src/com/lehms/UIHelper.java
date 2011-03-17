@@ -298,12 +298,9 @@ public class UIHelper {
 		bitmap.compress(CompressFormat.JPEG, 60, new FileOutputStream(file));
 	}
 	
-	private static UUID _applicationUUID;
 	public static UUID getApplicationUUID()
 	{
-		if( _applicationUUID == null )
-			_applicationUUID = UUID.randomUUID(); 
-		return _applicationUUID;
+		return UUID.fromString("ea001101-0000-1000-8000-00805F9B34FB");  
 	}
 	
 }

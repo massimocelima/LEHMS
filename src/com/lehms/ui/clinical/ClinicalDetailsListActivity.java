@@ -2,6 +2,7 @@ package com.lehms.ui.clinical;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Set;
 
@@ -22,6 +23,7 @@ import android.bluetooth.BluetoothSocket;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -188,12 +190,14 @@ public class ClinicalDetailsListActivity  extends RoboListActivity { //implement
 		{
 			_device = null;
 			
+			/*
 			Set<BluetoothDevice> pairedDevices = _bluetoothAdapter.getBondedDevices();
 		    for (BluetoothDevice device : pairedDevices) {
 		    	// If you have already paird with this device then you are good to go
 		    	_device = device;
 		    	//_bluetoothDeviceListAdapter.add(device.getName() + "\n" + device.getAddress());
 		    } 
+		    */
 
 		    // If we do not have a pared device then initiate descovery
 		    if( _device == null )
@@ -212,17 +216,22 @@ public class ClinicalDetailsListActivity  extends RoboListActivity { //implement
 	{
 		try {
 			
-			BluetoothSocket socket = device.createRfcommSocketToServiceRecord(UIHelper.getApplicationUUID());
+			//BluetoothSocket socket = device.createRfcommSocketToServiceRecord(UIHelper.getApplicationUUID());
 			
+			Method m = device.getClass().getMethod("createRfcommSocket", new Class[] {int.class});          
+			BluetoothSocket socket = (BluetoothSocket) m.invoke(device, 1); 
+
 			// In case this is running
 	        _bluetoothAdapter.cancelDiscovery();
-	        
+
 	        socket.connect(); 
+
+	        
 	        
 	        InputStream socketInputStream = socket.getInputStream(); 
 	        byte[] buffer = new byte[1024];  
 	        int bytes;
-	        while (true) { 
+	        //while (true) { 
 	            try { 
 	                // Read from the InputStream 
 	                bytes = socketInputStream.read(buffer); 
@@ -230,11 +239,11 @@ public class ClinicalDetailsListActivity  extends RoboListActivity { //implement
 	                //mHandler.obtainMessage(MESSAGE_READ, bytes, -1, buffer) 
 	                        //.sendToTarget(); 
 	            } catch (IOException e) { 
-	                break; 
+	                //break; 
 	            } 
-	        } 
+	        //} 
 	        
-		} catch (IOException e) {
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -252,11 +261,21 @@ public class ClinicalDetailsListActivity  extends RoboListActivity { //implement
 	        // When discovery finds a device 
 	        if (BluetoothDevice.ACTION_FOUND.equals(action)) { 
 	            // Get the BluetoothDevice object from the Intent 
-	            BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE); 
+	            BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+	            
 	            // If this is the device we are looking for then 
 	            // 1dd the name and address to an array adapter to show in a ListView 
 	            //_bluetoothDeviceListAdapter.add(device.getName() + "\n" + device.getAddress());
 	            _device = device;
+	            
+				try {
+					BluetoothSocket socket = _device.createRfcommSocketToServiceRecord(UIHelper.getApplicationUUID());
+					socket.connect();
+					socket.close();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 	        } 
 	    } 
 	}; 
