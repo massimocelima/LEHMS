@@ -21,6 +21,7 @@ import com.lehms.serviceInterface.IEventExecuter;
 import com.lehms.serviceInterface.IFormDataResource;
 import com.lehms.serviceInterface.IProgressNoteResource;
 import com.lehms.util.AppLog;
+import com.lehms.util.StreamExtentions;
 
 public class EventExecuter implements IEventExecuter {
 
@@ -93,13 +94,16 @@ public class EventExecuter implements IEventExecuter {
 			attachment.Id = request.Data.AttachmentId;
 			try {
 				String path = UIHelper.GetFormImagePath(request.Data.AttachmentId);
-				if( ! new File(path).exists() )
+				File file = new File(path);
+				if( ! file.exists() )
+				{
 					path = UIHelper.GetClientPhotoPath(request.Data.ClientId, request.Data.AttachmentId, PhotoType.Wound);
+					file = new File(path);
+				}
 				
-				attachment.Data = ReadToEnd(path);
+				attachment.Data = StreamExtentions.readToEnd(new FileInputStream(path), file.length());
 				response = _formDataResource.Create(request, attachment);
 				
-				File file = new File(path);
 				file.delete();
 				
 			} catch (Exception e) {
@@ -111,29 +115,6 @@ public class EventExecuter implements IEventExecuter {
 			response = _formDataResource.Create(request);
 		
 		return response;
-	}
-	
-	
-	private byte[] ReadToEnd(String filename) throws IOException
-	{
-		FileInputStream stream = new FileInputStream(filename);
-
-		File file = new File(filename);
-		byte[] buff = new byte[(int)file.length()];
-		int index = 0;
-		int read = 0;
-		
-		index = stream.read(buff);
-		
-		while(index < file.length())
-		{
-			read = stream.read(buff);
-			if(read == -1)
-				break;
-			index += read;
-		}
-
-		return buff;
 	}
 
 }

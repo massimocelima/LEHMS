@@ -1,5 +1,10 @@
 package com.lehms;
 
+import java.io.BufferedInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.net.URL;
+
 import roboguice.activity.RoboActivity;
 import roboguice.inject.*;
 
@@ -7,25 +12,35 @@ import com.google.inject.Inject;
 import com.lehms.messages.LoginResponse;
 import com.lehms.serviceInterface.*;
 import com.lehms.util.AppLog;
+import com.lehms.util.StreamExtentions;
 
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.DialogInterface.OnCancelListener;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
 import android.widget.EditText;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 public class LoginActivity extends RoboActivity {
 	
 	@InjectView(R.id.login_username_edit) protected EditText _usernameEditText;
 	@InjectView(R.id.login_password_edit) protected EditText _passwordEditText;
+	@InjectView(R.id.version_label) protected TextView _vaersonLabel;
 
+		
     @Inject protected IAuthenticationProvider _authenticationService;
     @Inject protected IIdentityProvider _identityProvider;
     @Inject protected IProfileProvider _profileProvider;
+    @Inject protected IApkResource _apkResource;
     
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -38,6 +53,7 @@ public class LoginActivity extends RoboActivity {
         _usernameEditText.setText("claude.r");
         _passwordEditText.setText("claude.r");
         
+        _vaersonLabel.setText("Version " + UIHelper.getVersionNumber(this));
     }
 
     public void OnLoginClick(View view)
@@ -100,15 +116,41 @@ public class LoginActivity extends RoboActivity {
             _progressDialog = new ProgressDialog(_context);
             _progressDialog.setMessage("Please wait...");
             _progressDialog.setIndeterminate(true);
-            _progressDialog.setCancelable(false);
-    		
+            _progressDialog.setCancelable(true);
+    	
+            _progressDialog.setOnCancelListener(new OnCancelListener() 
+            {             
+            	@Override             
+            	public void onCancel(DialogInterface dialog) {                 
+            		cancel(true);             
+            	}         
+            });
+            
             _progressDialog.show();
     	}
+    	
+    	@Override
+    	protected void onCancelled() {
+    		super.onCancelled();
+    	}
+
+    	private Boolean _updateRequired = false;
     	
 		@Override
 		protected LoginResponse doInBackground(String... arg0) {
 			try {
-				return _authenticationService.Login(arg0[0], arg0[1]);
+				LoginResponse response = _authenticationService.Login(arg0[0], arg0[1]);
+				
+				if( response.IsAuthenticated )
+				{
+					_identityProvider.setCurrent(response.User);
+					String version = UIHelper.getVersionNumber(_context);
+
+					_updateRequired = ! (_apkResource.GetCurrentVersion().Version.equals(version));
+				}
+
+				return response;
+
 			} catch (Exception e) {
 				AppLog.error(e.getMessage());
 				_exception = e;
@@ -117,8 +159,17 @@ public class LoginActivity extends RoboActivity {
 		}
 		
 		@Override
+		protected void onProgressUpdate(Integer... values) {
+			super.onProgressUpdate(values);
+		}
+		
+		@Override
 		protected void onPostExecute(LoginResponse result) {
 			super.onPostExecute(result);
+			
+			if(isCancelled())
+				return;
+			
 			if( result == null )
 			{
 				_progressDialog.dismiss();
@@ -130,12 +181,20 @@ public class LoginActivity extends RoboActivity {
 					_identityProvider.setCurrent(result.User);
 					_progressDialog.dismiss();
 
-		            // Here we start the next activity, and then call finish()
-		            // so that our own will stop running and be removed from the history stack.
-		            Intent intent = new Intent(_context, Dashboard.class);
-		            _context.startActivity(intent);
-		            
-		            _context.finish();
+					if(_updateRequired)
+					{
+						DownloadFile downloadFile = new DownloadFile(); 
+						downloadFile.execute(null); 
+					}
+					else
+					{
+			            // Here we start the next activity, and then call finish()
+			            // so that our own will stop running and be removed from the history stack.
+			            Intent intent = new Intent(_context, Dashboard.class);
+			            _context.startActivity(intent);
+			            _context.finish();
+					}
+					
 					
 				} catch (Exception e) {
 					_progressDialog.dismiss();
@@ -150,6 +209,91 @@ public class LoginActivity extends RoboActivity {
 			}
 		}
 		
+    }
+    
+    private class DownloadFile extends AsyncTask<Void, Integer, Boolean>{     
+    	
+    	private final static String APK_FILE_NAME = "LEHMS V2.apk";
+    	private Exception _exception;
+    	private ProgressDialog _progressDialog;
+    	
+    	@Override
+    	protected void onPreExecute() {
+    		// TODO Auto-generated method stub
+    		super.onPreExecute();
+    		
+			_progressDialog = new ProgressDialog(LoginActivity.this); 
+			_progressDialog.setMessage("Donwloading update..."); 
+			_progressDialog.setIndeterminate(false); 
+			_progressDialog.setMax(100); 
+			_progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+			_progressDialog.show();
+    	}
+    	
+    	@Override     
+    	protected Boolean doInBackground(Void... v) {         
+    		int count;         
+    		try {
+    			
+    			ContentInputStream inputStream = _apkResource.GetUpdate(UIHelper.getVersionNumber(LoginActivity.this));
+				FileOutputStream outStream = openFileOutput(APK_FILE_NAME, Context.MODE_WORLD_READABLE);
+
+    			// this will be useful so that you can show a tipical 0-100% progress bar             
+    			int lenghtOfFile = (int)inputStream.length;              
+    			// downlod the file             
+    			InputStream input = new BufferedInputStream(inputStream.InputStream);
+    			byte data[] = new byte[1024];              
+    			long total = 0;              
+    			while ((count = input.read(data)) != -1) {                 
+    				total += count;                 
+    				// publishing the progress....                 
+    				publishProgress((int)(total*100/lenghtOfFile));                 
+    				outStream.write(data, 0, count);             
+    			}              
+    			outStream.flush();             
+    			outStream.close();             
+    			input.close();
+    		} catch (Exception e) 
+    		{
+    			_exception = e;
+    			return false;
+    		}
+    		
+    		return true;     
+    	}
+    	
+        @Override     
+        protected void onProgressUpdate(Integer[] values) 
+        {
+        	_progressDialog.setProgress(values[0]);
+        };
+    	
+    	@Override
+    	protected void onPostExecute(Boolean result) {
+
+    		super.onPostExecute(result);
+    		
+    		if(! result )
+    		{
+    			UIHelper.ShowAlertDialog(LoginActivity.this, "Error downloding update", "Error downloding update: " + _exception);
+    			AppLog.error("Error downloding update", _exception);
+    		}
+    		else
+    		{
+				// create and post an intent to install
+				Intent intent = new Intent();
+	
+				String fileAbsPath = "file://" + getFilesDir().getAbsolutePath() + "/" + APK_FILE_NAME; 
+	
+				intent.setAction(android.content.Intent.ACTION_VIEW); 
+				intent.setDataAndType(Uri.parse(fileAbsPath), "application/vnd.android.package-archive"); 
+				startActivity(intent);
+	            LoginActivity.this.finish();
+    		}
+    		
+    		_progressDialog.dismiss();
+    		
+    	}
     }
 
 }
