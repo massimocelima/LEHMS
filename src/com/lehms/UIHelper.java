@@ -28,6 +28,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.DialogInterface.OnClickListener;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
@@ -52,6 +53,18 @@ public class UIHelper {
 		return UUID.fromString("00000000-0000-0000-0000-000000000000");
 	}
 
+    public static String getVersionNumber(Context context) { 
+        String version = ""; 
+        try { 
+                PackageInfo pi = context.getPackageManager().getPackageInfo(context.getPackageName(), 0); 
+                version = pi.versionName; 
+        } catch (PackageManager.NameNotFoundException e) {
+                AppLog.error("Package name not found", e);
+        }; 
+        return version; 
+    }
+
+	
 	public static String GetPhotoDirectory() throws Exception
 	{
         String path = Environment.getExternalStorageDirectory().getAbsolutePath(); 

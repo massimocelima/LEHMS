@@ -2,6 +2,7 @@ package com.lehms.serviceInterface.implementation;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
@@ -25,10 +26,12 @@ import android.text.format.DateFormat;
 import android.util.Base64;
 
 import com.lehms.messages.dataContracts.UserDataContract;
+import com.lehms.serviceInterface.ContentInputStream;
 import com.lehms.serviceInterface.IChannel;
 import com.lehms.serviceInterface.IDepartmentProvider;
 import com.lehms.serviceInterface.IIdentityProvider;
 import com.lehms.serviceInterface.ISerializer;
+import com.lehms.util.StreamExtentions;
 
 public class HttpRestChannel implements IChannel {
 
@@ -61,7 +64,30 @@ public class HttpRestChannel implements IChannel {
 		
     	return _serializer.Deserializer(jsonStringResponse, responseType);
 	}
+	
+	@Override
+	public ContentInputStream GetStream(String id) throws Exception {
 
+		String url = _url + "/";
+		if(id != null && !id.equals(""))
+			url = _url + "/" + id;
+		
+		UserDataContract user = _identityProvider.getCurrent();
+	    HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
+	    connection.setRequestMethod("GET");
+	    connection.setDoOutput(true);
+	    
+	    connection.addRequestProperty( "Authorization", 
+	    		"basic " + _departmentProvider.getDepartment() + "\\" + user.Username + ":" + user.Password);
+	    
+	    connection.connect();
+	    
+	    ContentInputStream result = new ContentInputStream();
+	    result.InputStream = connection.getInputStream();
+	    result.length = connection.getContentLength();
+	    
+	    return result;
+	}
 	
 	@Override
 	public <T> T Get(Class<T> responseType) throws Exception {

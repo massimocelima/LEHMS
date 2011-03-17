@@ -22,6 +22,7 @@ import com.lehms.IoC.ContainerFactory;
 import com.lehms.messages.LoginResponse;
 import com.lehms.messages.dataContracts.RoleDataContract;
 import com.lehms.messages.dataContracts.UserDataContract;
+import com.lehms.serviceInterface.ContentInputStream;
 import com.lehms.serviceInterface.IChannel;
 import com.lehms.serviceInterface.IIdentityProvider;
 import com.lehms.serviceInterface.ISerializer;
@@ -105,6 +106,12 @@ public class MockChannel implements IChannel {
 	@Override
 	public <T> T UploadAttachment(String id, String fileName,
 			byte[] attachment, Class<T> responseType) throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ContentInputStream GetStream(String id) throws Exception {
 		// TODO Auto-generated method stub
 		return null;
 	}

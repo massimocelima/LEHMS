@@ -68,6 +68,16 @@ public class Profile {
 	{
 		return GetBaseUrl() + "/FormDataAttachment";
 	}
+	
+	public String GetApkResourceEndPoint()
+	{
+		return GetBaseUrl() + "/Application/Apk";
+	}
+		
+	public String GetApkVersionInfoResourceEndPoint()
+	{
+		return GetBaseUrl() + "/Application/ApkVersionInfo";
+	}
 
 	public String GetBaseUrl()
 	{
