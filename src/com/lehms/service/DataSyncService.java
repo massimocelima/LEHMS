@@ -120,7 +120,7 @@ public class DataSyncService extends RoboService {
 	    //_serviceHandler.post(notifier);
 	}
 	
-	synchronized private void RunSynch()
+	synchronized public void RunSynch()
 	{
 		try
 		{

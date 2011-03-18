@@ -32,6 +32,7 @@ public class ApkResource implements IApkResource {
 
 	@Override
 	public ContentInputStream GetUpdate(String currentVersion) throws Exception {
+		currentVersion = currentVersion.replace(".", "_");
 		return GetChannel().GetStream(currentVersion);
 	}
 

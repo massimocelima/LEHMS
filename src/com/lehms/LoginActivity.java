@@ -10,17 +10,20 @@ import roboguice.inject.*;
 
 import com.google.inject.Inject;
 import com.lehms.messages.LoginResponse;
+import com.lehms.service.DataSyncService;
 import com.lehms.serviceInterface.*;
 import com.lehms.util.AppLog;
 import com.lehms.util.StreamExtentions;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.DialogInterface.OnCancelListener;
+import android.content.DialogInterface.OnClickListener;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -41,6 +44,8 @@ public class LoginActivity extends RoboActivity {
     @Inject protected IIdentityProvider _identityProvider;
     @Inject protected IProfileProvider _profileProvider;
     @Inject protected IApkResource _apkResource;
+    @Inject protected DataSyncService _dataSyncService;
+
     
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -183,8 +188,23 @@ public class LoginActivity extends RoboActivity {
 
 					if(_updateRequired)
 					{
-						DownloadFile downloadFile = new DownloadFile(); 
-						downloadFile.execute(null); 
+						AlertDialog dialog = new AlertDialog.Builder(LoginActivity.this)
+				        .setTitle("Update Required")
+				        .setMessage("A new version of the application has been found and needs to be installed. Click OK to download the update or cancel to quit the application.")
+				        .setPositiveButton("OK", new OnClickListener() {
+							@Override
+							public void onClick(DialogInterface arg0, int arg1) {
+								DownloadFile downloadFile = new DownloadFile(); 
+								downloadFile.execute(null); 
+							}
+						})
+						.setNegativeButton("Cancel", new OnClickListener() {
+							@Override
+							public void onClick(DialogInterface arg0, int arg1) {
+								LoginActivity.this.finish();
+							}})
+				        .create();
+						dialog.show();
 					}
 					else
 					{
@@ -223,11 +243,26 @@ public class LoginActivity extends RoboActivity {
     		super.onPreExecute();
     		
 			_progressDialog = new ProgressDialog(LoginActivity.this); 
-			_progressDialog.setMessage("Donwloading update..."); 
+			_progressDialog.setMessage("Synchronising pending updates..."); 
 			_progressDialog.setIndeterminate(false); 
 			_progressDialog.setMax(100); 
 			_progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+			_progressDialog.setCancelable(true);
 			_progressDialog.show();
+			
+            _progressDialog.setOnCancelListener(new OnCancelListener() 
+            {             
+            	@Override             
+            	public void onCancel(DialogInterface dialog) {                 
+            		cancel(true);             
+            	}         
+            });
+    	}
+    	
+    	
+    	@Override
+    	protected void onCancelled() {
+    		super.onCancelled();
     	}
     	
     	@Override     
@@ -235,11 +270,17 @@ public class LoginActivity extends RoboActivity {
     		int count;         
     		try {
     			
+    			_dataSyncService.RunSynch();
+
+				publishProgress(0);                 
+
     			ContentInputStream inputStream = _apkResource.GetUpdate(UIHelper.getVersionNumber(LoginActivity.this));
 				FileOutputStream outStream = openFileOutput(APK_FILE_NAME, Context.MODE_WORLD_READABLE);
 
     			// this will be useful so that you can show a tipical 0-100% progress bar             
-    			int lenghtOfFile = (int)inputStream.length;              
+    			int lenghtOfFile = (int)inputStream.length;
+    			_progressDialog.setMax(lenghtOfFile);
+
     			// downlod the file             
     			InputStream input = new BufferedInputStream(inputStream.InputStream);
     			byte data[] = new byte[1024];              
@@ -247,11 +288,12 @@ public class LoginActivity extends RoboActivity {
     			while ((count = input.read(data)) != -1) {                 
     				total += count;                 
     				// publishing the progress....                 
-    				publishProgress((int)(total*100/lenghtOfFile));                 
-    				outStream.write(data, 0, count);             
+    				//publishProgress((int)(total*100/lenghtOfFile));
+    				publishProgress((int)total);
+    				outStream.write(data, 0, count);
     			}              
-    			outStream.flush();             
-    			outStream.close();             
+    			outStream.flush();      
+    			outStream.close();
     			input.close();
     		} catch (Exception e) 
     		{
@@ -265,6 +307,7 @@ public class LoginActivity extends RoboActivity {
         @Override     
         protected void onProgressUpdate(Integer[] values) 
         {
+			_progressDialog.setMessage("Donwloading Update...");
         	_progressDialog.setProgress(values[0]);
         };
     	
