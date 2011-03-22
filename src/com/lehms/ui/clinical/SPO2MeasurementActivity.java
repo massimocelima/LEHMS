@@ -5,9 +5,14 @@ import com.lehms.R;
 import com.lehms.UIHelper;
 
 import com.lehms.messages.dataContracts.ClientSummaryDataContract;
+import com.lehms.ui.clinical.device.IMeasurementDevice;
+import com.lehms.ui.clinical.device.IMeasurementDeviceProvider;
+import com.lehms.ui.clinical.device.SPO2MeasurementDeviceProvider;
 import com.lehms.ui.clinical.model.BloodPressureMeasurement;
 import com.lehms.ui.clinical.model.SPO2Measurement;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
@@ -16,9 +21,11 @@ import roboguice.activity.RoboActivity;
 import roboguice.inject.InjectExtra;
 import roboguice.inject.InjectView;
 
-public class SPO2MeasurementActivity  extends RoboActivity { 
+public class SPO2MeasurementActivity extends ClinicalMeasurmentBaseActivity { 
 
 	public static final String EXTRA_CLIENT = "client";
+	
+	private static final int REQUEST_AUTO_MEASURMENT = 0;
 	
 	@InjectExtra(EXTRA_CLIENT) ClientSummaryDataContract _client;
 	
@@ -40,6 +47,14 @@ public class SPO2MeasurementActivity  extends RoboActivity {
 		
 		_subtitle.setText(_client.FirstName + " " + _client.LastName);
 		//_subtitle2.setText(_client.ClientId);
+		
+		if(isAutoEntryForm())
+		{
+			if( ! UIHelper.HasBluetoth() )
+				UIHelper.ShowAlertDialog(this, "No bluetooth found on device", "No bluetooth found on device");
+			else
+				openAutoEntryForm();
+		}
 	}
 	
 	@Override
@@ -62,6 +77,11 @@ public class SPO2MeasurementActivity  extends RoboActivity {
 	{
 		finish();
 	}
+	
+	public void onTakeAutoMeasurementClick(View view)
+	{
+		openAutoEntryForm();
+	}
 		
 	public void onSaveClick(View view)
 	{
@@ -74,6 +94,32 @@ public class SPO2MeasurementActivity  extends RoboActivity {
 			measurement.Pulse = Integer.parseInt( _pulseEdit.getText().toString() );
 			// Create an event and save the measurement
 			finish();
+		}
+	}
+
+	@Override
+	protected IMeasurementDeviceProvider getDeviceProvider() {
+		return new SPO2MeasurementDeviceProvider();
+	}
+
+	@Override
+	protected void openAuoMeasurementActivity(IMeasurementDevice device) {
+		Intent intent = new Intent(this, SPO2AutoMeasurementActivity.class);
+		intent.putExtra(SPO2AutoMeasurementActivity.EXTRA_DEVICE, device);
+		startActivityForResult(intent, REQUEST_AUTO_MEASURMENT);
+	}
+	
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		if( requestCode == REQUEST_AUTO_MEASURMENT)
+		{
+			if( resultCode == Activity.RESULT_OK)
+			{
+				SPO2Measurement measurement = (SPO2Measurement)data.getSerializableExtra(SPO2AutoMeasurementActivity.EXTRA_MEASUREMENT);
+				_oxegenEdit.setText(measurement.OxegenPercent + "");
+				_pulseEdit.setText(measurement.Pulse + "");
+			}
 		}
 	}
 }

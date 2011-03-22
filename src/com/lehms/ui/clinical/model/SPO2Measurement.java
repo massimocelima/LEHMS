@@ -1,6 +1,8 @@
 package com.lehms.ui.clinical.model;
 
-public class SPO2Measurement extends Measurement  {
+import java.io.Serializable;
+
+public class SPO2Measurement extends Measurement implements Serializable  {
 
 	public SPO2Measurement()
 	{

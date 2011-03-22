@@ -144,18 +144,34 @@
 	        android:orientation="horizontal"
 	        style="@android:style/ButtonBar"
 	        >
-	        
-	    <Button 
-			android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:text="Cancel"
-	        android:onClick="onCancelClick" />
 
 	    <Button 
 			android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
-	        android:text="Save"
-	        android:onClick="onSaveClick" />
+	        android:text="Take Measurement"
+	        android:drawableLeft="@drawable/quick_actions_ic_bluetooth"
+	        android:onClick="onTakeAutoMeasurementClick" />
+
+		<LinearLayout
+				android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:orientation="horizontal"
+		        android:layout_weight="1"
+		        android:gravity="right"
+		        >
+	        
+		    <Button 
+				android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:text="Cancel"
+		        android:onClick="onCancelClick" />
+	
+		    <Button 
+				android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:text="Save"
+		        android:onClick="onSaveClick" />
+	    </LinearLayout>
 
 	</LinearLayout>
   

@@ -100,21 +100,26 @@
 					
 					<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 					    android:orientation="horizontal"
-					    android:layout_width="wrap_content"
+					    android:layout_width="fill_parent"
 					    android:layout_height="wrap_content"
+					    android:gravity="center"
 					    >
 					    
 						<Button android:id="@+id/login_login_button"
 							android:onClick="OnLoginClick" 
 							android:text="@string/login_login"
 							android:layout_width="wrap_content" 
-							android:layout_height="wrap_content" />
+							android:layout_height="wrap_content"
+							android:layout_weight="1"
+							 />
 							
 						<Button android:id="@+id/login_cancel_button"
 							android:onClick="OnCancelClick" 
 							android:text="@string/login_cancel"
 							android:layout_width="wrap_content" 
-							android:layout_height="wrap_content" />
+							android:layout_height="wrap_content" 
+							android:layout_weight="1"
+							/>
 				
 					</LinearLayout>    
 					

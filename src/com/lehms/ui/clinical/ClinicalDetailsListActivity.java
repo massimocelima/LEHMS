@@ -39,8 +39,6 @@ public class ClinicalDetailsListActivity  extends RoboListActivity { //implement
 
 	public static final String EXTRA_CLIENT = "client";
 	public static final int REQUEST_CODE_MEASUREMENT = 0; 
-	public static final int REQUEST_ENABLE_BT = 1; 
-	public static final int REQUEST_CONNECT_DEVICE = 2; 
 	
 	@InjectExtra(EXTRA_CLIENT) ClientSummaryDataContract _client;
 	
@@ -52,10 +50,6 @@ public class ClinicalDetailsListActivity  extends RoboListActivity { //implement
 	
 	private ListQuickAction _qa;
 	private MeasurementType _selectedMeasurmentType;
-	private BluetoothAdapter _bluetoothAdapter;
-	
-	private BluetoothDevice _device;
-	//private ArrayAdapter _bluetoothDeviceListAdapter;;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -74,8 +68,6 @@ public class ClinicalDetailsListActivity  extends RoboListActivity { //implement
 		_subtitle.setText(_client.FirstName + " " + _client.LastName);
 		_subtitle2.setText(_client.ClientId);
 
-		_bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-		//_bluetoothDeviceListAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item);
 		
 		final ActionItem qaViewMeasurments = new ActionItem();
 		
@@ -84,6 +76,7 @@ public class ClinicalDetailsListActivity  extends RoboListActivity { //implement
 		qaViewMeasurments.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
+				openAutoEntryForm(_selectedMeasurmentType);
 				_qa.dismiss();
 			}
 		});
@@ -107,10 +100,7 @@ public class ClinicalDetailsListActivity  extends RoboListActivity { //implement
 		qaTakeAutoMeasurment.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				if( ! UIHelper.HasBluetoth() )
-					UIHelper.ShowAlertDialog(ClinicalDetailsListActivity.this, "No bluetooth found on device", "No bluetooth found on device");
-				else
-					openAutoEntryForm();		
+				openAutoEntryForm(_selectedMeasurmentType);
 				_qa.dismiss();
 			}
 		});
@@ -132,6 +122,23 @@ public class ClinicalDetailsListActivity  extends RoboListActivity { //implement
 	
 	private void openManualEntryForm(MeasurementType _selectedMeasurmentType) {
 		
+		Intent intent = getMeasurmentEntryFOrmIntent(_selectedMeasurmentType);
+		if( intent != null )
+			this.startActivityForResult(intent, REQUEST_CODE_MEASUREMENT);
+	}
+
+	private void openAutoEntryForm(MeasurementType _selectedMeasurmentType) {
+		
+		Intent intent = getMeasurmentEntryFOrmIntent(_selectedMeasurmentType);
+		if( intent != null )
+		{
+			intent.putExtra(ClinicalMeasurmentBaseActivity.EXTRA_AUTO_ENTRY, true);
+			this.startActivityForResult(intent, REQUEST_CODE_MEASUREMENT);
+		}
+	}
+
+	private Intent getMeasurmentEntryFOrmIntent(MeasurementType _selectedMeasurmentType) 
+	{
 		Intent intent = null;
 		
 		switch (_selectedMeasurmentType.Type) {
@@ -171,143 +178,24 @@ public class ClinicalDetailsListActivity  extends RoboListActivity { //implement
 			break;
 		}
 		
-		if( intent != null )
-			this.startActivityForResult(intent, REQUEST_CODE_MEASUREMENT);
+		return intent;
 	}
 	
-	public void openAutoEntryForm()
-	{
-		if ( !_bluetoothAdapter.isEnabled()) { 
-
-			Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE); 
-		    startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT); 
-		    
-		    //Intent discoverableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE); 
-		    //discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 300); 
-		    //startActivity(discoverableIntent);
-		}
-		else
-		{
-			_device = null;
-			
-			/*
-			Set<BluetoothDevice> pairedDevices = _bluetoothAdapter.getBondedDevices();
-		    for (BluetoothDevice device : pairedDevices) {
-		    	// If you have already paird with this device then you are good to go
-		    	_device = device;
-		    	//_bluetoothDeviceListAdapter.add(device.getName() + "\n" + device.getAddress());
-		    } 
-		    */
-
-		    // If we do not have a pared device then initiate descovery
-		    if( _device == null )
-		    {
-	            Intent serverIntent = new Intent(this, DeviceListActivity.class);
-	            startActivityForResult(serverIntent, REQUEST_CONNECT_DEVICE);
-	            
-		    	// Register the BroadcastReceiver 
-		    	//IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND); 
-		    	//registerReceiver(_receiver, filter); // Don't forget to unregister during onDestroy
-		    }
-		}
-	}
-	
-	private void GetDataDromDevice(BluetoothDevice device)
-	{
-		try {
-			
-			//BluetoothSocket socket = device.createRfcommSocketToServiceRecord(UIHelper.getApplicationUUID());
-			
-			Method m = device.getClass().getMethod("createRfcommSocket", new Class[] {int.class});          
-			BluetoothSocket socket = (BluetoothSocket) m.invoke(device, 1); 
-
-			// In case this is running
-	        _bluetoothAdapter.cancelDiscovery();
-
-	        socket.connect(); 
-
-	        
-	        
-	        InputStream socketInputStream = socket.getInputStream(); 
-	        byte[] buffer = new byte[1024];  
-	        int bytes;
-	        //while (true) { 
-	            try { 
-	                // Read from the InputStream 
-	                bytes = socketInputStream.read(buffer); 
-	                // Send the obtained bytes to the UI Activity 
-	                //mHandler.obtainMessage(MESSAGE_READ, bytes, -1, buffer) 
-	                        //.sendToTarget(); 
-	            } catch (IOException e) { 
-	                //break; 
-	            } 
-	        //} 
-	        
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
 	
 	@Override 
 	protected void onDestroy() {
-		unregisterReceiver(_receiver);
+		super.onDestroy();
 	};
-
-	// Create a BroadcastReceiver for ACTION_FOUND 
-	private final BroadcastReceiver _receiver = new BroadcastReceiver() { 
-	    public void onReceive(Context context, Intent intent) { 
-	        String action = intent.getAction(); 
-	        // When discovery finds a device 
-	        if (BluetoothDevice.ACTION_FOUND.equals(action)) { 
-	            // Get the BluetoothDevice object from the Intent 
-	            BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-	            
-	            // If this is the device we are looking for then 
-	            // 1dd the name and address to an array adapter to show in a ListView 
-	            //_bluetoothDeviceListAdapter.add(device.getName() + "\n" + device.getAddress());
-	            _device = device;
-	            
-				try {
-					BluetoothSocket socket = _device.createRfcommSocketToServiceRecord(UIHelper.getApplicationUUID());
-					socket.connect();
-					socket.close();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-	        } 
-	    } 
-	}; 
 
 	
 	@Override
-		protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-			super.onActivityResult(requestCode, resultCode, data);
-			if( requestCode == REQUEST_CODE_MEASUREMENT)
-			{
-				// do something with this result
-			}
-			else if( requestCode == REQUEST_ENABLE_BT )
-			{
-				if(resultCode == RESULT_OK)
-				{
-					openAutoEntryForm();
-				}
-			}
-			else if(requestCode == REQUEST_CONNECT_DEVICE)
-			{
-	            if (resultCode == Activity.RESULT_OK) {
-	                // Get the device MAC address
-	                String address = data.getExtras().getString(DeviceListActivity.EXTRA_DEVICE_ADDRESS);
-	                // Get the BLuetoothDevice object
-	                BluetoothDevice device = _bluetoothAdapter.getRemoteDevice(address);
-	                GetDataDromDevice(device);
-	                // Attempt to connect to the device
-	                //mChatService.connect(device);
-	            }
-			}
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		if( requestCode == REQUEST_CODE_MEASUREMENT)
+		{
+			// do something with this result
 		}
+	}
 	
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
@@ -404,6 +292,7 @@ public class ClinicalDetailsListActivity  extends RoboListActivity { //implement
 	{
 		NavigationHelper.goEmergency(this);
 	}
+	
 	/*
 	private class LoadClientsTask extends AsyncTask<Void, Void, List<ClientSummaryDataContract>>
     {
