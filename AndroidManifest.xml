@@ -85,42 +85,42 @@
                   />
 
         <activity android:name="com.lehms.ui.clinical.WeightMeasurementActivity"
-                  android:label="@string/app_name" 
+                  android:label="Weight Measurement" 
                   android:configChanges="orientation" 
                   />
 
         <activity android:name="com.lehms.ui.clinical.BloodPressureMeasurementActivity"
-                  android:label="@string/app_name" 
+                  android:label="Blood Pressure Measurement" 
                   android:configChanges="orientation" 
                   />
                   
         <activity android:name="com.lehms.ui.clinical.BloodSugerLevelMeasurementActivity"
-                  android:label="@string/app_name" 
+                  android:label="BSL Measurement" 
                   android:configChanges="orientation" 
                   />
 
         <activity android:name="com.lehms.ui.clinical.ECGMeasurementActivity"
-                  android:label="@string/app_name" 
+                  android:label="ECG Measurement" 
                   android:configChanges="orientation" 
                   />
 
         <activity android:name="com.lehms.ui.clinical.TemperatureMeasurementActivity"
-                  android:label="@string/app_name" 
+                  android:label="Temperature Measurement" 
                   android:configChanges="orientation" 
                   />
 
         <activity android:name="com.lehms.ui.clinical.SPO2MeasurementActivity"
-                  android:label="@string/app_name" 
+                  android:label="SPO2 Measurement" 
                   android:configChanges="orientation" 
                   />
 
         <activity android:name="com.lehms.ui.clinical.INRMeasurementActivity"
-                  android:label="@string/app_name" 
+                  android:label="INR Measurement" 
                   android:configChanges="orientation" 
                   />
 
         <activity android:name="com.lehms.ui.clinical.UrinetMeasurementActivity"
-                  android:label="@string/app_name" 
+                  android:label="Urine Measurement" 
                   android:configChanges="orientation" 
                   />
                   
@@ -131,6 +131,11 @@
 
 		<activity android:name="com.lehms.ui.clinical.SPO2AutoMeasurementActivity"
                   android:label="SPO2 Measurement"
+                  android:theme="@android:style/Theme.Dialog"
+                  android:configChanges="orientation|keyboardHidden" />
+
+		<activity android:name="com.lehms.ui.clinical.TemperatureAutoMeasurementActivity"
+                  android:label="Tempreature Measurement"
                   android:theme="@android:style/Theme.Dialog"
                   android:configChanges="orientation|keyboardHidden" />
 

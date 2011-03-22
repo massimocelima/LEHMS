@@ -28,11 +28,11 @@
 		    android:layout_height="wrap_content"
 		  	android:textAppearance="?android:attr/textAppearanceSmall" 
 		  	android:textColor="?android:attr/textColorPrimary" 
-		  	android:text="SPO2 (%)"
+		  	android:text="Temperature"
 		>
 		</TextView>
 		<TextView 
-			android:id="@+id/activity_measurment_spo2_auto_edit"
+			android:id="@+id/activity_measurment_temperature_auto_edit"
 		    android:layout_width="wrap_content"
 		    android:layout_height="wrap_content"
 		  	android:textAppearance="?android:attr/textAppearanceSmall" 
@@ -43,33 +43,6 @@
 		
 	</LinearLayout>
 
-  	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	    android:orientation="horizontal"
-	    android:layout_width="fill_parent"
-	    android:layout_height="wrap_content"
-		style="@style/FormItem"
-	    >
-	
-		<TextView 
-		    android:layout_width="100dip"
-		    android:layout_height="wrap_content"
-		  	android:textAppearance="?android:attr/textAppearanceSmall" 
-		  	android:textColor="?android:attr/textColorPrimary" 
-		  	android:text="Pulse (bpm)"
-		>
-		</TextView>
-		<TextView 
-			android:id="@+id/activity_measurment_spo2_pulse_auto_edit"
-		    android:layout_width="wrap_content"
-		    android:layout_height="wrap_content"
-		  	android:textAppearance="?android:attr/textAppearanceSmall" 
-		  	android:textColor="?android:attr/textColorPrimary" 
-		  	android:inputType="number"
-		>
-		</TextView>
-		
-	</LinearLayout>
-	
 	<LinearLayout
 			android:layout_width="fill_parent"
 	        android:layout_height="wrap_content"

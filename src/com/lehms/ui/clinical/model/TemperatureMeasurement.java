@@ -1,6 +1,8 @@
 package com.lehms.ui.clinical.model;
 
-public class TemperatureMeasurement extends Measurement {
+import java.io.Serializable;
+
+public class TemperatureMeasurement extends Measurement implements Serializable {
 
 	public TemperatureMeasurement()
 	{

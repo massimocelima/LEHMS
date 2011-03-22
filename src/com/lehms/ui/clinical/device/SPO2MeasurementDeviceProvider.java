@@ -6,11 +6,11 @@ import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 
 public class SPO2MeasurementDeviceProvider extends BluetoothMeasurementDeviceProvider<SPO2Measurement> {
-
+	
 	public SPO2MeasurementDeviceProvider() {
 		super();
 	}
-
+	
 	@Override
 	public Boolean isMeasurmentDevice(BluetoothDevice device) {
 		return device.getName().startsWith("Nonin");

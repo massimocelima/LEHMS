@@ -5,5 +5,15 @@ public enum EventType {
 	JobCompleted,
 	ProgressNoteAdded,
 	LocationTracking,
-	FormCompleted
+	FormCompleted,
+	
+	//Measurements
+	BloodPressureTaken,
+	BSLTaken,
+	ECGTaken,
+	INRTaken,
+	SPO2Taken,
+	TemperatureTaken,
+	UrineTaken,
+	WeightTaken
 }

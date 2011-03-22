@@ -1,6 +1,8 @@
 package com.lehms.ui.clinical.model;
 
-public class INRMeasurement extends Measurement  {
+import java.io.Serializable;
+
+public class INRMeasurement extends Measurement implements Serializable  {
 
 	public INRMeasurement()
 	{

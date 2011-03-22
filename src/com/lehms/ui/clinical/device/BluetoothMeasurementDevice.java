@@ -70,6 +70,26 @@ public abstract class BluetoothMeasurementDevice<T> implements IMeasurementDevic
 			_socket = null;
 		}
 	}
+
+	protected byte[] getData(BluetoothSocket socket) throws IOException
+	{
+		byte [] data = null;
+        byte[] buffer = new byte[1024];
+        int bytes;
+        
+        bytes = socket.getInputStream().read(buffer);
+        if( bytes > 0 )
+        {
+        	data = buffer;
+        	if( bytes < buffer.length)
+        	{
+        		data = new byte[bytes];
+        		System.arraycopy(buffer, 0, data, 0, bytes);;
+        	}
+        }
+        
+        return data;
+	}
 	
 	public T readMeasurement() throws Exception
 	{
@@ -77,28 +97,19 @@ public abstract class BluetoothMeasurementDevice<T> implements IMeasurementDevic
 			connect();
 		
 		T result = null;
- 
-        InputStream socketInputStream = _socket.getInputStream(); 
-        byte[] buffer = new byte[1024];
-        int bytes;
+		
+		try
+		{
+        	result = createMeasurement(_socket);
+		} catch(Exception e) {
+			close();	
+			throw e;
+		}
         
-        bytes = socketInputStream.read(buffer);
-        if( bytes > 0 )
-        {
-        	byte [] data = buffer;
-        	if( bytes < buffer.length)
-        	{
-        		data = new byte[bytes];
-        		System.arraycopy(buffer, 0, data, 0, bytes);;
-        	}
-        	
-        	result = createMeasurement(data);
-        }
-            
         return result;
 	}
 	
-	public abstract T createMeasurement(byte [] data);
+	public abstract T createMeasurement(BluetoothSocket socket) throws Exception;
 
 	@Override
 	public Boolean isDefault()

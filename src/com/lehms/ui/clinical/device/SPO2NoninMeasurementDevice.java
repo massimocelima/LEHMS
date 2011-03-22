@@ -11,6 +11,7 @@ import org.apache.http.util.EncodingUtils;
 import com.lehms.ui.clinical.model.SPO2Measurement;
 
 import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothSocket;
 
 public class SPO2NoninMeasurementDevice extends BluetoothMeasurementDevice<SPO2Measurement>  {
 	
@@ -29,9 +30,10 @@ public class SPO2NoninMeasurementDevice extends BluetoothMeasurementDevice<SPO2M
 	};
 	
 	@Override
-	public SPO2Measurement createMeasurement(byte[] data) {
-		
-		_data += HexConverter.encode(data);
+	public SPO2Measurement createMeasurement(BluetoothSocket socket) throws Exception {
+
+		byte [] byteData = super.getData(socket);
+		_data += HexConverter.encode(byteData);
 		
         int index = _data.indexOf("01");
         while (index >= 0 && _data.length() >= 250)
@@ -77,6 +79,12 @@ public class SPO2NoninMeasurementDevice extends BluetoothMeasurementDevice<SPO2M
         int num2 = this.GetParameter(message, iRow + 1, iCol);
         return ((num << 8) | num2);
     }
+
+	@Override
+	public SPO2Measurement readMeasurement() throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
     /*
     private class Packet

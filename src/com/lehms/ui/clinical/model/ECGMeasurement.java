@@ -1,6 +1,8 @@
 package com.lehms.ui.clinical.model;
 
-public class ECGMeasurement extends Measurement {
+import java.io.Serializable;
+
+public class ECGMeasurement extends Measurement implements Serializable {
 
 	public ECGMeasurement()
 	{

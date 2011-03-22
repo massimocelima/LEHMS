@@ -25,7 +25,8 @@ public class LehmsApplication extends RoboApplication
 			IDepartmentProvider, 
 			IOfficeContactProvider, 
 			IAuthorisationProvider,
-			IActiveJobProvider
+			IActiveJobProvider,
+			IDefualtDeviceAddressProvider
 {
     public static final String KEY_PROFILE_PREF = "application_settings_profile_pref";
     public static final String KEY_DEVICE_ID_PREF = "application_settings_device_id_pref";
@@ -212,6 +213,19 @@ public class LehmsApplication extends RoboApplication
 		else
         	editor.putString(KEY_JOB, "");
         	*/
+	}
+
+	@Override
+	public String getDeafultDeviceAddress(String key) {
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+        return sharedPref.getString(key, "");
+	}
+
+	@Override
+	public void setDeafultDeviceAddress(String key, String value) {
+        Editor editor = PreferenceManager.getDefaultSharedPreferences(this).edit();
+        editor.putString(key, value);
+        editor.commit();
 	}
 
 }

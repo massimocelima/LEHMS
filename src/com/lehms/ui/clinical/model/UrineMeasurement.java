@@ -1,6 +1,8 @@
 package com.lehms.ui.clinical.model;
 
-public class UrineMeasurement extends Measurement  {
+import java.io.Serializable;
+
+public class UrineMeasurement extends Measurement implements Serializable {
 
 	public UrineMeasurement()
 	{

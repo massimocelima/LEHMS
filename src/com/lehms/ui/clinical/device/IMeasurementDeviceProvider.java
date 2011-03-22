@@ -11,7 +11,8 @@ public interface IMeasurementDeviceProvider<T> extends Serializable {
 	void beginDiscovery(IDeviceDiscoveredEventHandler<T> handler, Context context) throws Exception;
 	void cancelDiscovery(Context context);
 
-	IMeasurementDevice<T> getDefaultDevice() throws Exception;
+	IMeasurementDevice<T> getDefaultDevice();
+	void setDefaultDevice(IMeasurementDevice<T> device);
 	
 	Boolean isEnabled();
 

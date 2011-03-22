@@ -1,6 +1,8 @@
 package com.lehms.ui.clinical.model;
 
-public class WeightMeasurement extends Measurement {
+import java.io.Serializable;
+
+public class WeightMeasurement extends Measurement implements Serializable {
 
 	public WeightMeasurement()
 	{

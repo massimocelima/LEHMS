@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Set;
 
 import com.google.inject.Inject;
+import com.lehms.R.color;
+import com.lehms.serviceInterface.IDefualtDeviceAddressProvider;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -16,10 +18,12 @@ import android.content.IntentFilter;
 public abstract class BluetoothMeasurementDeviceProvider<T> implements IMeasurementDeviceProvider<T> {
 
 	private IDeviceDiscoveredEventHandler<T> _handler;
+	private IDefualtDeviceAddressProvider _defualtDeviceAddressProvider;
 	
 	@Inject
 	public BluetoothMeasurementDeviceProvider()
 	{
+		_defualtDeviceAddressProvider = com.lehms.IoC.ContainerFactory.Create().resolve(IDefualtDeviceAddressProvider.class);
 	}
 		
 	public abstract Boolean isMeasurmentDevice(BluetoothDevice device);
@@ -83,9 +87,21 @@ public abstract class BluetoothMeasurementDeviceProvider<T> implements IMeasurem
         _handler = null;
 	}
 
-	public IMeasurementDevice<T> getDefaultDevice() throws Exception
+	public IMeasurementDevice<T> getDefaultDevice()
 	{
-		return null;	
+		IMeasurementDevice<T> result = null;
+		String address = _defualtDeviceAddressProvider.getDeafultDeviceAddress(this.getClass().getName());
+		if(! address.equals(""))
+		{
+			BluetoothDevice device = getAdapter().getRemoteDevice(address);
+			result = createDevice(device);
+		}
+		return result;	
+	}
+	
+	public void setDefaultDevice(IMeasurementDevice<T> device)
+	{
+		_defualtDeviceAddressProvider.setDeafultDeviceAddress(this.getClass().getName(), device.getAddress());
 	}
 	
 	public Boolean isEnabled()

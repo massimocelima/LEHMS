@@ -1,29 +1,35 @@
 package com.lehms.ui.clinical;
 
-import com.lehms.LoginActivity;
+
+import java.io.Serializable;
+
+import com.lehms.ISaveEventResultHandler;
 import com.lehms.R;
 import com.lehms.UIHelper;
+import com.lehms.controls.ActionItem;
+import com.lehms.controls.QuickAction;
+import com.lehms.serviceInterface.ISerializer;
 import com.lehms.ui.clinical.device.IMeasurementDevice;
+import com.lehms.ui.clinical.device.IMeasurementDeviceProvider;
 import com.lehms.ui.clinical.model.SPO2Measurement;
+import com.lehms.util.AppLog;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
+import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
-import android.content.DialogInterface.OnClickListener;
 import android.os.AsyncTask;
-import android.os.AsyncTask.Status;
 import android.os.Bundle;
+import android.os.AsyncTask.Status;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
 import roboguice.activity.RoboActivity;
 import roboguice.inject.InjectExtra;
 import roboguice.inject.InjectView;
 
-public class SPO2AutoMeasurementActivity extends ClinicalMeasurmentAutoBaseActivity<SPO2Measurement> {
+public abstract class ClinicalMeasurmentAutoBaseActivity<T> extends RoboActivity {
 
-	/*
 	public final static String EXTRA_DEVICE =  "device"; 
 	public final static String EXTRA_MEASUREMENT = "measurement"; 
 	private static Boolean _running = false;
@@ -34,35 +40,29 @@ public class SPO2AutoMeasurementActivity extends ClinicalMeasurmentAutoBaseActiv
 	@InjectView(R.id.activity_measurment_auto_save) Button _saveButton;
 		
 	private TakeMeasurementTask _task;
-	private SPO2Measurement _measurement;
-	*/
+	private T _measurement;
 
-	@InjectView(R.id.activity_measurment_spo2_auto_edit) TextView _spo2TextView;
-	@InjectView(R.id.activity_measurment_spo2_pulse_auto_edit) TextView _pulseTextView;
+	
+	public abstract void loadMeasurement(T measurement);
 
-
-	@Override
-	public void loadMeasurement(SPO2Measurement measurement) {
-		_pulseTextView.setText(measurement.Pulse + "");
-		_spo2TextView.setText(measurement.OxegenPercent + "");
-	}
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		this.setContentView(R.layout.activity_measurement_spo2_auto);
-		start();
-		//if(savedInstanceState != null && savedInstanceState.get(EXTRA_DEVICE) != null)
-		//	_device = (IMeasurementDevice) savedInstanceState.get(EXTRA_DEVICE);
 		
-		//_saveButton.setEnabled(false);
-
-		//_running = true;
-		//_task = new TakeMeasurementTask(_device);
-		//_task.execute(null);
+		if(savedInstanceState != null && savedInstanceState.get(EXTRA_DEVICE) != null)
+			_device = (IMeasurementDevice) savedInstanceState.get(EXTRA_DEVICE);
 	}
 	
-	/*
+	protected void start()
+	{
+		_saveButton.setEnabled(false);
+
+		_running = true;
+		_task = new TakeMeasurementTask(_device);
+		_task.execute(null);
+	}
+	
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
@@ -79,7 +79,7 @@ public class SPO2AutoMeasurementActivity extends ClinicalMeasurmentAutoBaseActiv
 	public void onSaveClick(View view)
 	{
    		Intent intent = new Intent();
-		intent.putExtra(EXTRA_MEASUREMENT, _measurement);
+		intent.putExtra(EXTRA_MEASUREMENT, (Serializable) _measurement);
 
         // Set result and finish this Activity
         setResult(Activity.RESULT_OK, intent);
@@ -95,7 +95,7 @@ public class SPO2AutoMeasurementActivity extends ClinicalMeasurmentAutoBaseActiv
 		try { _device.close(); } catch(Exception e) { }
 	};
 	
-	private class TakeMeasurementTask extends AsyncTask<Void, Integer, SPO2Measurement>
+	private class TakeMeasurementTask extends AsyncTask<Void, Integer, T>
 	{
 		private Exception _exception = null;
 	    private IMeasurementDevice _device;
@@ -118,9 +118,9 @@ public class SPO2AutoMeasurementActivity extends ClinicalMeasurmentAutoBaseActiv
     	private Boolean _updateRequired = false;
     	
 		@Override
-		protected SPO2Measurement doInBackground(Void... arg0) {
+		protected T doInBackground(Void... arg0) {
 			try {
-				return (SPO2Measurement)_device.readMeasurement();
+				return (T)_device.readMeasurement();
 			} catch (Exception e) {
 				_exception = e;
 			}
@@ -128,7 +128,7 @@ public class SPO2AutoMeasurementActivity extends ClinicalMeasurmentAutoBaseActiv
 		}
 		
 		@Override
-		protected void onPostExecute(SPO2Measurement result) {
+		protected void onPostExecute(T result) {
 			super.onPostExecute(result);
 			
 			if(isCancelled() || ! _running)
@@ -139,8 +139,7 @@ public class SPO2AutoMeasurementActivity extends ClinicalMeasurmentAutoBaseActiv
 				_statusTextView.setText("Getting measurements...");
 
 				_measurement = result;
-				_pulseTextView.setText(result.Pulse + "");
-				_spo2TextView.setText(result.OxegenPercent + "");
+				loadMeasurement(_measurement);
 				
 				_saveButton.setEnabled(true);
 			}
@@ -156,5 +155,11 @@ public class SPO2AutoMeasurementActivity extends ClinicalMeasurmentAutoBaseActiv
 
 		}
 	}
-	*/
+	
+	public T getMeasurement()
+	{
+		return _measurement;
+	}
+	
+
 }

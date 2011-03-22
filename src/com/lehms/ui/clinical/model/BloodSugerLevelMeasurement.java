@@ -1,6 +1,8 @@
 package com.lehms.ui.clinical.model;
 
-public class BloodSugerLevelMeasurement extends Measurement {
+import java.io.Serializable;
+
+public class BloodSugerLevelMeasurement extends Measurement implements Serializable {
 
 	public BloodSugerLevelMeasurement()
 	{
