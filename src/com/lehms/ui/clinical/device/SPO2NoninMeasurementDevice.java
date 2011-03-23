@@ -32,7 +32,7 @@ public class SPO2NoninMeasurementDevice extends BluetoothMeasurementDevice<SPO2M
 	@Override
 	public SPO2Measurement createMeasurement(BluetoothSocket socket) throws Exception {
 
-		byte [] byteData = super.getData(socket);
+		byte [] byteData = super.getData(socket, 1024);
 		_data += HexConverter.encode(byteData);
 		
         int index = _data.indexOf("01");

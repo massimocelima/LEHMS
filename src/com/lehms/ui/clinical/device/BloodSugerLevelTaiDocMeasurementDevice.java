@@ -8,15 +8,17 @@ import java.util.Date;
 
 import org.apache.http.util.EncodingUtils;
 
+import com.lehms.ui.clinical.model.BloodPressureMeasurement;
+import com.lehms.ui.clinical.model.BloodSugerLevelMeasurement;
 import com.lehms.ui.clinical.model.SPO2Measurement;
 import com.lehms.ui.clinical.model.TemperatureMeasurement;
 
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 
-public class TemperatureTaiDocMeasurementDevice extends BluetoothMeasurementDevice<TemperatureMeasurement>  {
+public class BloodSugerLevelTaiDocMeasurementDevice extends BluetoothMeasurementDevice<BloodSugerLevelMeasurement>  {
 	
-	public TemperatureTaiDocMeasurementDevice(BluetoothDevice device)
+	public BloodSugerLevelTaiDocMeasurementDevice(BluetoothDevice device)
 	{
 		super(device);
 	}
@@ -25,24 +27,20 @@ public class TemperatureTaiDocMeasurementDevice extends BluetoothMeasurementDevi
 	public void connected(android.bluetooth.BluetoothSocket socket) throws IOException {
 		try {
 			OutputStream stream = socket.getOutputStream();
-			stream.write( createPacket((byte)0x25, (byte)0, (byte)0, (byte)3, (byte)0), 0, 8);
+			stream.write( createPacket((byte)0x25, (byte)0, (byte)0, (byte)0, (byte)0), 0, 8);
 			Thread.sleep(290);
-			stream.write( createPacket((byte)0x25, (byte)0, (byte)0, (byte)3, (byte)0), 0, 8);
-			Thread.sleep(290);
-			
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	};
 	
 	@Override
-	public TemperatureMeasurement createMeasurement(BluetoothSocket socket) throws Exception {
+	public BloodSugerLevelMeasurement createMeasurement(BluetoothSocket socket) throws Exception {
 
 		OutputStream outputStream = socket.getOutputStream();
 		
 		byte [] data = getData(socket, 8);
-		TemperatureMeasurement result = null; 
+		BloodSugerLevelMeasurement result = null; 
 
 		if(validateMessage(data))
 		{
@@ -50,11 +48,10 @@ public class TemperatureTaiDocMeasurementDevice extends BluetoothMeasurementDevi
             {
                 if (data[1] == 0x26)
                 {
-                    double temp = ((data[3] * 0x100) + data[2]) / 10.0;
-                    
-                    result = new TemperatureMeasurement();
+                    result = new BloodSugerLevelMeasurement();
                     result.CreatedDate = new Date();
-                    result.Degrees = temp;
+                    
+                    result.Level = (data[3] * 0x100) + data[2];
                     
                     // TODO Test this, also need something to say measurement completed
                     outputStream.write(createPacket((byte)80, (byte)0, (byte)0, (byte)0, (byte)0), 0, 8);
@@ -63,7 +60,7 @@ public class TemperatureTaiDocMeasurementDevice extends BluetoothMeasurementDevi
             else
             {
             	// This is the date, i do not care about this
-            	outputStream.write(createPacket((byte)0x26, (byte)0, (byte)0, (byte)3, (byte)0), 0, 8);
+            	outputStream.write(createPacket((byte)0x26, (byte)0, (byte)0, (byte)0, (byte)0), 0, 8);
             }
 
 		}

@@ -154,7 +154,8 @@ public class DeviceListActivity extends RoboActivity implements IDeviceDiscovere
            		
            		// Create the result Intent and include the MAC address
            		Intent intent = new Intent();
-				intent.putExtra(EXTRA_SELECTED_DEVICE, device);
+           		if( device != null )
+           			intent.putExtra(EXTRA_SELECTED_DEVICE, device);
 
 	            // Set result and finish this Activity
 	            setResult(Activity.RESULT_OK, intent);

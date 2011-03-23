@@ -71,15 +71,31 @@ public abstract class BluetoothMeasurementDevice<T> implements IMeasurementDevic
 		}
 	}
 
-	protected byte[] getData(BluetoothSocket socket) throws IOException
+	protected byte[] getData(BluetoothSocket socket, int length) throws IOException
 	{
+		byte [] data = new byte[length];
+		int dataRead = 0;
+		int totalRead;
+		dataRead = socket.getInputStream().read(data, 0, length);
+		
+		totalRead = dataRead; 
+		while(totalRead < 8 && dataRead > 0)
+		{
+			dataRead = socket.getInputStream().read(data, 0, length - totalRead);
+			if(dataRead > 0 )
+				totalRead += dataRead;
+		}
+		
+		return data;
+
+		/*
 		byte [] data = null;
-        byte[] buffer = new byte[1024];
+        byte[] buffer = new byte[length];
         int bytes;
         
         bytes = socket.getInputStream().read(buffer);
         if( bytes > 0 )
-        {
+        {        	
         	data = buffer;
         	if( bytes < buffer.length)
         	{
@@ -89,6 +105,7 @@ public abstract class BluetoothMeasurementDevice<T> implements IMeasurementDevic
         }
         
         return data;
+        */
 	}
 	
 	public T readMeasurement() throws Exception

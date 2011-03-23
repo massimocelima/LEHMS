@@ -139,6 +139,21 @@
                   android:theme="@android:style/Theme.Dialog"
                   android:configChanges="orientation|keyboardHidden" />
 
+		<activity android:name="com.lehms.ui.clinical.BloodPressureMeasurementAutoActivity"
+                  android:label="Blood Pressure Measurement"
+                  android:theme="@android:style/Theme.Dialog"
+                  android:configChanges="orientation|keyboardHidden" />
+
+		<activity android:name="com.lehms.ui.clinical.BloodSugerLevelMeasurementAutoActivity"
+                  android:label="Blood Pressure Measurement"
+                  android:theme="@android:style/Theme.Dialog"
+                  android:configChanges="orientation|keyboardHidden" />
+
+		<activity android:name="com.lehms.ui.clinical.ECGMeasurementAutoActivity"
+                  android:label="Blood Pressure Measurement"
+                  android:theme="@android:style/Theme.Dialog"
+                  android:configChanges="orientation|keyboardHidden" />
+
 		<service android:name="com.lehms.service.GPSLoggerService"/>
 		<service android:name="com.lehms.service.DataSyncService"/>
 		<receiver android:name="com.lehms.receivers.AlarmReceiver"/>

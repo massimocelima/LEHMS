@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/home_root"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    >
+ 
+     <TextView android:id="@+id/activity_measurment_status_auto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Reading measurements from device..."
+        android:background="#666"
+        android:textColor="#fff"
+        android:padding="5dp"
+    />
+
+  	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	    android:orientation="horizontal"
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+		style="@style/FormItem"
+	    >
+	
+		<TextView 
+		    android:layout_width="150dip"
+		    android:layout_height="wrap_content"
+		  	android:textAppearance="?android:attr/textAppearanceSmall" 
+		  	android:textColor="?android:attr/textColorPrimary" 
+		  	android:text="Systolic (mmHg)"
+		>
+		</TextView>
+		
+		<TextView 
+			android:id="@+id/activity_measurment_blood_pressure_systolic_auto"
+		    android:layout_width="fill_parent"
+		    android:layout_height="wrap_content"
+		  	android:textAppearance="?android:attr/textAppearanceSmall" 
+		  	android:textColor="?android:attr/textColorPrimary" 
+		  	android:inputType="number"
+		>
+		</TextView>
+		
+	</LinearLayout>
+
+  	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	    android:orientation="horizontal"
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+		style="@style/FormItem"
+	    >
+	
+		<TextView 
+		    android:layout_width="150dip"
+		    android:layout_height="wrap_content"
+		  	android:textAppearance="?android:attr/textAppearanceSmall" 
+		  	android:textColor="?android:attr/textColorPrimary" 
+		  	android:text="Diastolic (mmHg)"
+		>
+		</TextView>
+		<TextView 
+			android:id="@+id/activity_measurment_blood_pressure_diastolic_auto"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		  	android:textAppearance="?android:attr/textAppearanceSmall" 
+		  	android:textColor="?android:attr/textColorPrimary" 
+		>
+		</TextView>
+		
+	</LinearLayout>
+	
+	<LinearLayout
+			android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:orientation="horizontal"
+	        style="@android:style/ButtonBar"
+	        >
+
+		    <Button 
+		    	android:id="@+id/activity_measurment_auto_cancel"
+				android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:text="Cancel"
+		        android:layout_weight="1"
+		        android:onClick="onCancelClick" />
+	
+		    <Button 
+		    	android:id="@+id/activity_measurment_auto_save"
+				android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:text="Save"
+		        android:layout_weight="1"
+		        android:onClick="onSaveClick" />
+
+	</LinearLayout>
+  
+</LinearLayout>
+

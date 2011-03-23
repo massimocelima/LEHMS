@@ -5,9 +5,18 @@ import com.lehms.R;
 import com.lehms.UIHelper;
 
 import com.lehms.messages.dataContracts.ClientSummaryDataContract;
+import com.lehms.ui.clinical.device.BloodPressureMeasurementDeviceProvider;
+import com.lehms.ui.clinical.device.IMeasurementDevice;
+import com.lehms.ui.clinical.device.IMeasurementDeviceProvider;
+import com.lehms.ui.clinical.device.TemperatureMeasurementDeviceProvider;
 import com.lehms.ui.clinical.model.BloodPressureMeasurement;
+import com.lehms.ui.clinical.model.ECGMeasurement;
+import com.lehms.ui.clinical.model.SPO2Measurement;
+import com.lehms.ui.clinical.model.TemperatureMeasurement;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.Message;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -15,66 +24,58 @@ import roboguice.activity.RoboActivity;
 import roboguice.inject.InjectExtra;
 import roboguice.inject.InjectView;
 
-public class BloodPressureMeasurementActivity  extends RoboActivity { 
-
-	public static final String EXTRA_CLIENT = "client";
+public class BloodPressureMeasurementActivity  extends ClinicalMeasurmentBaseActivity<BloodPressureMeasurement> { 
 	
-	@InjectExtra(EXTRA_CLIENT) ClientSummaryDataContract _client;
+	@InjectView(R.id.activity_measurment_blood_pressure_systolic_edit) TextView _systolicTextView;
+	@InjectView(R.id.activity_measurment_blood_pressure_diastolic_edit) TextView _diastlicTextView;
 	
-	@InjectView(R.id.activity_title) TextView _title;
-	@InjectView(R.id.activity_sub_title) TextView _subtitle;
-	//@InjectView(R.id.activity_sub_title2) TextView _subtitle2;
-
-	@InjectView(R.id.activity_measurment_blood_pressure_systolic_edit) EditText _systolicEdit;
-	@InjectView(R.id.activity_measurment_blood_pressure_diastolic_edit) EditText _diastolicEdit;
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_measurement_blood_pressure);
-		
-		if(savedInstanceState != null && savedInstanceState.get(EXTRA_CLIENT) != null)
-			_client = (ClientSummaryDataContract)savedInstanceState.get(EXTRA_CLIENT);
-		
-		_subtitle.setText(_client.FirstName + " " + _client.LastName);
-		//_subtitle2.setText(_client.ClientId);
+		init();
 	}
-	
+
 	@Override
-	protected void onSaveInstanceState(Bundle outState) {
-		super.onSaveInstanceState(outState);
-		outState.putSerializable(EXTRA_CLIENT, _client);
+	protected IMeasurementDeviceProvider<BloodPressureMeasurement> getDeviceProvider() {
+		return new BloodPressureMeasurementDeviceProvider();
 	}
-	
-	public void onHomeClick(View view)
-	{
-		NavigationHelper.goHome(this);
+
+	@Override
+	protected void openAuoMeasurementActivity(
+			IMeasurementDevice<BloodPressureMeasurement> device) {
+		Intent intent = new Intent(this, BloodPressureMeasurementAutoActivity.class);
+		intent.putExtra(ClinicalMeasurmentAutoBaseActivity.EXTRA_DEVICE, device);
+		startActivityForResult(intent, ClinicalMeasurmentBaseActivity.REQUEST_AUTO_MEASURMENT);
 	}
-		
-	public void onEmergencyClick(View view)
-	{
-		NavigationHelper.goEmergency(this);
-	}
-	
-	public void onCancelClick(View view)
-	{
-		finish();
-	}
-		
-	public void onSaveClick(View view)
-	{
-		if( _systolicEdit.getText().toString().equals("" ))
-			UIHelper.ShowAlertDialog(this, "Validation error", "Please enter a value for systolic.");
-		else if( _diastolicEdit.getText().toString().equals("" ))
-			UIHelper.ShowAlertDialog(this, "Validation error", "Please enter a value for diastolic.");
-		else
+
+	@Override
+	protected Boolean validate() {
+		if( _systolicTextView.getText().toString().equals("" ))
 		{
-			BloodPressureMeasurement measurement = new BloodPressureMeasurement();
-			measurement.Diastolic = Integer.parseInt( _diastolicEdit.getText().toString() );
-			measurement.Systolic = Integer.parseInt( _systolicEdit.getText().toString() );
-			// Create an event and save the measurement
-			finish();
+			UIHelper.ShowAlertDialog(this, "Validation error", "Please enter a value for the Systolic.");
+			return false;
 		}
+		if( _diastlicTextView.getText().toString().equals("" ))
+		{
+			UIHelper.ShowAlertDialog(this, "Validation error", "Please enter a value for the Diastolic.");
+			return false;
+		}
+		return true;
 	}
+
+	@Override
+	protected BloodPressureMeasurement getMeasurement() {
+		BloodPressureMeasurement result = new BloodPressureMeasurement();
+		result.Systolic = Integer.parseInt( _systolicTextView.getText().toString() );
+		result.Diastolic = Integer.parseInt( _diastlicTextView.getText().toString() );
+		return result;
+	}
+
+	@Override
+	protected void loadMeasurement(BloodPressureMeasurement measurement) {
+		_systolicTextView.setText(measurement.Systolic + "");
+		_diastlicTextView.setText(measurement.Diastolic + "");
+	}
+	
 }

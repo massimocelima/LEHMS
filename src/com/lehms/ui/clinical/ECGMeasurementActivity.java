@@ -5,9 +5,14 @@ import com.lehms.R;
 import com.lehms.UIHelper;
 
 import com.lehms.messages.dataContracts.ClientSummaryDataContract;
+import com.lehms.ui.clinical.device.ECGMeasurementDeviceProvider;
+import com.lehms.ui.clinical.device.IMeasurementDevice;
+import com.lehms.ui.clinical.device.IMeasurementDeviceProvider;
 import com.lehms.ui.clinical.model.BloodPressureMeasurement;
 import com.lehms.ui.clinical.model.ECGMeasurement;
+import com.lehms.ui.clinical.model.TemperatureMeasurement;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
@@ -16,15 +21,7 @@ import roboguice.activity.RoboActivity;
 import roboguice.inject.InjectExtra;
 import roboguice.inject.InjectView;
 
-public class ECGMeasurementActivity  extends RoboActivity { 
-
-	public static final String EXTRA_CLIENT = "client";
-	
-	@InjectExtra(EXTRA_CLIENT) ClientSummaryDataContract _client;
-	
-	@InjectView(R.id.activity_title) TextView _title;
-	@InjectView(R.id.activity_sub_title) TextView _subtitle;
-	//@InjectView(R.id.activity_sub_title2) TextView _subtitle2;
+public class ECGMeasurementActivity  extends ClinicalMeasurmentBaseActivity<ECGMeasurement> { 
 
 	@InjectView(R.id.activity_measurment_ecg_pulse_edit) EditText _pulseEdit;
 
@@ -33,45 +30,42 @@ public class ECGMeasurementActivity  extends RoboActivity {
 
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_measurement_ecg);
-		
-		if(savedInstanceState != null && savedInstanceState.get(EXTRA_CLIENT) != null)
-			_client = (ClientSummaryDataContract)savedInstanceState.get(EXTRA_CLIENT);
-		
-		_subtitle.setText(_client.FirstName + " " + _client.LastName);
-		//_subtitle2.setText(_client.ClientId);
+		init();
 	}
-	
+
 	@Override
-	protected void onSaveInstanceState(Bundle outState) {
-		super.onSaveInstanceState(outState);
-		outState.putSerializable(EXTRA_CLIENT, _client);
+	protected IMeasurementDeviceProvider<ECGMeasurement> getDeviceProvider() {
+		return new ECGMeasurementDeviceProvider();
 	}
-	
-	public void onHomeClick(View view)
-	{
-		NavigationHelper.goHome(this);
+
+	@Override
+	protected void openAuoMeasurementActivity(
+			IMeasurementDevice<ECGMeasurement> device) {
+		Intent intent = new Intent(this, ECGMeasurementAutoActivity.class);
+		intent.putExtra(ClinicalMeasurmentAutoBaseActivity.EXTRA_DEVICE, device);
+		startActivityForResult(intent, ClinicalMeasurmentBaseActivity.REQUEST_AUTO_MEASURMENT);
 	}
-		
-	public void onEmergencyClick(View view)
-	{
-		NavigationHelper.goEmergency(this);
-	}
-	
-	public void onCancelClick(View view)
-	{
-		finish();
-	}
-		
-	public void onSaveClick(View view)
-	{
+
+	@Override
+	protected Boolean validate() {
 		if( _pulseEdit.getText().toString().equals("" ))
-			UIHelper.ShowAlertDialog(this, "Validation error", "Please enter a value for pulse.");
-		else
 		{
-			ECGMeasurement measurement = new ECGMeasurement();
-			measurement.Pulse = Integer.parseInt( _pulseEdit.getText().toString() );
-			// Create an event and save the measurement
-			finish();
+			UIHelper.ShowAlertDialog(this, "Validation error", "Please enter a value for pulse.");
+			return false;
 		}
+		return true;
 	}
+
+	@Override
+	protected ECGMeasurement getMeasurement() {
+		ECGMeasurement measurement = new ECGMeasurement();
+		measurement.Pulse = Integer.parseInt( _pulseEdit.getText().toString() );
+		return measurement;
+	}
+
+	@Override
+	protected void loadMeasurement(ECGMeasurement measurement) {
+		_pulseEdit.setText(measurement.Pulse + "");
+	}
+
 }
