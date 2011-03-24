@@ -1,12 +1,21 @@
 package com.lehms.ui.clinical;
 
+import com.google.inject.Inject;
+import com.lehms.ISaveEventResultHandler;
 import com.lehms.NavigationHelper;
 import com.lehms.R;
 import com.lehms.UIHelper;
 
 import com.lehms.messages.dataContracts.ClientSummaryDataContract;
+import com.lehms.persistence.Event;
+import com.lehms.persistence.EventType;
+import com.lehms.persistence.IEventFactory;
+import com.lehms.persistence.IEventRepository;
+import com.lehms.serviceInterface.IEventExecuter;
+import com.lehms.ui.clinical.model.INRMeasurement;
 import com.lehms.ui.clinical.model.UrineMeasurement;
 import com.lehms.ui.clinical.model.WeightMeasurement;
+import com.lehms.util.AppLog;
 
 import android.os.Bundle;
 import android.view.View;
@@ -16,7 +25,7 @@ import roboguice.activity.RoboActivity;
 import roboguice.inject.InjectExtra;
 import roboguice.inject.InjectView;
 
-public class UrinetMeasurementActivity  extends RoboActivity { 
+public class UrinetMeasurementActivity  extends RoboActivity implements ISaveEventResultHandler  { 
 
 	public static final String EXTRA_CLIENT = "client";
 	
@@ -39,6 +48,10 @@ public class UrinetMeasurementActivity  extends RoboActivity {
 	@InjectView(R.id.activity_measurment_urine_urobilinogen_edit) EditText _urobilinogenEdit;
 	@InjectView(R.id.activity_measurment_urine_ketones_edit) EditText _ketonesEdit;
 
+	@Inject IEventRepository _eventRepository;
+	@Inject IEventExecuter _eventExecuter;
+	@Inject IEventFactory _eventEventFactory;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 
@@ -49,7 +62,6 @@ public class UrinetMeasurementActivity  extends RoboActivity {
 			_client = (ClientSummaryDataContract)savedInstanceState.get(EXTRA_CLIENT);
 		
 		_subtitle.setText(_client.FirstName + " " + _client.LastName);
-		//_subtitle2.setText(_client.ClientId);
 	}
 	
 	@Override
@@ -133,8 +145,32 @@ public class UrinetMeasurementActivity  extends RoboActivity {
 			measurement.Protein = Double.parseDouble( _proteinEdit.getText().toString() );
 			measurement.SpecificGrav = Double.parseDouble( _specificGravEdit.getText().toString() );
 			measurement.Urobilinogen = Double.parseDouble( _urobilinogenEdit.getText().toString() );
-			// Create an event and save the measurement
-			finish();
+			measurement.ClientId = _client.ClientId;
+			
+			Event event = _eventEventFactory.create(measurement, EventType.UrineTaken);
+			try {
+				UIHelper.SaveEvent(this, this, _eventRepository, _eventExecuter, event, this.getTitle().toString());
+				UIHelper.ShowToast(this, "INR Measurement Saved");
+
+				finish();
+			} catch (Exception e) {
+				onError(e);
+			}
 		}
+		
+		
 	}
+	
+	//ISaveEventResultHandler Implementation
+	@Override
+	public void onSuccess(Object data) {
+		this.finish();
+	}
+
+	@Override
+	public void onError(Exception e) {
+		UIHelper.ShowAlertDialog(this, "Error saving measurment", "Error ssving measurment: " + e.getMessage());
+		AppLog.error("Error ssving measurment", e);
+	}
+	//ISaveEventResultHandler Implementation
 }

@@ -78,6 +78,51 @@ public class Profile {
 	{
 		return GetBaseUrl() + "/Application/ApkVersionInfo";
 	}
+    
+	public String GetMeasurementSummaryResourceEndPoint()
+	{
+		return GetBaseUrl() + "Measurement/MeasurementSummary";
+	}
+
+	public String GetBloodPressureMeasurementResourceEndPoint()
+	{
+		return GetBaseUrl() + "Measurement/BloodPressureMeasurement";
+	}
+
+	public String GetBloodSugerLevelMeasurementResourceEndPoint()
+	{
+		return GetBaseUrl() + "Measurement/BloodSugerLevelMeasurement";
+	}
+
+	public String GetECGMeasurementResourceEndPoint()
+	{
+		return GetBaseUrl() + "Measurement/ECGMeasurement";
+	}
+
+	public String GetINRMeasurementResourceEndPoint()
+	{
+		return GetBaseUrl() + "Measurement/INRMeasurement";
+	}
+
+	public String GetSPO2MeasurementResourceEndPoint()
+	{
+		return GetBaseUrl() + "Measurement/SPO2Measurement";
+	}
+
+	public String GetTemperatureMeasurementResourceEndPoint()
+	{
+		return GetBaseUrl() + "Measurement/TemperatureMeasurement";
+	}
+
+	public String GetUrineMeasurementResourceEndPoint()
+	{
+		return GetBaseUrl() + "Measurement/UrineMeasurement";
+	}
+	
+	public String GetWeightMeasurementResourceEndPoint()
+	{
+		return GetBaseUrl() + "Measurement/WeightMeasurement";
+	}
 
 	public String GetBaseUrl()
 	{

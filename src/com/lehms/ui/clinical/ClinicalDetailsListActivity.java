@@ -114,7 +114,9 @@ public class ClinicalDetailsListActivity  extends RoboListActivity { //implement
 				_qa.addActionItem(qaViewMeasurments);
 				_qa.addActionItem(qaTakeManualMeasurment);
 				
-				if( _selectedMeasurmentType.Type != MeasurementTypeEnum.Urine )
+				if( _selectedMeasurmentType.Type != MeasurementTypeEnum.Urine && 
+						_selectedMeasurmentType.Type != MeasurementTypeEnum.INR && 
+						_selectedMeasurmentType.Type != MeasurementTypeEnum.Weight )
 					_qa.addActionItem(qaTakeAutoMeasurment);
 				
 				_qa.setAnimStyle(ListQuickAction.ANIM_AUTO);

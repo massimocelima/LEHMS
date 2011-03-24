@@ -2,6 +2,8 @@ package com.lehms;
 
 import com.lehms.persistence.*;
 import com.lehms.serviceInterface.*;
+import com.lehms.serviceInterface.clinical.ClinicalMeasurementResource;
+import com.lehms.serviceInterface.clinical.IClinicalMeasurementResource;
 import com.lehms.serviceInterface.implementation.*;
 
 import roboguice.config.AbstractAndroidModule;
@@ -28,6 +30,7 @@ public class ConfigurationModule extends AbstractAndroidModule {
 		bind(IFormDefinitionResource.class).to(FormDefinitionResource.class);
 		bind(IFormDataResource.class).to(FormDataResource.class);
 		bind(IApkResource.class).to(ApkResource.class);
+		bind(IClinicalMeasurementResource.class).to(ClinicalMeasurementResource.class);
 		
 		bind(IEventExecuter.class).to(EventExecuter.class);
 		bind(IEventFactory.class).to(EventFactory.class);

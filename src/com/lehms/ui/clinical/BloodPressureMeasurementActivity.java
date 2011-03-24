@@ -5,6 +5,7 @@ import com.lehms.R;
 import com.lehms.UIHelper;
 
 import com.lehms.messages.dataContracts.ClientSummaryDataContract;
+import com.lehms.persistence.EventType;
 import com.lehms.ui.clinical.device.BloodPressureMeasurementDeviceProvider;
 import com.lehms.ui.clinical.device.IMeasurementDevice;
 import com.lehms.ui.clinical.device.IMeasurementDeviceProvider;
@@ -69,6 +70,7 @@ public class BloodPressureMeasurementActivity  extends ClinicalMeasurmentBaseAct
 		BloodPressureMeasurement result = new BloodPressureMeasurement();
 		result.Systolic = Integer.parseInt( _systolicTextView.getText().toString() );
 		result.Diastolic = Integer.parseInt( _diastlicTextView.getText().toString() );
+		result.ClientId = _client.ClientId;
 		return result;
 	}
 
@@ -76,6 +78,11 @@ public class BloodPressureMeasurementActivity  extends ClinicalMeasurmentBaseAct
 	protected void loadMeasurement(BloodPressureMeasurement measurement) {
 		_systolicTextView.setText(measurement.Systolic + "");
 		_diastlicTextView.setText(measurement.Diastolic + "");
+	}
+
+	@Override
+	protected EventType getEventType() {
+		return EventType.BloodPressureTaken;
 	}
 	
 }

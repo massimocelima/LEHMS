@@ -6,6 +6,7 @@ import com.lehms.UIHelper;
 
 import com.lehms.messages.dataContracts.ClientSummaryDataContract;
 import com.lehms.messages.formDefinition.FormElementOption;
+import com.lehms.persistence.EventType;
 import com.lehms.ui.clinical.device.BloodPressureMeasurementDeviceProvider;
 import com.lehms.ui.clinical.device.BloodSugerLevelMeasurementDeviceProvider;
 import com.lehms.ui.clinical.device.IMeasurementDevice;
@@ -70,6 +71,7 @@ public class BloodSugerLevelMeasurementActivity extends ClinicalMeasurmentBaseAc
 	protected BloodSugerLevelMeasurement getMeasurement() {
 		BloodSugerLevelMeasurement measurement = new BloodSugerLevelMeasurement();
 		measurement.Level = Integer.parseInt( _bslEdit.getText().toString() );
+		measurement.ClientId = _client.ClientId;
 		if(!_insulinEdit.getText().toString().equals(""))
 		{
 			measurement.Insulin = Integer.parseInt( _insulinEdit.getText().toString() );
@@ -84,5 +86,10 @@ public class BloodSugerLevelMeasurementActivity extends ClinicalMeasurmentBaseAc
 		
 		if(measurement.Insulin != 0)
 			_insulinEdit.setText(measurement.Insulin + "");
+	}
+
+	@Override
+	protected EventType getEventType() {
+		return EventType.BSLTaken;
 	}
 }

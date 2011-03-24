@@ -33,26 +33,9 @@ import roboguice.inject.InjectView;
 
 public class SPO2MeasurementActivity extends ClinicalMeasurmentBaseActivity<SPO2Measurement> { 
 
-	/*
-	public static final String EXTRA_CLIENT = "client";
-	
-	private static final int REQUEST_AUTO_MEASURMENT = 0;
-	
-	@InjectExtra(EXTRA_CLIENT) ClientSummaryDataContract _client;
-	
-	@InjectView(R.id.activity_title) TextView _title;
-	@InjectView(R.id.activity_sub_title) TextView _subtitle;
-	//@InjectView(R.id.activity_sub_title2) TextView _subtitle2;
-*/
 	@InjectView(R.id.activity_measurment_spo2_edit) EditText _oxegenEdit;
 	@InjectView(R.id.activity_measurment_spo2_pulse_edit) EditText _pulseEdit;
 
-	/*
-	@Inject IEventRepository _eventRepository;
-	@Inject IEventExecuter _eventExecuter;
-	@Inject IEventFactory _eventEventFactory;
-*/
-	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 
@@ -60,34 +43,6 @@ public class SPO2MeasurementActivity extends ClinicalMeasurmentBaseActivity<SPO2
 		setContentView(R.layout.activity_measurement_spo2);
 		init();
 	}
-	
-	/*
-	@Override
-	protected void onSaveInstanceState(Bundle outState) {
-		super.onSaveInstanceState(outState);
-		outState.putSerializable(EXTRA_CLIENT, _client);
-	}
-	
-	public void onHomeClick(View view)
-	{
-		NavigationHelper.goHome(this);
-	}
-		
-	public void onEmergencyClick(View view)
-	{
-		NavigationHelper.goEmergency(this);
-	}
-	
-	public void onCancelClick(View view)
-	{
-		finish();
-	}
-	
-	public void onTakeAutoMeasurementClick(View view)
-	{
-		openAutoEntryForm();
-	}
-	*/
 	
 	@Override protected Boolean validate() 
 	{
@@ -116,6 +71,7 @@ public class SPO2MeasurementActivity extends ClinicalMeasurmentBaseActivity<SPO2
 		SPO2Measurement measurement = new SPO2Measurement();
 		measurement.OxegenPercent = Double.parseDouble( _oxegenEdit.getText().toString() );
 		measurement.Pulse = Integer.parseInt( _pulseEdit.getText().toString() );
+		measurement.ClientId = _client.ClientId;
 		return measurement;
 	}
 
@@ -124,31 +80,10 @@ public class SPO2MeasurementActivity extends ClinicalMeasurmentBaseActivity<SPO2
 		_oxegenEdit.setText(measurement.OxegenPercent + "");
 		_pulseEdit.setText(measurement.Pulse + "");
 	}
-	
-	/*
-	public void onSaveClick(View view)
-	{
-		if( _oxegenEdit.getText().toString().equals("" ))
-			UIHelper.ShowAlertDialog(this, "Validation error", "Please enter a value for SPO2.");
-		else
-		{
-			SPO2Measurement measurement = new SPO2Measurement();
-			measurement.OxegenPercent = Double.parseDouble( _oxegenEdit.getText().toString() );
-			measurement.Pulse = Integer.parseInt( _pulseEdit.getText().toString() );
-			
-			
-			Event event = _eventEventFactory.create(measurement, EventType.SPO2Taken);
-			try {
-				UIHelper.SaveEvent(this, this, _eventRepository, _eventExecuter, event, "SPO2 Measurment");
-				UIHelper.ShowToast(this, "SPO2 Measurment Saved");
-			} catch (Exception e) {
-				onError(e);
-			}
-			
-			// Create an event and save the measurement
-			finish();
-		}
+
+	@Override
+	protected EventType getEventType() {
+		return EventType.SPO2Taken;
 	}
-*/
 	
 }

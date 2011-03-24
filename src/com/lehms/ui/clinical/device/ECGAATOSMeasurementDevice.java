@@ -21,6 +21,7 @@ public class ECGAATOSMeasurementDevice extends BluetoothMeasurementDevice<ECGMea
 	
 	private MeasurmentBuffer _measurementBuffer;
 	
+	// PIN: 3448
 	public ECGAATOSMeasurementDevice(BluetoothDevice device)
 	{
 		super(device);

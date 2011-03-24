@@ -5,6 +5,7 @@ import com.lehms.R;
 import com.lehms.UIHelper;
 
 import com.lehms.messages.dataContracts.ClientSummaryDataContract;
+import com.lehms.persistence.EventType;
 import com.lehms.ui.clinical.device.ECGMeasurementDeviceProvider;
 import com.lehms.ui.clinical.device.IMeasurementDevice;
 import com.lehms.ui.clinical.device.IMeasurementDeviceProvider;
@@ -60,12 +61,18 @@ public class ECGMeasurementActivity  extends ClinicalMeasurmentBaseActivity<ECGM
 	protected ECGMeasurement getMeasurement() {
 		ECGMeasurement measurement = new ECGMeasurement();
 		measurement.Pulse = Integer.parseInt( _pulseEdit.getText().toString() );
+		measurement.ClientId = _client.ClientId;
 		return measurement;
 	}
 
 	@Override
 	protected void loadMeasurement(ECGMeasurement measurement) {
 		_pulseEdit.setText(measurement.Pulse + "");
+	}
+
+	@Override
+	protected EventType getEventType() {
+		return EventType.ECGTaken;
 	}
 
 }

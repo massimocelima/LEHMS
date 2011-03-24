@@ -5,6 +5,7 @@ import com.lehms.R;
 import com.lehms.UIHelper;
 
 import com.lehms.messages.dataContracts.ClientSummaryDataContract;
+import com.lehms.persistence.EventType;
 import com.lehms.ui.clinical.device.IMeasurementDevice;
 import com.lehms.ui.clinical.device.IMeasurementDeviceProvider;
 import com.lehms.ui.clinical.device.TemperatureMeasurementDeviceProvider;
@@ -61,12 +62,18 @@ public class TemperatureMeasurementActivity  extends ClinicalMeasurmentBaseActiv
 	protected TemperatureMeasurement getMeasurement() {
 		TemperatureMeasurement result = new TemperatureMeasurement();
 		result.Degrees = Double.parseDouble( _temperatureEdit.getText().toString() );
+		result.ClientId = _client.ClientId;
 		return result;
 	}
 
 	@Override
 	protected void loadMeasurement(TemperatureMeasurement measurement) {
 		_temperatureEdit.setText(measurement.Degrees + "");
+	}
+
+	@Override
+	protected EventType getEventType() {
+		return EventType.TemperatureTaken;
 	}
 	
 }

@@ -61,7 +61,7 @@ public abstract class ClinicalMeasurmentBaseActivity<T> extends RoboActivity imp
 	protected abstract Boolean validate();
 	protected abstract T getMeasurement();
 	protected abstract void loadMeasurement(T measurement);	
-
+	protected abstract EventType getEventType();
 	
 	@Override
 	protected void onCreate(android.os.Bundle savedInstanceState) 
@@ -135,7 +135,7 @@ public abstract class ClinicalMeasurmentBaseActivity<T> extends RoboActivity imp
 		{
 			T measurement = getMeasurement();
 			
-			Event event = _eventEventFactory.create(measurement, EventType.SPO2Taken);
+			Event event = _eventEventFactory.create(measurement, getEventType());
 			try {
 				UIHelper.SaveEvent(this, this, _eventRepository, _eventExecuter, event, this.getTitle().toString());
 				UIHelper.ShowToast(this, this.getTitle() + " Saved");
