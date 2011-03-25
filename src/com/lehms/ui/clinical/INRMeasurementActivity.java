@@ -11,6 +11,7 @@ import com.lehms.persistence.Event;
 import com.lehms.persistence.EventType;
 import com.lehms.persistence.IEventFactory;
 import com.lehms.persistence.IEventRepository;
+import com.lehms.serviceInterface.IActiveJobProvider;
 import com.lehms.serviceInterface.IEventExecuter;
 import com.lehms.ui.clinical.model.BloodPressureMeasurement;
 import com.lehms.ui.clinical.model.ECGMeasurement;
@@ -40,6 +41,7 @@ public class INRMeasurementActivity  extends RoboActivity implements ISaveEventR
 	@Inject IEventRepository _eventRepository;
 	@Inject IEventExecuter _eventExecuter;
 	@Inject IEventFactory _eventEventFactory;
+	@Inject IActiveJobProvider _activeJobProvider;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -85,6 +87,8 @@ public class INRMeasurementActivity  extends RoboActivity implements ISaveEventR
 			INRMeasurement measurement = new INRMeasurement();
 			measurement.Value = Double.parseDouble(_inrEdit.getText().toString() );
 			measurement.ClientId = _client.ClientId;
+			if(_activeJobProvider.get() != null)
+				((com.lehms.ui.clinical.model.Measurement)measurement).JobId = _activeJobProvider.get().JobId;
 
 			Event event = _eventEventFactory.create(measurement, EventType.INRTaken);
 			try {

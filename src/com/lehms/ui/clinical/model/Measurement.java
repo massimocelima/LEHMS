@@ -13,4 +13,7 @@ public class Measurement implements Serializable {
 	public Date CreatedDate;
 	public String CreatedBy;
 	public String ClientId; 
+	public String JobId;
+    public Boolean IsManualMeasurement;
+
 }

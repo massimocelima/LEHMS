@@ -84,6 +84,11 @@ public class Profile {
 		return GetBaseUrl() + "Measurement/MeasurementSummary";
 	}
 
+	public String GetPreviousMeasurementResourceEndPoint()
+	{
+		return GetBaseUrl() + "Measurement/PreviousMeasurement";
+	}
+	
 	public String GetBloodPressureMeasurementResourceEndPoint()
 	{
 		return GetBaseUrl() + "Measurement/BloodPressureMeasurement";

@@ -13,6 +13,7 @@ import com.lehms.persistence.Event;
 import com.lehms.persistence.EventType;
 import com.lehms.persistence.IEventFactory;
 import com.lehms.persistence.IEventRepository;
+import com.lehms.serviceInterface.IActiveJobProvider;
 import com.lehms.serviceInterface.IEventExecuter;
 import com.lehms.ui.clinical.model.WeightMeasurement;
 import com.lehms.util.AppLog;
@@ -44,6 +45,7 @@ public class WeightMeasurementActivity  extends RoboActivity implements ISaveEve
 	@Inject IEventRepository _eventRepository;
 	@Inject IEventExecuter _eventExecuter;
 	@Inject IEventFactory _eventEventFactory;
+	@Inject IActiveJobProvider _activeJobProvider;
 	
 	private AcceptThread _acceptThread;
 	
@@ -145,7 +147,9 @@ public class WeightMeasurementActivity  extends RoboActivity implements ISaveEve
 			WeightMeasurement measurement = new WeightMeasurement();
 			measurement.Weight = Double.parseDouble( _weightEdit.getText().toString() );
 			measurement.ClientId = _client.ClientId;
-			
+			if(_activeJobProvider.get() != null)
+				((com.lehms.ui.clinical.model.Measurement)measurement).JobId = _activeJobProvider.get().JobId;
+
 			Event event = _eventEventFactory.create(measurement, EventType.WeightTaken);
 			try {
 				UIHelper.SaveEvent(this, this, _eventRepository, _eventExecuter, event, this.getTitle().toString());

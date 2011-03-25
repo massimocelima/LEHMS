@@ -9,6 +9,7 @@ import com.google.inject.Inject;
 import com.lehms.UIHelper;
 import com.lehms.messages.CreateFormDataRequest;
 import com.lehms.messages.CreateFormDataResponse;
+import com.lehms.messages.CreateMeasurementResponse;
 import com.lehms.messages.CreateProgressNoteRequest;
 import com.lehms.messages.dataContracts.AttachmentDataContract;
 import com.lehms.messages.dataContracts.PhotoType;
@@ -20,6 +21,8 @@ import com.lehms.persistence.IEventRepository;
 import com.lehms.serviceInterface.IEventExecuter;
 import com.lehms.serviceInterface.IFormDataResource;
 import com.lehms.serviceInterface.IProgressNoteResource;
+import com.lehms.serviceInterface.clinical.IClinicalMeasurementResource;
+import com.lehms.ui.clinical.model.Measurement;
 import com.lehms.util.AppLog;
 import com.lehms.util.StreamExtentions;
 
@@ -28,26 +31,47 @@ public class EventExecuter implements IEventExecuter {
 	private IEventRepository _eventRepository;
 	private IProgressNoteResource _progressNoteResource;
 	private IFormDataResource _formDataResource;
+	private IClinicalMeasurementResource _clinicalMeasurementResource;
 	
 	@Inject
 	public EventExecuter(IProgressNoteResource progressNoteResource,
 			IFormDataResource formDataResource,
-			IEventRepository eventRepository)
+			IEventRepository eventRepository, 
+			IClinicalMeasurementResource clinicalMeasurementResource)
 	{
 		_progressNoteResource = progressNoteResource;
 		_eventRepository = eventRepository;
 		_formDataResource = formDataResource;
+		_clinicalMeasurementResource = clinicalMeasurementResource;
 	}
 	
 	@Override
 	public Object ExecuteEvent(Event event) throws Exception {
 		
-		if( event.Type == EventType.ProgressNoteAdded)
+		switch(event.Type)
+		{
+		case ProgressNoteAdded:
 			return ExecuteCreateProgressNoteEvent(event);
-		else if(event.Type == EventType.FormCompleted)
+		case FormCompleted:
 			return ExecuteCreateFormEvent(event);
-		else
-			throw new Exception("Unimplemented event executer for " + event.Type.toString());
+		case BloodPressureTaken:
+		case BSLTaken:
+		case ECGTaken:
+		case INRTaken:
+		case SPO2Taken:
+		case TemperatureTaken:
+		case UrineTaken:
+		case WeightTaken:
+			return ExecuteCreateMeasurmentEvent(event);
+		case JobCompleted:
+			return ExecuteJobCompletedEvent(event);
+		case JobStarted:
+			return ExecuteJobStartedEvent(event);
+		case LocationTracking:
+			return ExecuteLocationTrackingEvent(event);
+		}
+		
+		throw new Exception("Unimplemented event executer for " + event.Type.toString());
 	}
 	
 	public Object ExecuteCreateProgressNoteEvent(Event event) throws Exception
@@ -115,6 +139,32 @@ public class EventExecuter implements IEventExecuter {
 			response = _formDataResource.Create(request);
 		
 		return response;
+	}
+	
+	public Object ExecuteCreateMeasurmentEvent(Event event) throws Exception
+	{
+		Measurement measurement = (Measurement)event.Data;
+		CreateMeasurementResponse response = null;
+		
+		response = _clinicalMeasurementResource.Save(measurement);
+		
+		return response;
+
+	}
+	
+	public Object ExecuteJobCompletedEvent(Event event) throws Exception
+	{
+		throw new Exception("Not implemented: " + event.Type.toString());
+	}	
+	
+	public Object ExecuteJobStartedEvent(Event event) throws Exception
+	{
+		throw new Exception("Not implemented: " + event.Type.toString());
+	}
+	
+	public Object ExecuteLocationTrackingEvent(Event event) throws Exception
+	{
+		throw new Exception("Not implemented: " + event.Type.toString());
 	}
 
 }

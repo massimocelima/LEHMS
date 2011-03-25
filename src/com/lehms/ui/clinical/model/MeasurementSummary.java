@@ -6,7 +6,7 @@ public class MeasurementSummary
 {
     public String CreatedBy;
     public Date CreatedDate;
-    public String Type;
+    public MeasurementTypeEnum Type;
     public String Description;
     public double PrimaryData;
     public Double SecondaryData;

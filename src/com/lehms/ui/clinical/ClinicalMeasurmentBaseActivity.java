@@ -13,6 +13,7 @@ import com.lehms.persistence.Event;
 import com.lehms.persistence.EventType;
 import com.lehms.persistence.IEventFactory;
 import com.lehms.persistence.IEventRepository;
+import com.lehms.serviceInterface.IActiveJobProvider;
 import com.lehms.serviceInterface.IEventExecuter;
 import com.lehms.ui.clinical.device.IMeasurementDevice;
 import com.lehms.ui.clinical.device.IMeasurementDeviceProvider;
@@ -54,6 +55,7 @@ public abstract class ClinicalMeasurmentBaseActivity<T> extends RoboActivity imp
 	@Inject IEventRepository _eventRepository;
 	@Inject IEventExecuter _eventExecuter;
 	@Inject IEventFactory _eventEventFactory;
+	@Inject IActiveJobProvider _activeJobProvider;
 
 
 	protected abstract IMeasurementDeviceProvider<T> getDeviceProvider();
@@ -135,6 +137,9 @@ public abstract class ClinicalMeasurmentBaseActivity<T> extends RoboActivity imp
 		{
 			T measurement = getMeasurement();
 			
+			if(_activeJobProvider.get() != null)
+				((com.lehms.ui.clinical.model.Measurement)measurement).JobId = _activeJobProvider.get().JobId;
+
 			Event event = _eventEventFactory.create(measurement, getEventType());
 			try {
 				UIHelper.SaveEvent(this, this, _eventRepository, _eventExecuter, event, this.getTitle().toString());
