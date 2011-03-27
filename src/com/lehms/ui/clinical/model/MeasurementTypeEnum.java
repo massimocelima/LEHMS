@@ -1,6 +1,8 @@
 package com.lehms.ui.clinical.model;
 
-public enum MeasurementTypeEnum {
+import java.io.Serializable;
+
+public enum MeasurementTypeEnum implements Serializable {
 
 	ECG,
 	BP,

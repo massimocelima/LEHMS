@@ -42,7 +42,7 @@ public class ClinicalMeasurementResource implements IClinicalMeasurementResource
 			int skip, 
 			int take) throws Exception {
 		
-		return GetSummaryChannel().Get(skip, take, "", "ClientId = " + client + " AND Type = " + type, 
+		return GetSummaryChannel().Get(skip, take, "", "ClientId = " + client + " AND Type = " + type.Type.toString(), 
 				GetMeasurementSummaryListResponse.class);
 	}
 	

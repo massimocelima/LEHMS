@@ -84,6 +84,11 @@
                   android:configChanges="orientation" 
                   />
 
+        <activity android:name="com.lehms.ui.clinical.MeasurementSummaryListActivity"
+                  android:label="@string/app_name" 
+                  android:configChanges="orientation" 
+                  />
+
         <activity android:name="com.lehms.ui.clinical.WeightMeasurementActivity"
                   android:label="Weight Measurement" 
                   android:configChanges="orientation" 

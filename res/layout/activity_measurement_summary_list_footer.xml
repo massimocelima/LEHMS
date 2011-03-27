@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+	android:orientation="horizontal"
+	android:background="@drawable/list_header_background" 
+	android:gravity="center"
+    style="@style/ListItem">
+
+	<ImageView 
+		android:id="@+id/activity_list_footer_ic_refresh"
+	  	android:layout_width="wrap_content" 
+		android:layout_height="wrap_content" 
+		android:gravity="center" 
+		android:src="@drawable/ic_menu_refresh" /> 
+    
+    <TextView
+		android:id="@+id/activity_list_footer_refresh"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Load More..."
+        android:gravity="center_vertical"
+        style="@style/NoteCreate" />
+
+    <TextView
+		android:id="@+id/activity_list_footer_no_connection"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="A intenet connection could not be found, please get in range of a data connection and try again using the refresh icon in the top right."
+        android:gravity="center_vertical"
+        android:textStyle="italic"
+        android:visibility="gone"
+        />
+        
+</LinearLayout>

@@ -54,7 +54,15 @@ public class MeasurementTypeAdapter extends ArrayAdapter<MeasurementType> {
 		nameTextView.setText(item.Name);
 		descriptionTextView.setText(item.Description);
 
-		switch(item.Type)
+		SetImage(item.Type, image);
+		
+		return view;
+		
+	}
+	
+	public static void SetImage(MeasurementTypeEnum type, ImageView image)
+	{
+		switch(type)
 		{
 		case BP:
 			image.setImageResource(R.drawable.list_btn_clinical_details_blood_pressure);
@@ -81,8 +89,36 @@ public class MeasurementTypeAdapter extends ArrayAdapter<MeasurementType> {
 			image.setImageResource(R.drawable.list_btn_clinical_details_weight);
 			break;
 		}
-		
-		return view;
-		
+	}
+	
+	public static void SetTitleImage(MeasurementTypeEnum type, ImageView image)
+	{
+		switch(type)
+		{
+		case BP:
+			image.setImageResource(R.drawable.dashboard_btn_clinical_details_blood_pressure);
+			break;
+		case ECG:
+			image.setImageResource(R.drawable.dashboard_btn_clinical_details_heart);
+			break;
+		case BSL:
+			image.setImageResource(R.drawable.dashboard_btn_clinical_details_device);
+			break;
+		case INR:
+			image.setImageResource(R.drawable.dashboard_btn_clinical_details_needle);
+			break;
+		case SPO2:
+			image.setImageResource(R.drawable.dashboard_btn_clinical_details_o2);
+			break;
+		case Temp:
+			image.setImageResource(R.drawable.dashboard_btn_clinical_details_temp);
+			break;
+		case Urine:
+			image.setImageResource(R.drawable.dashboard_btn_clinical_details_default);
+			break;
+		case Weight:
+			image.setImageResource(R.drawable.dashboard_btn_clinical_details_weight);
+			break;
+		}
 	}
 }

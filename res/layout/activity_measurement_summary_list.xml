@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/home_root"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    >
+ 
+   <LinearLayout style="@style/TitleBar">
+        
+		<ImageButton style="@style/TitleBarAction"
+            android:contentDescription="Home"
+            android:src="@drawable/ic_title_home"
+            android:onClick="onHomeClick" />
+        
+        <ImageView style="@style/TitleBarSeparator" />
+        <TextView 
+	        android:id="@+id/title_bar_title"
+        	style="@style/TitleBarText" 
+        	android:text="Measurements" />
+        <!-- <View style="@style/TitleBarSpring" /> -->
+
+        <ImageView style="@style/TitleBarSeparator" />
+        <ImageButton style="@style/TitleBarAction"
+            android:contentDescription="Refresh"
+            android:src="@drawable/ic_title_refresh"
+            android:onClick="onRefreshClick" />
+            
+        <ImageView style="@style/TitleBarSeparator" />
+        <ImageButton style="@style/TitleBarAction"
+            android:contentDescription="Emergency"
+            android:src="@drawable/ic_title_emergency"
+            android:onClick="onEmergencyClick" />
+
+    </LinearLayout>
+    
+    <LinearLayout 
+        style="@style/HeaderContainer">
+
+		<ImageView 
+			android:id="@+id/activity_title_image"
+			android:layout_height="wrap_content" 
+			android:layout_width="wrap_content" 
+			android:src="@drawable/dashboard_btn_clinical_details_default"></ImageView>
+			
+	    <LinearLayout 
+		    android:orientation="vertical"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:layout_weight="1"
+		    >
+			
+			<TextView 
+				android:id="@+id/activity_title"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:text="Measurements"
+		        style="@style/HeaderTitle" />
+	   		<TextView 
+				android:id="@+id/activity_sub_title"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        style="@style/HeaderSubTitle" />
+        </LinearLayout>
+
+	</LinearLayout>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        >
+
+ 		<ListView
+ 			android:id="@+id/android:list"
+	        android:layout_width="fill_parent"
+	        android:layout_height="fill_parent" />
+ 
+    </LinearLayout>
+	    
+	<LinearLayout
+		android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        style="@android:style/ButtonBar"
+        >
+
+	    <Button 
+			android:id="@+id/activity_measurment_summary_send"
+			android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:text="Send Measurements..."
+	        android:drawableLeft="@drawable/quick_actions_ic_send"
+		/>
+
+	</LinearLayout>
+
+  
+</LinearLayout>

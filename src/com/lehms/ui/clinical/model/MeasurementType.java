@@ -1,7 +1,9 @@
 package com.lehms.ui.clinical.model;
 
+import java.io.Serializable;
 
-public class MeasurementType {
+
+public class MeasurementType implements Serializable {
 
 	public String Name;
 	public String Description;

@@ -11,6 +11,8 @@ import com.lehms.messages.dataContracts.ProgressNoteDataContract;
 import com.lehms.messages.formDefinition.FormData;
 import com.lehms.messages.formDefinition.FormDefinition;
 import com.lehms.ui.clinical.ClinicalDetailsListActivity;
+import com.lehms.ui.clinical.MeasurementSummaryListActivity;
+import com.lehms.ui.clinical.model.MeasurementType;
 
 import android.app.Activity;
 import android.content.Context;
@@ -43,6 +45,14 @@ public class NavigationHelper {
 	public static void goNextService(Context context, Long clientId)
 	{
 		UIHelper.ShowUnderConstructionMessage(context);
+	}
+
+	public static void viewMeasurementSummaryList(Context context, ClientSummaryDataContract client, MeasurementType measurementType)
+	{
+        Intent intent = new Intent(context, MeasurementSummaryListActivity.class);
+        intent.putExtra(MeasurementSummaryListActivity.EXTRA_CLIENT, client);
+        intent.putExtra(MeasurementSummaryListActivity.EXTRA_MEASUREMENT_TYPE, measurementType);
+        context.startActivity(intent);
 	}
 
 	public static void goCliniclaDetails(Context context, ClientSummaryDataContract client)

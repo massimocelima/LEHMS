@@ -177,7 +177,7 @@ public class DeviceListActivity extends RoboActivity implements IDeviceDiscovere
 	@Override
 	public void discoveryFinished() {
         setProgressBarIndeterminateVisibility(false);
-        setTitle("select a device to connect");
+        setTitle("Select a device to connect");
         if (_newDevicesArrayAdapter.getCount() == 0) 
         {
         // TODO: do something here	
@@ -188,7 +188,7 @@ public class DeviceListActivity extends RoboActivity implements IDeviceDiscovere
 	public void discoveryStarted() {
         // Indicate scanning in the title
         setProgressBarIndeterminateVisibility(true);
-        setTitle("scanning for devices...");
+        setTitle("Scanning for devices...");
 
         // Turn on sub-title for new devices
         findViewById(R.id.title_new_devices).setVisibility(View.VISIBLE);

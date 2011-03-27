@@ -81,52 +81,52 @@ public class Profile {
     
 	public String GetMeasurementSummaryResourceEndPoint()
 	{
-		return GetBaseUrl() + "Measurement/MeasurementSummary";
+		return GetBaseUrl() + "/Measurement/MeasurementSummary";
 	}
 
 	public String GetPreviousMeasurementResourceEndPoint()
 	{
-		return GetBaseUrl() + "Measurement/PreviousMeasurement";
+		return GetBaseUrl() + "/Measurement/PreviousMeasurement";
 	}
 	
 	public String GetBloodPressureMeasurementResourceEndPoint()
 	{
-		return GetBaseUrl() + "Measurement/BloodPressureMeasurement";
+		return GetBaseUrl() + "/Measurement/BloodPressureMeasurement";
 	}
 
 	public String GetBloodSugerLevelMeasurementResourceEndPoint()
 	{
-		return GetBaseUrl() + "Measurement/BloodSugerLevelMeasurement";
+		return GetBaseUrl() + "/Measurement/BloodSugerLevelMeasurement";
 	}
 
 	public String GetECGMeasurementResourceEndPoint()
 	{
-		return GetBaseUrl() + "Measurement/ECGMeasurement";
+		return GetBaseUrl() + "/Measurement/ECGMeasurement";
 	}
 
 	public String GetINRMeasurementResourceEndPoint()
 	{
-		return GetBaseUrl() + "Measurement/INRMeasurement";
+		return GetBaseUrl() + "/Measurement/INRMeasurement";
 	}
 
 	public String GetSPO2MeasurementResourceEndPoint()
 	{
-		return GetBaseUrl() + "Measurement/SPO2Measurement";
+		return GetBaseUrl() + "/Measurement/SPO2Measurement";
 	}
 
 	public String GetTemperatureMeasurementResourceEndPoint()
 	{
-		return GetBaseUrl() + "Measurement/TemperatureMeasurement";
+		return GetBaseUrl() + "/Measurement/TemperatureMeasurement";
 	}
 
 	public String GetUrineMeasurementResourceEndPoint()
 	{
-		return GetBaseUrl() + "Measurement/UrineMeasurement";
+		return GetBaseUrl() + "/Measurement/UrineMeasurement";
 	}
 	
 	public String GetWeightMeasurementResourceEndPoint()
 	{
-		return GetBaseUrl() + "Measurement/WeightMeasurement";
+		return GetBaseUrl() + "/Measurement/WeightMeasurement";
 	}
 
 	public String GetBaseUrl()

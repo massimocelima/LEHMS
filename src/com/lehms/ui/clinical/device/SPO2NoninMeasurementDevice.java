@@ -80,12 +80,6 @@ public class SPO2NoninMeasurementDevice extends BluetoothMeasurementDevice<SPO2M
         return ((num << 8) | num2);
     }
 
-	@Override
-	public SPO2Measurement readMeasurement() throws Exception {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
     /*
     private class Packet
     {

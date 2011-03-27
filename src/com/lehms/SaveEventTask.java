@@ -75,7 +75,9 @@ public class SaveEventTask extends AsyncTask<Event, Integer, Object>
 				return;
 
 			if( _progressDialog.isShowing() )
-				_progressDialog.dismiss();
+			{
+				try { _progressDialog.dismiss(); } catch (Exception e) {}
+			}
 
 			if( _exception != null )
 			{

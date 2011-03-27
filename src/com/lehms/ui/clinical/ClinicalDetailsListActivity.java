@@ -76,7 +76,7 @@ public class ClinicalDetailsListActivity  extends RoboListActivity { //implement
 		qaViewMeasurments.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				openAutoEntryForm(_selectedMeasurmentType);
+				NavigationHelper.viewMeasurementSummaryList(ClinicalDetailsListActivity.this, _client, _selectedMeasurmentType);
 				_qa.dismiss();
 			}
 		});

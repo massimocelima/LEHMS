@@ -147,8 +147,6 @@ public abstract class ClinicalMeasurmentBaseActivity<T> extends RoboActivity imp
 			} catch (Exception e) {
 				onError(e);
 			}
-			
-			finish();
 		}
 	}
 		

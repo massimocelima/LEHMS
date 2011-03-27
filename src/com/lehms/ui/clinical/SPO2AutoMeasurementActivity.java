@@ -23,138 +23,19 @@ import roboguice.inject.InjectView;
 
 public class SPO2AutoMeasurementActivity extends ClinicalMeasurmentAutoBaseActivity<SPO2Measurement> {
 
-	/*
-	public final static String EXTRA_DEVICE =  "device"; 
-	public final static String EXTRA_MEASUREMENT = "measurement"; 
-	private static Boolean _running = false;
-	
-	@InjectExtra(EXTRA_DEVICE) IMeasurementDevice _device;
-
-	@InjectView(R.id.activity_measurment_status_auto) TextView _statusTextView;
-	@InjectView(R.id.activity_measurment_auto_save) Button _saveButton;
-		
-	private TakeMeasurementTask _task;
-	private SPO2Measurement _measurement;
-	*/
-
 	@InjectView(R.id.activity_measurment_spo2_auto_edit) TextView _spo2TextView;
 	@InjectView(R.id.activity_measurment_spo2_pulse_auto_edit) TextView _pulseTextView;
-
-
-	@Override
-	public void loadMeasurement(SPO2Measurement measurement) {
-		_pulseTextView.setText(measurement.Pulse + "");
-		_spo2TextView.setText(measurement.OxegenPercent + "");
-	}
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		this.setContentView(R.layout.activity_measurement_spo2_auto);
 		start();
-		//if(savedInstanceState != null && savedInstanceState.get(EXTRA_DEVICE) != null)
-		//	_device = (IMeasurementDevice) savedInstanceState.get(EXTRA_DEVICE);
-		
-		//_saveButton.setEnabled(false);
-
-		//_running = true;
-		//_task = new TakeMeasurementTask(_device);
-		//_task.execute(null);
 	}
-	
-	/*
+
 	@Override
-	protected void onSaveInstanceState(Bundle outState) {
-		super.onSaveInstanceState(outState);
-		outState.putSerializable(EXTRA_DEVICE, _device);
+	public void loadMeasurement(SPO2Measurement measurement) {
+		_pulseTextView.setText(measurement.Pulse + "");
+		_spo2TextView.setText(measurement.OxegenPercent + "");
 	}
-	
-	public void onCancelClick(View view)
-	{
-		if(_task.getStatus() == Status.RUNNING)
-			_task.cancel(true);
-		finish();
-	}
-	
-	public void onSaveClick(View view)
-	{
-   		Intent intent = new Intent();
-		intent.putExtra(EXTRA_MEASUREMENT, _measurement);
-
-        // Set result and finish this Activity
-        setResult(Activity.RESULT_OK, intent);
-        finish();
-	}
-	
-	@Override 
-	protected void onDestroy() {
-		super.onDestroy();
-		_running = false;
-		if(_task.getStatus() == Status.RUNNING)
-			_task.cancel(true);
-		try { _device.close(); } catch(Exception e) { }
-	};
-	
-	private class TakeMeasurementTask extends AsyncTask<Void, Integer, SPO2Measurement>
-	{
-		private Exception _exception = null;
-	    private IMeasurementDevice _device;
-
-	    public TakeMeasurementTask(IMeasurementDevice device)
-	    {
-	    	_device = device;
-	    }
-	    	
-	    @Override
-	    protected void onPreExecute() {
-	    	super.onPreExecute();
-    	}
-    	
-    	@Override
-    	protected void onCancelled() {
-    		super.onCancelled();
-    	}
-
-    	private Boolean _updateRequired = false;
-    	
-		@Override
-		protected SPO2Measurement doInBackground(Void... arg0) {
-			try {
-				return (SPO2Measurement)_device.readMeasurement();
-			} catch (Exception e) {
-				_exception = e;
-			}
-			return null;
-		}
-		
-		@Override
-		protected void onPostExecute(SPO2Measurement result) {
-			super.onPostExecute(result);
-			
-			if(isCancelled() || ! _running)
-				return;
-			
-			if( result != null )
-			{
-				_statusTextView.setText("Getting measurements...");
-
-				_measurement = result;
-				_pulseTextView.setText(result.Pulse + "");
-				_spo2TextView.setText(result.OxegenPercent + "");
-				
-				_saveButton.setEnabled(true);
-			}
-			else if(_exception != null )
-			{
-				_statusTextView.setText("Error getting measurement, attempting to reconnect...");
-				_exception = null;
-				try { _device.close(); } catch (Exception e ) {}
-			}
-			
-			_task = new TakeMeasurementTask(_device);
-			_task.execute(null);
-
-		}
-	}
-	*/
 }
