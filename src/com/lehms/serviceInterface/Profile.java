@@ -68,6 +68,11 @@ public class Profile {
 	{
 		return GetBaseUrl() + "/FormDataAttachment";
 	}
+
+	public String GetAlarmResourceEndPoint()
+	{
+		return GetBaseUrl() + "/Alarm";
+	}
 	
 	public String GetApkResourceEndPoint()
 	{
@@ -138,7 +143,8 @@ public class Profile {
 			result = "http://192.168.0.112/INS.Gateway.WASHost";
 			break;
 		case DevelopmentEmulation:
-			result = "http://192.168.43.57/INS.Gateway.WASHost";
+			result = "http://10.0.0.3/INS.Gateway.WASHost";
+			//result = "http://192.168.43.57/INS.Gateway.WASHost";
 			//result = "http://192.168.1.3/INS.Gateway.WASHost";
 			//result = "http://10.0.2.2:7856";
 			break;

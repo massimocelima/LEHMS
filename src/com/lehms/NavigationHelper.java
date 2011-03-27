@@ -26,12 +26,12 @@ public class NavigationHelper {
 	public static final int RESULT_CREATE_PROGRESS_NOTE = 0;
 	
 	private NavigationHelper() {}
-	
-	public static void goEmergency(Context context)
+
+	public static void goTestEmergency(Context context)
 	{
 		UIHelper.ShowUnderConstructionMessage(context);
 	}
-	
+
 	public static void goContactCallCentre(Context context)
 	{
 		UIHelper.ShowUnderConstructionMessage(context);
@@ -47,6 +47,12 @@ public class NavigationHelper {
 		UIHelper.ShowUnderConstructionMessage(context);
 	}
 
+	public static void goEmergency(Context context)
+	{
+        Intent intent = new Intent(context, RaiseAlarmActivity.class);
+        context.startActivity(intent);
+	}
+	
 	public static void viewMeasurementSummaryList(Context context, ClientSummaryDataContract client, MeasurementType measurementType)
 	{
         Intent intent = new Intent(context, MeasurementSummaryListActivity.class);

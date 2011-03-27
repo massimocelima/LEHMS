@@ -43,6 +43,34 @@
                 android:summary="@string/application_settings_office_email_summary"
                 android:dialogTitle="@string/application_settings_office_email" />
 
+		<EditTextPreference
+                android:key="application_settings_alarm_phone_pref"
+	            android:defaultValue="0410308497"
+                android:title="Alarm Phone Number"
+                android:summary="Phone number the alarms will call"
+                android:dialogTitle="Alarm Phone Number" />
+
+		<EditTextPreference
+                android:key="application_settings_alarm_sms_number_pref"
+	            android:defaultValue="0410308497"
+                android:title="Alarm SMS Number"
+                android:summary="The phone number the alarm will use to sms a alarm message when a data connection is not available"
+                android:dialogTitle="Alarm SMS Number" />
+
+		<EditTextPreference
+                android:key="application_settings_service_phone_pref"
+	            android:defaultValue=" 0410308497"
+                android:title="Servie Phone Number"
+                android:summary="Phone number of the service centre"
+                android:dialogTitle="Service Phone Number" />
+
+		<EditTextPreference
+                android:key="application_settings_call_centre_phone_pref"
+	            android:defaultValue="0410308497"
+                android:title="Call Centre Phone Number"
+                android:summary="Phone number of the call centre"
+                android:dialogTitle="Call Centre Phone Number" />
+
     </PreferenceCategory>
     
 </PreferenceScreen>
