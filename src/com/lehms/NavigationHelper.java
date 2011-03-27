@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.Date;
 import java.util.UUID;
 
+import com.lehms.messages.dataContracts.AlarmType;
 import com.lehms.messages.dataContracts.ClientDataContract;
 import com.lehms.messages.dataContracts.ClientSummaryDataContract;
 import com.lehms.messages.dataContracts.PhotoType;
@@ -27,11 +28,6 @@ public class NavigationHelper {
 	
 	private NavigationHelper() {}
 
-	public static void goTestEmergency(Context context)
-	{
-		UIHelper.ShowUnderConstructionMessage(context);
-	}
-
 	public static void goContactCallCentre(Context context)
 	{
 		UIHelper.ShowUnderConstructionMessage(context);
@@ -45,6 +41,13 @@ public class NavigationHelper {
 	public static void goNextService(Context context, Long clientId)
 	{
 		UIHelper.ShowUnderConstructionMessage(context);
+	}
+
+	public static void goTestEmergency(Context context)
+	{
+        Intent intent = new Intent(context, RaiseAlarmActivity.class);
+        intent.putExtra(RaiseAlarmActivity.EXTRA_ALARM_TYPE, AlarmType.Test);
+        context.startActivity(intent);
 	}
 
 	public static void goEmergency(Context context)

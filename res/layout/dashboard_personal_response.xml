@@ -15,11 +15,11 @@
              android:text="Help"
              android:onClick="onEmergencyClick"
              android:drawableTop="@drawable/dashboard_btn_emergency"/>
-         <Button android:id="@+id/dashboard_btn_schedule"
+         <Button android:id="@+id/dashboard_btn_clinical_details"
              style="@style/DashboardButton"
-             android:onClick="onCalendarClick"
-             android:text="Calendar"
-             android:drawableTop="@drawable/dashboard_btn_schedule"/>
+             android:onClick="onClinicalDetailsClick"
+             android:text="Clinical Details"
+             android:drawableTop="@drawable/dashboard_btn_clinical_details"/>
      </LinearLayout>
 
      <LinearLayout
@@ -32,5 +32,10 @@
              android:onClick="onCallCallCentreClick"
              android:text="Contact Call Centre"
              android:drawableTop="@drawable/dashboard_btn_contact"/>
+         <Button android:id="@+id/dashboard_btn_emergency"
+             style="@style/DashboardButton"
+             android:text="Test Alarm"
+             android:onClick="onEmergencyTestClick"
+             android:drawableTop="@drawable/dashboard_btn_emergency_test"/>
      </LinearLayout>
  </LinearLayout>

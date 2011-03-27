@@ -10,6 +10,7 @@ import com.google.inject.Module;
 import com.lehms.IoC.Container;
 import com.lehms.IoC.ContainerFactory;
 import com.lehms.messages.dataContracts.JobDetailsDataContract;
+import com.lehms.messages.dataContracts.LocationDataContract;
 import com.lehms.messages.dataContracts.Permission;
 import com.lehms.messages.dataContracts.RoleDataContract;
 import com.lehms.messages.dataContracts.UserDataContract;
@@ -26,7 +27,8 @@ public class LehmsApplication extends RoboApplication
 			IOfficeContactProvider, 
 			IAuthorisationProvider,
 			IActiveJobProvider,
-			IDefualtDeviceAddressProvider
+			IDefualtDeviceAddressProvider,
+			ITracker
 {
     public static final String KEY_PROFILE_PREF = "application_settings_profile_pref";
     public static final String KEY_DEVICE_ID_PREF = "application_settings_device_id_pref";
@@ -214,6 +216,31 @@ public class LehmsApplication extends RoboApplication
 	public String getCallCentrePhoneNumber() {
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
         return sharedPref.getString(KEY_CALL_CENTRE_PHONE_PREF, "0410308497");
+	}
+
+	@Override
+	public LocationDataContract getLastLocation() {
+		LocationDataContract result = null;
+		try {
+		    SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+		    String locationSerilised = sharedPref.getString("current_location", null);
+		    if(locationSerilised != null)
+		    	result = _serializer.Deserializer(locationSerilised, LocationDataContract.class);
+		} catch (Exception e) {
+			AppLog.error("Error saving current location: " + e.getMessage());
+		}
+		return result;
+	}
+
+	@Override
+	public void putLastLocation(LocationDataContract location) {
+		try {
+			String locationSerilised = _serializer.Serializer(location);
+		    SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+		    sharedPref.edit().putString("current_location", locationSerilised);
+		} catch (Exception e) {
+			AppLog.error("Error saving current location: " + e.getMessage());
+		}		
 	}
 
 }

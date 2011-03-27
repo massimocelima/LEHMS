@@ -3,7 +3,9 @@ package com.lehms;
 import java.util.Date;
 
 import com.google.inject.Inject;
+import com.lehms.messages.dataContracts.ClientSummaryDataContract;
 import com.lehms.messages.dataContracts.Permission;
+import com.lehms.messages.dataContracts.UserDataContract;
 import com.lehms.receivers.AlarmReceiver;
 import com.lehms.service.GPSLoggerService;
 import com.lehms.serviceInterface.IAuthorisationProvider;
@@ -226,14 +228,31 @@ public class Dashboard extends RoboActivity implements OnGestureListener
 		NavigationHelper.goEmergency(this);
 	}
 	
+	public void onEmergencyTestClick(View view)
+	{
+		NavigationHelper.goTestEmergency(this);
+	}
+	
 	public void onCallCallCentreClick(View view)
 	{
 		NavigationHelper.goContactCallCentre(this);
 	}
 	
-	public void onCalendarClick(View view)
+	public void onClinicalDetailsClick(View view)
 	{
-		UIHelper.ShowUnderConstructionMessage(this);
+		try
+		{
+			UserDataContract user = _identityProvider.getCurrent();
+			if(user.ClientId != null && ! user.ClientId.equals(""))
+				NavigationHelper.openClient(this,Long.parseLong(user.UserId));
+			else
+				throw new Exception("Client id not found.");
+		} 
+		catch (Exception e)
+		{
+			AppLog.error("Error opening client: " + e.getMessage());
+			UIHelper.ShowAlertDialog(this, "Error opeing client", "Error opeing client: " + e.getMessage());
+		}
 	}
 	
     private View buildIndicator(String string) {

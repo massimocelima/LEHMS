@@ -30,6 +30,6 @@ public class AlarmResource implements IAlarmResource {
 	
 	private IChannel GetChannel()
 	{
-		return _channelFactory.Create(_profileProvider.getProfile().GetAlarmResourceEndPoint());
+		return _channelFactory.Create(_profileProvider.getProfile().GetAlarmResourceEndPoint() + "/");
 	}
 }

@@ -1,5 +1,11 @@
 package com.lehms.service;
 
+import roboguice.service.RoboService;
+
+import com.google.inject.Inject;
+import com.lehms.messages.dataContracts.LocationDataContract;
+import com.lehms.serviceInterface.ISerializer;
+import com.lehms.serviceInterface.ITracker;
 import com.lehms.util.AppLog;
 
 import android.app.Notification;
@@ -8,6 +14,7 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.location.GpsStatus;
 import android.location.Location;
 import android.location.LocationListener;
@@ -18,17 +25,21 @@ import android.os.HandlerThread;
 import android.os.IBinder;
 import android.os.Looper;
 import android.os.Message;
+import android.preference.PreferenceManager;
 import android.widget.Toast;
 
 
-public class GPSLoggerService extends Service implements LocationListener, GpsStatus.Listener {
+public class GPSLoggerService extends RoboService implements LocationListener, GpsStatus.Listener {
 
 	private static Boolean _isRunning = false;
 	private LocationManager _gpsLocationManager;
     private Looper _serviceLooper;
     private ServiceHandler _serviceHandler;
     private NotificationManager _notificationManager;
-
+    
+    @Inject ISerializer _serializer;
+    @Inject ITracker _tracker;
+    
     //private final int PROXIMTY_TO_TARGET = 25; 
     
 	// Handler that receives messages from the thread
@@ -43,7 +54,7 @@ public class GPSLoggerService extends Service implements LocationListener, GpsSt
 		}
 	}
 	
-    public GPSLoggerService() {
+	public GPSLoggerService() {
         AppLog.info("GPSLoggerService.GPSLoggerService().");
     }
     
@@ -105,6 +116,14 @@ public class GPSLoggerService extends Service implements LocationListener, GpsSt
 		double latitude = location.getLatitude();
 		double x = longitude + latitude;
 		// Store this data
+		
+		
+		LocationDataContract locationDC = new LocationDataContract();
+		locationDC.Accuracy = location.getAccuracy();
+		locationDC.Latitude = latitude;
+		locationDC.Longitude = longitude;
+		if(_tracker != null)
+			_tracker.putLastLocation(locationDC);
 	}
 
 	@Override
@@ -153,7 +172,6 @@ public class GPSLoggerService extends Service implements LocationListener, GpsSt
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
                 new Intent(this, GPSLoggerService.class), 0);
         
-        
         Notification notification = new Notification();
         notification.tickerText = "text";
         notification.when = System.currentTimeMillis();
@@ -169,4 +187,5 @@ public class GPSLoggerService extends Service implements LocationListener, GpsSt
 		_notificationManager.notify();
 		*/		
 	}
+
 }

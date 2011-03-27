@@ -2,7 +2,7 @@
 <resources>
 
 	<style name="Theme.Lehms" parent="@android:style/Theme.Light.NoTitleBar">
-
+		
 <!--	
 		<item name="gdActionBarTitleColor">@android:color/white</item>
 		<item name="gdActionBarBackground">@drawable/action_bar_background</item>
@@ -21,5 +21,11 @@
         
     </style>
 -->
+
+	    <!-- Variation on the Light theme that turns off the title -->
+    <style name="Theme.Lehms.Preferences" parent="android:style/Theme">
+        <item name="android:windowNoTitle">true</item>
+    </style>
+
 
 </resources>

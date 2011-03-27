@@ -10,6 +10,7 @@ import com.lehms.controls.ActionItem;
 import com.lehms.controls.QuickAction;
 import com.lehms.messages.GetClientDetailsResponse;
 import com.lehms.messages.LoginResponse;
+import com.lehms.messages.RaiseAlarmRequest;
 import com.lehms.messages.RaiseAlarmResponse;
 import com.lehms.messages.dataContracts.AlarmType;
 import com.lehms.messages.dataContracts.ClientDataContract;
@@ -20,6 +21,7 @@ import com.lehms.serviceInterface.IClientResource;
 import com.lehms.serviceInterface.IIdentityProvider;
 import com.lehms.serviceInterface.IOfficeContactProvider;
 import com.lehms.serviceInterface.IProfileProvider;
+import com.lehms.serviceInterface.ITracker;
 import com.lehms.util.AppLog;
 
 import android.app.Activity;
@@ -70,6 +72,7 @@ public class RaiseAlarmActivity  extends RoboActivity {
 	@Inject IAlarmResource _alarmResource;
 	@Inject IIdentityProvider _identityProvider;
 	@Inject IOfficeContactProvider _officeContactProvider;
+	@Inject ITracker _tracker;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -173,7 +176,15 @@ public class RaiseAlarmActivity  extends RoboActivity {
 		protected RaiseAlarmResponse doInBackground(Void... arg0) {
 			try {
 				if( UIHelper.IsOnline(RaiseAlarmActivity.this))
-					return  _alarmResource.Raise(null);
+				{
+					RaiseAlarmRequest request = new RaiseAlarmRequest();
+					request.AlarmSentOn = new Date();
+					request.Type = _alarmType;
+					request.Location = _tracker.getLastLocation();
+					request.Description = "";
+
+					return  _alarmResource.Raise(request);
+				}
 				else
 					return SendViaSMS();
 			} catch (Exception e) {
@@ -196,15 +207,19 @@ public class RaiseAlarmActivity  extends RoboActivity {
  			
  			DateFormat formatter = new DateFormat();
  			//TODO: gets the latest gps cordinates
- 			LocationDataContract location = new LocationDataContract();
+ 			LocationDataContract location = _tracker.getLastLocation();
  			
  			if( _alarmType == AlarmType.Test )
  				alramTypeString = "TEST";
  			
             String seperator = "%7C";
-            String smsTextMessage = ((((("LEHMS" + seperator) + "alarm" + seperator) + alramTypeString + seperator) + _identityProvider.getCurrent().Username + seperator) + seperator) + "MobileId" + seperator;
-            smsTextMessage = (((smsTextMessage + formatter.format("yyMMddHHmmss", date) + seperator) + location.Latitude + seperator) + location.Longitude + seperator) + location.Accuracy + seperator;
- 			
+            String smsTextMessage = "";
+           	smsTextMessage = ((((("LEHMS" + seperator) + "alarm" + seperator) + alramTypeString + seperator) + _identityProvider.getCurrent().Username + seperator) + seperator) + "MobileId" + seperator;
+           	if(location != null)
+ 	            smsTextMessage = (((smsTextMessage + formatter.format("yyMMddHHmmss", date) + seperator) + location.Latitude + seperator) + location.Longitude + seperator) + location.Accuracy + seperator;
+            else
+	            smsTextMessage = (((smsTextMessage + formatter.format("yyMMddHHmmss", date) + seperator) + "0.000000" + seperator) + "0.000000" + seperator) + "0" + seperator;
+           	
 			SmsManager sm = SmsManager.getDefault();
 			sm.sendTextMessage(_officeContactProvider.getAlarmSmsNumber(), null, smsTextMessage, null, null);
 			return new RaiseAlarmResponse();

@@ -22,6 +22,7 @@ public class UserDataContract implements Serializable {
     public String Email;
     public String Phone;
     public String Mobile;
+    public String ClientId;
 	
 	public Boolean IsInRole(String role)
 	{
