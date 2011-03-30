@@ -6,30 +6,52 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Set;
 
+import com.google.inject.Inject;
+import com.lehms.Dashboard;
 import com.lehms.NavigationHelper;
 import com.lehms.R;
 import com.lehms.controls.*;
 
 import com.lehms.UIHelper;
+import com.lehms.messages.GetClientDetailsResponse;
+import com.lehms.messages.GetMeasurementSummaryListResponse;
+import com.lehms.messages.dataContracts.ClientDataContract;
 import com.lehms.messages.dataContracts.ClientSummaryDataContract;
+import com.lehms.messages.dataContracts.DoctorDataContract;
+import com.lehms.serviceInterface.IClientResource;
+import com.lehms.serviceInterface.IOfficeContactProvider;
+import com.lehms.serviceInterface.IPreviousMeasurmentProvider;
+import com.lehms.serviceInterface.clinical.IClinicalMeasurementResource;
+import com.lehms.ui.clinical.model.Measurement;
+import com.lehms.ui.clinical.model.MeasurementSummary;
 import com.lehms.ui.clinical.model.MeasurementType;
 import com.lehms.ui.clinical.model.MeasurementTypeAdapter;
 import com.lehms.ui.clinical.model.MeasurementTypeEnum;
+import com.lehms.util.AppLog;
+import com.lehms.util.IMeasurmentReportProvider;
+import com.lehms.util.MeasurmentReportDocument;
+import com.lehms.util.MeasurmentReportProvider;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.AsyncTask;
+import android.os.AsyncTask.Status;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import roboguice.activity.RoboListActivity;
 import roboguice.inject.InjectExtra;
@@ -40,16 +62,27 @@ public class ClinicalDetailsListActivity  extends RoboListActivity { //implement
 	public static final String EXTRA_CLIENT = "client";
 	public static final int REQUEST_CODE_MEASUREMENT = 0; 
 	
-	@InjectExtra(EXTRA_CLIENT) ClientSummaryDataContract _client;
+	@InjectExtra(EXTRA_CLIENT) ClientDataContract _client;
 	
 	@InjectView(R.id.activity_clinical_details_list_title) TextView _title;
 	@InjectView(R.id.activity_clinical_details_list_sub_title) TextView _subtitle;
 	@InjectView(R.id.activity_clinical_details_list_sub_title2) TextView _subtitle2;
 
+	@InjectView(R.id.btn_title_refresh) ImageButton _refreshButton;
+	@InjectView(R.id.title_refresh_progress) ProgressBar _refreshProgressIndicator;
+	
+	//@Inject IClinicalMeasurementResource _clinicalMeasurementResource;
+	@Inject IPreviousMeasurmentProvider _previousMeasurmentProvider;
+	@Inject IMeasurmentReportProvider _measurmentReportProvider;
+	@Inject IOfficeContactProvider _officeContactProvider; 
+	@Inject IClientResource _clientResource;
+	
 	private MeasurementTypeAdapter _adapter;
 	
 	private ListQuickAction _qa;
 	private MeasurementType _selectedMeasurmentType;
+	
+	LoadPreviousMeasurmentsTask _task = null;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -58,7 +91,7 @@ public class ClinicalDetailsListActivity  extends RoboListActivity { //implement
 		setContentView(R.layout.activity_clinical_details_list);
 		
 		if(savedInstanceState != null && savedInstanceState.get(EXTRA_CLIENT) != null)
-			_client = (ClientSummaryDataContract)savedInstanceState.get(EXTRA_CLIENT);
+			_client = (ClientDataContract)savedInstanceState.get(EXTRA_CLIENT);
 		
 		ListView listView = getListView();
 		listView.setTextFilterEnabled(true); 
@@ -76,6 +109,7 @@ public class ClinicalDetailsListActivity  extends RoboListActivity { //implement
 		qaViewMeasurments.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
+				cancelTask();
 				NavigationHelper.viewMeasurementSummaryList(ClinicalDetailsListActivity.this, _client, _selectedMeasurmentType);
 				_qa.dismiss();
 			}
@@ -88,6 +122,7 @@ public class ClinicalDetailsListActivity  extends RoboListActivity { //implement
 		qaTakeManualMeasurment.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
+				cancelTask();
 				openManualEntryForm(_selectedMeasurmentType);
 				_qa.dismiss();
 			}
@@ -100,6 +135,7 @@ public class ClinicalDetailsListActivity  extends RoboListActivity { //implement
 		qaTakeAutoMeasurment.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
+				cancelTask();
 				openAutoEntryForm(_selectedMeasurmentType);
 				_qa.dismiss();
 			}
@@ -123,6 +159,9 @@ public class ClinicalDetailsListActivity  extends RoboListActivity { //implement
 				
 				_qa.show();
 		    }}); 
+		
+		_task = new LoadPreviousMeasurmentsTask();
+		_task.execute(null);
 	}
 	
 	private void openManualEntryForm(MeasurementType _selectedMeasurmentType) {
@@ -198,7 +237,10 @@ public class ClinicalDetailsListActivity  extends RoboListActivity { //implement
 		super.onActivityResult(requestCode, resultCode, data);
 		if( requestCode == REQUEST_CODE_MEASUREMENT)
 		{
-			// do something with this result
+			cancelTask();
+			_task = new LoadPreviousMeasurmentsTask();
+			_task.execute(null);
+
 		}
 	}
 	
@@ -210,7 +252,111 @@ public class ClinicalDetailsListActivity  extends RoboListActivity { //implement
 	
 	public void onSendMeasurementsToClick(View view)
 	{
-		// TODO: send measurement dialog then send via email
+		AlertDialog dialog = new AlertDialog.Builder(this)
+        .setTitle("Who do you want to send the measurments to:")
+        .setItems(R.array.send_measurment_selection, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+            	
+            	try
+            	{
+	            	MeasurmentReportDocument doc = _measurmentReportProvider.createReport(_client, _previousMeasurmentProvider);
+	            	
+	            	switch(which)
+	            	{
+	            	case 0:
+	            		//OFFICE
+	            		NavigationHelper.sendEmail(ClinicalDetailsListActivity.this, 
+	            				_officeContactProvider.getOfficeEmail(), doc.Subject, doc.Body);
+	            		break;
+	            	case 1:
+	            		//DOCTOR
+	            		GetClientDetailsResponse response = _clientResource.GetClientDetails(Long.parseLong(_client.ClientId));
+	            		NavigationHelper.sendEmail(ClinicalDetailsListActivity.this, 
+	            				response.Doctor.Email, doc.Subject, doc.Body);
+	            		break;
+	            	case 2:
+	            		//OTHER
+	            		NavigationHelper.sendEmail(ClinicalDetailsListActivity.this, 
+	            				"", doc.Subject, doc.Body);
+	            		break;
+	            	}
+            	
+	        	}
+	        	catch(Exception e)
+	        	{
+	        		UIHelper.ShowAlertDialog(ClinicalDetailsListActivity.this, 
+	        				"Error faxing measurments", 
+	        				"Error faxing measurments: " + e.getMessage());
+	        	}
+           }
+        })
+        .setCancelable(true)
+        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+            }
+        })
+        .create();
+	
+		dialog.show();
+	}
+	
+	
+	public void onFaxMeasurementsToClick(View view)
+	{
+		AlertDialog dialog = new AlertDialog.Builder(this)
+        .setTitle("Who do you want to send the measurments to:")
+        .setItems(R.array.send_measurment_selection, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+            	      
+            	try
+            	{
+            		
+		        	MeasurmentReportDocument doc = _measurmentReportProvider.createReport(_client, _previousMeasurmentProvider);
+		        	
+		        	switch(which)
+		        	{
+		        	case 0:
+		        		//OFFICE
+		        		NavigationHelper.sendEmail(ClinicalDetailsListActivity.this, 
+		        				_measurmentReportProvider.getFaxNumberForEmail(_officeContactProvider.getOfficeFax()), 
+		        				doc.Subject, 
+		        				doc.Body);
+		        		break;
+		        	case 1:
+		        		//DOCTOR
+		        		GetClientDetailsResponse response = _clientResource.GetClientDetails(Long.parseLong(_client.ClientId));
+		        		NavigationHelper.sendEmail(ClinicalDetailsListActivity.this, 
+		        				_measurmentReportProvider.getFaxNumberForEmail(response.Doctor.FaxNumber), 
+		        				doc.Subject, 
+		        				doc.Body);
+		        		break;
+		        	case 2:
+		        		//OTHER
+		        		NavigationHelper.sendEmail(ClinicalDetailsListActivity.this, 
+		        				_measurmentReportProvider.getFaxNumberForEmail(""), 
+		        				doc.Subject, 
+		        				doc.Body);
+		        		break;
+		        	}
+            	
+            	}
+            	catch(Exception e)
+            	{
+            		UIHelper.ShowAlertDialog(ClinicalDetailsListActivity.this, 
+            				"Error faxing measurments", 
+            				"Error faxing measurments: " + e.getMessage());
+            	}
+           }
+        })
+        .setCancelable(true)
+        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+            }
+        })
+        .create();
+	
+		dialog.show();
+		
 	}
 	
 	private void loadClinicalDetailsList(){
@@ -290,6 +436,7 @@ public class ClinicalDetailsListActivity  extends RoboListActivity { //implement
 	
 	public void onHomeClick(View view)
 	{
+		cancelTask();
 		NavigationHelper.goHome(this);
 	}
 		
@@ -297,65 +444,80 @@ public class ClinicalDetailsListActivity  extends RoboListActivity { //implement
 	{
 		NavigationHelper.goEmergency(this);
 	}
+
+	public void onRefreshClick(View view)
+	{
+		cancelTask();
+		_task = new LoadPreviousMeasurmentsTask();
+		_task.execute(null);
+	}
 	
-	/*
-	private class LoadClientsTask extends AsyncTask<Void, Void, List<ClientSummaryDataContract>>
+	private void cancelTask()
+	{
+		if(_task != null && _task.getStatus() == Status.RUNNING)
+			_task.cancel(true);
+		_task = null;
+	}
+
+	private class LoadPreviousMeasurmentsTask extends AsyncTask<Void, Void, Void>
     {
     	private Activity _context;
-    	private ProgressDialog _progressDialog;
     	private Exception _exception;
 
-    	public LoadClientsTask(Activity context)
+    	public LoadPreviousMeasurmentsTask()
     	{
-    		_context = context;
-    		
-            _progressDialog = new ProgressDialog(context);
-            _progressDialog.setMessage("Loading clients please wait...");
-            _progressDialog.setIndeterminate(true);
-            _progressDialog.setCancelable(false);
     	}
     	
     	@Override
     	protected void onPreExecute() {
     		super.onPreExecute();
-            _progressDialog.show();
+    		_refreshButton.setVisibility(View.GONE);
+    		_refreshProgressIndicator.setVisibility(View.VISIBLE);
     	}
     	
 		@Override
-		protected List<ClientSummaryDataContract> doInBackground(Void... arg0) {
+		protected Void doInBackground(Void... arg0) {
 			
-			List<ClientSummaryDataContract> clients = null;
-			
+		
 			try {
+				Measurement measurment = null;
 				
-				clients = _clientResource.GetClientSummaries();
+				for(MeasurementTypeEnum typeEnum : MeasurementTypeEnum.values() )
+				{
+					measurment = _previousMeasurmentProvider.getPreviousMeasurment(_client.ClientId, typeEnum);
+					
+					if(measurment != null)
+					{
+						for(int position = 0; position < _adapter.getCount(); position++)
+						{
+							MeasurementType type = _adapter.getItem(position);
+							if(type.Type == typeEnum)
+							{
+								type.PreviousMeasurmentData = measurment.toString(); 
+								break;
+							}
+						}
+					}
+						
+				}
+
+				//response = _clinicalMeasurementResource.GetPreviousMeasurements(_client.ClientId);
 			} catch (Exception e) {
 				AppLog.error(e.getMessage());
 				_exception = e;
 			} 
 			
-			return clients;
+			return null;
 		}
 		
 		@Override
-		protected void onPostExecute(List<ClientSummaryDataContract> result) {
-			super.onPostExecute(result);
-			if( result == null )
-			{
-				if( _exception != null )
-					createDialog("Error", "Error retriving clients: " + _exception.getMessage());
-				else
-					createDialog("Error", "Error retriving clients");
-			}
-			else
-			{
-				ClientSummaryAdapter adapter = new ClientSummaryAdapter(_context, R.layout.client_item, result);
-				ListView listView = getListView();
-				listView.setAdapter(adapter);
-				listView.invalidate();
-			}
-			if( _progressDialog.isShowing() )
-				_progressDialog.dismiss();
+		protected void onPostExecute(Void response) {
+			super.onPostExecute(response);
+
+			_adapter.notifyDataSetChanged();
+			ClinicalDetailsListActivity.this.getListView().invalidate();
+    		_refreshButton.setVisibility(View.VISIBLE);
+    		_refreshProgressIndicator.setVisibility(View.GONE);
 		}
 		
 	    private void createDialog(String title, String text) {
@@ -367,6 +529,6 @@ public class ClinicalDetailsListActivity  extends RoboListActivity { //implement
 	        ad.show();
 	    }
     }
-		*/
+		
 	
 }

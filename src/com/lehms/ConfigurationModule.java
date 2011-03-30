@@ -5,6 +5,8 @@ import com.lehms.serviceInterface.*;
 import com.lehms.serviceInterface.clinical.ClinicalMeasurementResource;
 import com.lehms.serviceInterface.clinical.IClinicalMeasurementResource;
 import com.lehms.serviceInterface.implementation.*;
+import com.lehms.util.IMeasurmentReportProvider;
+import com.lehms.util.MeasurmentReportProvider;
 
 import roboguice.config.AbstractAndroidModule;
 import roboguice.inject.SharedPreferencesName;
@@ -32,6 +34,7 @@ public class ConfigurationModule extends AbstractAndroidModule {
 		bind(IAlarmResource.class).to(AlarmResource.class);
 		bind(IApkResource.class).to(ApkResource.class);
 		bind(IClinicalMeasurementResource.class).to(ClinicalMeasurementResource.class);
+		bind(IMeasurmentReportProvider.class).to(MeasurmentReportProvider.class); 
 		
 		bind(IEventExecuter.class).to(EventExecuter.class);
 		bind(IEventFactory.class).to(EventFactory.class);
@@ -48,6 +51,7 @@ public class ConfigurationModule extends AbstractAndroidModule {
 		bind(IActiveJobProvider.class).toInstance(_context);
 		bind(IDefualtDeviceAddressProvider.class).toInstance(_context);
 		bind(ITracker.class).toInstance(_context);
+		bind(IPreviousMeasurmentProvider.class).toInstance(_context);
 		
 		bind(IChannelFactory.class).toInstance(
 				new HttpChannelFactory(new JsonSerializer(), 

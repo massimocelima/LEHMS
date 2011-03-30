@@ -242,7 +242,16 @@ public class RaiseAlarmActivity  extends RoboActivity {
 				if( _alarmType == AlarmType.Test )
 					createDialog("Test Alarm has been raised", "The test alarm has been raised.");
 				else
-					createDialog("Alarm has been raised", "The alarm has been raised. If you you do not recieve a response within one minute please call 000.");
+				{
+					try {
+						UIHelper.MakeCall(_officeContactProvider.getCallCentrePhoneNumber(), RaiseAlarmActivity.this);
+						RaiseAlarmActivity.this.finalize();
+					} catch (Throwable e) {
+						createDialog("Error trying to make call to call centre", "Error trying to make call to call centre: " + e.getMessage());
+						AppLog.error("Error trying to make call to call centre", e);
+					}
+					//createDialog("Alarm has been raised", "The alarm has been raised. If you you do not recieve a response within one minute please call 000.");
+				}
 			}
 		}
 

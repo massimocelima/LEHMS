@@ -90,8 +90,27 @@
 			android:id="@+id/activity_measurment_summary_send"
 			android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
-	        android:text="Send Measurements..."
+	        android:text="Send"
 	        android:drawableLeft="@drawable/quick_actions_ic_send"
+	        android:onClick="onSendMeasurmentsClick"
+		/>
+
+	    <Button 
+			android:id="@+id/activity_measurment_summary_fax"
+			android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:text="Fax"
+	        android:drawableLeft="@drawable/quick_actions_ic_fax"
+	        android:onClick="onFaxMeasurmentsClick"
+		/>
+
+	    <Button 
+			android:id="@+id/activity_measurment_summary_chart"
+			android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:text="View Chart"
+	        android:drawableLeft="@drawable/quick_actions_ic_chart"
+	        android:onClick="onViewChartClick"
 		/>
 
 	</LinearLayout>

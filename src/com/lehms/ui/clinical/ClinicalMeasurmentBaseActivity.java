@@ -15,8 +15,10 @@ import com.lehms.persistence.IEventFactory;
 import com.lehms.persistence.IEventRepository;
 import com.lehms.serviceInterface.IActiveJobProvider;
 import com.lehms.serviceInterface.IEventExecuter;
+import com.lehms.serviceInterface.IPreviousMeasurmentProvider;
 import com.lehms.ui.clinical.device.IMeasurementDevice;
 import com.lehms.ui.clinical.device.IMeasurementDeviceProvider;
+import com.lehms.ui.clinical.model.Measurement;
 import com.lehms.ui.clinical.model.SPO2Measurement;
 import com.lehms.util.AppLog;
 
@@ -56,7 +58,7 @@ public abstract class ClinicalMeasurmentBaseActivity<T> extends RoboActivity imp
 	@Inject IEventExecuter _eventExecuter;
 	@Inject IEventFactory _eventEventFactory;
 	@Inject IActiveJobProvider _activeJobProvider;
-
+	@Inject IPreviousMeasurmentProvider _previousMeasurmentProvider;
 
 	protected abstract IMeasurementDeviceProvider<T> getDeviceProvider();
 	protected abstract void openAuoMeasurementActivity(IMeasurementDevice<T> device);
@@ -142,6 +144,7 @@ public abstract class ClinicalMeasurmentBaseActivity<T> extends RoboActivity imp
 
 			Event event = _eventEventFactory.create(measurement, getEventType());
 			try {
+				_previousMeasurmentProvider.putPreviousMeasurment(_client.ClientId, (Measurement)measurement);
 				UIHelper.SaveEvent(this, this, _eventRepository, _eventExecuter, event, this.getTitle().toString());
 				UIHelper.ShowToast(this, this.getTitle() + " Saved");
 			} catch (Exception e) {

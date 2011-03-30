@@ -16,7 +16,11 @@ public class AddressDataContract implements Serializable {
      {
     	 String result = "";
     	 if(Appartment != "")
-    		 result = Appartment + "/";
+    	 {
+    		 int appartmentNo = Integer.getInteger(Appartment, 0);
+    		 if( appartmentNo > 0 )
+    			 result = Appartment + "/";
+    	 }
     	 
     	 result += StreetNumber + " " + Street + ", " + Suburb + ", " + Postcode + ", " + State;
     	 

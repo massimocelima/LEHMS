@@ -11,4 +11,9 @@ public class ECGMeasurement extends Measurement implements Serializable {
 	
 	public int Pulse;
 	
+	@Override
+	public String toString()
+	{
+		return "Pulse (bpm): " + Pulse;
+	}
 }

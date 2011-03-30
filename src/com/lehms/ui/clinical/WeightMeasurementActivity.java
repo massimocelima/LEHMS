@@ -15,6 +15,8 @@ import com.lehms.persistence.IEventFactory;
 import com.lehms.persistence.IEventRepository;
 import com.lehms.serviceInterface.IActiveJobProvider;
 import com.lehms.serviceInterface.IEventExecuter;
+import com.lehms.serviceInterface.IPreviousMeasurmentProvider;
+import com.lehms.ui.clinical.model.Measurement;
 import com.lehms.ui.clinical.model.WeightMeasurement;
 import com.lehms.util.AppLog;
 
@@ -46,7 +48,8 @@ public class WeightMeasurementActivity  extends RoboActivity implements ISaveEve
 	@Inject IEventExecuter _eventExecuter;
 	@Inject IEventFactory _eventEventFactory;
 	@Inject IActiveJobProvider _activeJobProvider;
-	
+	@Inject IPreviousMeasurmentProvider _previousMeasurmentProvider;
+
 	private AcceptThread _acceptThread;
 	
 	@Override
@@ -82,6 +85,9 @@ public class WeightMeasurementActivity  extends RoboActivity implements ISaveEve
 		}    
 		
 		public void run() {        
+			if(mmServerSocket == null)
+				return;
+			
 			BluetoothSocket socket = null;        
 			// Keep listening until exception occurs or a socket is returned        
 			while (true) {            
@@ -105,8 +111,9 @@ public class WeightMeasurementActivity  extends RoboActivity implements ISaveEve
 		
 		/** Will cancel the listening socket, and cause the thread to finish */    
 		public void cancel() {        
-			try {            
-				mmServerSocket.close();        
+			try {
+				if(mmServerSocket != null)
+					mmServerSocket.close();        
 			} catch (IOException e) { }    
 		}
 	}
@@ -152,6 +159,7 @@ public class WeightMeasurementActivity  extends RoboActivity implements ISaveEve
 
 			Event event = _eventEventFactory.create(measurement, EventType.WeightTaken);
 			try {
+				_previousMeasurmentProvider.putPreviousMeasurment(_client.ClientId, (Measurement)measurement);
 				UIHelper.SaveEvent(this, this, _eventRepository, _eventExecuter, event, this.getTitle().toString());
 				UIHelper.ShowToast(this, "Weight Measurement Saved");
 

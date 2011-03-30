@@ -147,13 +147,13 @@ public class Dashboard extends RoboActivity implements OnGestureListener
                 		UIHelper.MakeCall( _officeContactProvider.getOfficePhoneNumber(), Dashboard.this);
                 		break;
                 	case 1:
-                		NavigationHelper.sendEmail(Dashboard.this, _officeContactProvider.getOfficeEmail());
+                		NavigationHelper.sendEmail(Dashboard.this, _officeContactProvider.getOfficeEmail(), "", "");
                 		break;
                 	case 2:
                 		UIHelper.OpenCall(Dashboard.this);
                 		break;
                 	case 3:
-                		NavigationHelper.sendEmail(Dashboard.this, null);
+                		NavigationHelper.sendEmail(Dashboard.this, null, "", "");
                 		break;
                 	}
                 	

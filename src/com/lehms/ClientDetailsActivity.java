@@ -405,7 +405,7 @@ public class ClientDetailsActivity  extends RoboActivity { //implements AsyncQue
 		qaClinicalDetails.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				NavigationHelper.goCliniclaDetails(ClientDetailsActivity.this, _clientResponse.Client.createSummary());
+				NavigationHelper.goCliniclaDetails(ClientDetailsActivity.this, _clientResponse.Client);
 				_quickAction.dismiss();
 			}
 		});

@@ -7,6 +7,7 @@ import java.util.UUID;
 import com.lehms.messages.dataContracts.AlarmType;
 import com.lehms.messages.dataContracts.ClientDataContract;
 import com.lehms.messages.dataContracts.ClientSummaryDataContract;
+import com.lehms.messages.dataContracts.DoctorDataContract;
 import com.lehms.messages.dataContracts.PhotoType;
 import com.lehms.messages.dataContracts.ProgressNoteDataContract;
 import com.lehms.messages.formDefinition.FormData;
@@ -56,7 +57,7 @@ public class NavigationHelper {
         context.startActivity(intent);
 	}
 	
-	public static void viewMeasurementSummaryList(Context context, ClientSummaryDataContract client, MeasurementType measurementType)
+	public static void viewMeasurementSummaryList(Context context, ClientDataContract client, MeasurementType measurementType)
 	{
         Intent intent = new Intent(context, MeasurementSummaryListActivity.class);
         intent.putExtra(MeasurementSummaryListActivity.EXTRA_CLIENT, client);
@@ -64,7 +65,7 @@ public class NavigationHelper {
         context.startActivity(intent);
 	}
 
-	public static void goCliniclaDetails(Context context, ClientSummaryDataContract client)
+	public static void goCliniclaDetails(Context context, ClientDataContract client)
 	{
         Intent intent = new Intent(context, ClinicalDetailsListActivity.class);
         intent.putExtra(ClinicalDetailsListActivity.EXTRA_CLIENT, client);
@@ -195,14 +196,14 @@ public class NavigationHelper {
         context.startActivity(intent);
 	}
 	
-	public static void sendEmail(Context context, String recipient)
+	public static void sendEmail(Context context, String recipient, String body, String subject)
 	{
 		Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND);
 		emailIntent.setType("plain/text");
 		if( recipient != null && !recipient.equals(""))
-			emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL, new String[]{recipient} ); //new String[]{"to@email.com"});
-		emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "");   
-		emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, "");
+			emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL, new String[]{recipient} );
+		emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, body);   
+		emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, subject);
 		context.startActivity(Intent.createChooser(emailIntent, "Send mail..."));
 	}
 
@@ -211,7 +212,7 @@ public class NavigationHelper {
 		Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND);
 		emailIntent.setType("plain/text");
 		if( recipient != null && !recipient.equals(""))
-			emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL, new String[]{recipient} ); //new String[]{"to@email.com"});
+			emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL, new String[]{recipient} );
 		emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, client.FirstName + " " + client.LastName + " - Photo");   
 		emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, "");
 		

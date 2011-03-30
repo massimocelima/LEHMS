@@ -8,7 +8,7 @@
 
         <ListPreference
                 android:key="application_settings_profile_pref"
-	            android:defaultValue="Development"
+	            android:defaultValue="Testing"
                 android:title="@string/application_settings_profile"
                 android:summary="@string/application_settings_profile_summary"
                 android:entries="@array/application_settings_profile_entries"
@@ -45,6 +45,13 @@
 	                android:title="@string/application_settings_office_email"
 	                android:summary="@string/application_settings_office_email_summary"
 	                android:dialogTitle="@string/application_settings_office_email" />
+	
+			<EditTextPreference
+	                android:key="application_settings_office_fax_pref"
+		            android:defaultValue="0410308497"
+	                android:title="Office Fax Number"
+	                android:summary="Phone number of your office used to send clininical measurments to"
+	                android:dialogTitle="Office Fax Number" />
 	
 			<EditTextPreference
 	                android:key="application_settings_alarm_phone_pref"

@@ -10,4 +10,10 @@ public class WeightMeasurement extends Measurement implements Serializable {
 	}
 	
 	public double Weight;
+	
+	@Override
+	public String toString()
+	{
+		return "Weight (kg): " + Weight;
+	}
 }

@@ -1,5 +1,6 @@
 package com.lehms.ui.clinical;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.lehms.R;
@@ -27,6 +28,16 @@ public class MeasurementSummaryAdapter extends ArrayAdapter<MeasurementSummary> 
 	public MeasurementSummaryAdapter(Context context, int resource, List<MeasurementSummary> items) {
 		super(context, resource, items);
 		_resource = resource;
+	}
+	
+	public List<MeasurementSummary> getList()
+	{
+		ArrayList<MeasurementSummary> list = new ArrayList<MeasurementSummary>();
+		
+		for(int i = 0; i < this.getCount(); i++ )
+			list.add(getItem(i));
+		
+		return list;
 	}
 	
 	@Override

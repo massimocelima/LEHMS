@@ -84,20 +84,20 @@ public class JobDetailsActivity extends RoboActivity {
 			_jobId = savedInstanceState.getLong(EXTRA_JOB_ID);
 		if(savedInstanceState != null && savedInstanceState.get(EXTRA_ROSTER_DATE) != null)
 			_rosterTime = savedInstanceState.getLong(EXTRA_ROSTER_DATE);
-		
+
 		if(savedInstanceState != null && savedInstanceState.get(EXTRA_ROSTER_DATE) != null )
 			_rosterTime = savedInstanceState.getLong(EXTRA_ROSTER_DATE);
 		if(savedInstanceState != null && savedInstanceState.get(EXTRA_JOB_ID) != null )
 			_jobId = savedInstanceState.getLong(EXTRA_JOB_ID);
-		
-		JobDetailsDataContract job = GetJob();
-		
+	
+		JobDetailsDataContract job = null;
+		job = GetJob();
+
 		if(job != null)
 		{
 			LoadJob(job);
 			_activeJobProvider.set(job);
 		}
-		
 		CreateQuickActions();
 	}
 	
@@ -329,11 +329,11 @@ public class JobDetailsActivity extends RoboActivity {
 				
 			} catch (Exception e) {
 				UIHelper.ShowAlertDialog(this, "Can not find roster", "Can not roster" + UIHelper.FormatShortDate(new Date(_rosterTime)) );
-				AppLog.error("Can not find roster " + UIHelper.FormatShortDate(new Date(_rosterTime)));
+				//AppLog.error("Can not find roster " + UIHelper.FormatShortDate(new Date(_rosterTime)));
 			}
 			finally
 			{
-				_rosterRepository.close();
+				try { _rosterRepository.close(); } catch(Exception ex) {}
 			}
 		}
 		return _roster;
@@ -341,14 +341,37 @@ public class JobDetailsActivity extends RoboActivity {
 	
 	private JobDetailsDataContract GetJob()
 	{
-		RosterDataContract roster = GetRoster();
 		JobDetailsDataContract result = null;
-		
+		RosterDataContract roster = null;
+try
+{
+			roster = GetRoster();			
+}
+catch(Exception ex)
+{
+	UIHelper.ShowAlertDialog(this, "Error", "Error getting roster: " + ex.getMessage());
+}
+
+if(roster == null )
+{
+	UIHelper.ShowAlertDialog(this, "Error", "Error roster is null");
+	return null;
+}
+	
+
 		for(int i = 0; i < roster.Jobs.size(); i++ )
 		{
 			if( Long.parseLong( roster.Jobs.get(i).JobId ) == _jobId )
 			{
+try
+{
 				result = roster.Jobs.get(i);
+}
+catch(Exception ex)
+{
+	UIHelper.ShowAlertDialog(this, "Error", "Error getting job from roster: " + ex.getMessage());
+}
+
 				break;
 			}
 		}
@@ -441,7 +464,7 @@ public class JobDetailsActivity extends RoboActivity {
 		qaClinicalDetails.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				NavigationHelper.goCliniclaDetails(JobDetailsActivity.this, GetJob().Client.createSummary());
+				NavigationHelper.goCliniclaDetails(JobDetailsActivity.this, GetJob().Client);
 				_quickActions.dismiss();
 			}
 		});

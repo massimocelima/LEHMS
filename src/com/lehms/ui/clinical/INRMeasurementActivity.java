@@ -13,9 +13,11 @@ import com.lehms.persistence.IEventFactory;
 import com.lehms.persistence.IEventRepository;
 import com.lehms.serviceInterface.IActiveJobProvider;
 import com.lehms.serviceInterface.IEventExecuter;
+import com.lehms.serviceInterface.IPreviousMeasurmentProvider;
 import com.lehms.ui.clinical.model.BloodPressureMeasurement;
 import com.lehms.ui.clinical.model.ECGMeasurement;
 import com.lehms.ui.clinical.model.INRMeasurement;
+import com.lehms.ui.clinical.model.Measurement;
 import com.lehms.util.AppLog;
 
 import android.os.Bundle;
@@ -42,6 +44,7 @@ public class INRMeasurementActivity  extends RoboActivity implements ISaveEventR
 	@Inject IEventExecuter _eventExecuter;
 	@Inject IEventFactory _eventEventFactory;
 	@Inject IActiveJobProvider _activeJobProvider;
+	@Inject IPreviousMeasurmentProvider _previousMeasurmentProvider;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -92,6 +95,8 @@ public class INRMeasurementActivity  extends RoboActivity implements ISaveEventR
 
 			Event event = _eventEventFactory.create(measurement, EventType.INRTaken);
 			try {
+				_previousMeasurmentProvider.putPreviousMeasurment(_client.ClientId, (Measurement)measurement);
+
 				UIHelper.SaveEvent(this, this, _eventRepository, _eventExecuter, event, this.getTitle().toString());
 				UIHelper.ShowToast(this, "INR Measurement Saved");
 

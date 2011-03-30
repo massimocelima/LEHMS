@@ -10,7 +10,6 @@ public class MeasurementType implements Serializable {
 	public MeasurementTypeEnum Type; 
 	public int ImageDrawableId;
 	
-	//public FormDefinition FormDefinition;
-	//public FormData FormDefinition;
+	public String PreviousMeasurmentData;
 	
 }

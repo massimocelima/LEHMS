@@ -10,5 +10,10 @@ public class TemperatureMeasurement extends Measurement implements Serializable 
 	}
 	
 	public double Degrees;
-	
+
+	@Override
+	public String toString()
+	{
+		return "Temperature (c): " + Degrees;
+	}
 }

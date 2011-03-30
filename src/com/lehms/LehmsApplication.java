@@ -15,6 +15,18 @@ import com.lehms.messages.dataContracts.Permission;
 import com.lehms.messages.dataContracts.RoleDataContract;
 import com.lehms.messages.dataContracts.UserDataContract;
 import com.lehms.serviceInterface.*;
+import com.lehms.ui.clinical.device.ECGAATOSMeasurementDevice;
+import com.lehms.ui.clinical.model.BloodPressureMeasurement;
+import com.lehms.ui.clinical.model.BloodSugerLevelMeasurement;
+import com.lehms.ui.clinical.model.ECGMeasurement;
+import com.lehms.ui.clinical.model.INRMeasurement;
+import com.lehms.ui.clinical.model.Measurement;
+import com.lehms.ui.clinical.model.MeasurementSummary;
+import com.lehms.ui.clinical.model.MeasurementTypeEnum;
+import com.lehms.ui.clinical.model.SPO2Measurement;
+import com.lehms.ui.clinical.model.TemperatureMeasurement;
+import com.lehms.ui.clinical.model.UrineMeasurement;
+import com.lehms.ui.clinical.model.WeightMeasurement;
 import com.lehms.util.AppLog;
 
 import roboguice.application.RoboApplication;
@@ -28,18 +40,22 @@ public class LehmsApplication extends RoboApplication
 			IAuthorisationProvider,
 			IActiveJobProvider,
 			IDefualtDeviceAddressProvider,
-			ITracker
+			ITracker,
+			IPreviousMeasurmentProvider
 {
     public static final String KEY_PROFILE_PREF = "application_settings_profile_pref";
     public static final String KEY_DEVICE_ID_PREF = "application_settings_device_id_pref";
     public static final String KEY_DEPARTMENT_PREF = "application_settings_department_pref";
     public static final String KEY_OFFICE_PHONE_PREF = "application_settings_office_phone_pref";
     public static final String KEY_OFFICE_EMAIL_PREF = "application_settings_office_email_pref";
+    public static final String KEY_OFFICE_FAX_PREF = "application_settings_office_fax_pref";
 
     public static final String KEY_ALARM_PHONE_PREF = "application_settings_alarm_phone_pref";
     public static final String KEY_ALARM_SMS_PREF = "application_settings_alarm_sms_number_pref";
     public static final String KEY_SERVCIDE_PHONE_PREF = "application_settings_service_phone_pref";
     public static final String KEY_CALL_CENTRE_PHONE_PREF = "application_settings_call_centre_phone_pref";
+    
+    
 
     
     public static final String KEY_USER = "application_data_user";
@@ -96,7 +112,7 @@ public class LehmsApplication extends RoboApplication
 	public Profile getProfile()
 	{
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-        String profileName = sharedPref.getString(KEY_PROFILE_PREF, "Development");
+        String profileName = sharedPref.getString(KEY_PROFILE_PREF, "Testing");
 		return new Profile( Enum.valueOf(ProfileEnvironment.class, profileName) );
 	}
 	
@@ -122,6 +138,12 @@ public class LehmsApplication extends RoboApplication
 	{
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
         return sharedPref.getString(KEY_OFFICE_EMAIL_PREF, "massimo_celima@tpg.com.au");
+	}
+
+	public String getOfficeFax()
+	{
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+        return sharedPref.getString(KEY_OFFICE_FAX_PREF, "0410308497");
 	}
 
 	@Override
@@ -237,10 +259,58 @@ public class LehmsApplication extends RoboApplication
 		try {
 			String locationSerilised = _serializer.Serializer(location);
 		    SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-		    sharedPref.edit().putString("current_location", locationSerilised);
+		    Editor editor = sharedPref.edit();
+		    editor.putString("current_location", locationSerilised);
+		    editor.commit();
 		} catch (Exception e) {
 			AppLog.error("Error saving current location: " + e.getMessage());
 		}		
 	}
 
+	
+	@Override
+	public Measurement getPreviousMeasurment(String clientId, MeasurementTypeEnum measurementType) throws Exception {
+		Measurement result = null;
+	    SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+	    
+	    Class measurmentClass = getClassFromType(measurementType);
+	    String serilised = sharedPref.getString(clientId + "_" + measurmentClass.getName(), null);
+	    if(serilised != null)
+	    	result = _serializer.Deserializer(serilised, measurmentClass);
+		return result;
+	}
+
+	@Override
+	public void putPreviousMeasurment(String clientId, Measurement measurement) throws Exception  {
+		String serilised = _serializer.Serializer(measurement);
+	    SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+	    Editor editor = sharedPref.edit();
+	    editor.putString(clientId + "_" + measurement.getClass().getName(), serilised);
+	    editor.commit();
+	}
+	
+	private Class getClassFromType(MeasurementTypeEnum measurementType)
+	{
+		switch(measurementType)
+		{
+		case BP:
+			return BloodPressureMeasurement.class;
+		case BSL:
+			return BloodSugerLevelMeasurement.class;
+		case ECG:
+			return ECGMeasurement.class;
+		case INR:
+			return INRMeasurement.class;
+		case SPO2:
+			return SPO2Measurement.class;
+		case Temp:
+			return TemperatureMeasurement.class;
+		case Urine:
+			return UrineMeasurement.class;
+		case Weight:
+			return WeightMeasurement.class;
+		}
+		return null;
+	}
+	
 }

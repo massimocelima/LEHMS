@@ -14,4 +14,9 @@ public class BloodPressureMeasurement extends Measurement implements Serializabl
 	public int Map;
 	public int Pulse;
 	
+	@Override
+	public String toString()
+	{
+		return "Systolic (mmHg): " + Systolic + "\r\n" + "Diastolic (mmHg): " + Diastolic;
+	}	
 }

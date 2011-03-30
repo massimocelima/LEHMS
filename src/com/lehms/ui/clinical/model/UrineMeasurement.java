@@ -20,4 +20,12 @@ public class UrineMeasurement extends Measurement implements Serializable {
 	public double SpecificGrav;
 	public double Leucocytes;
 	
+	@Override
+	public String toString()
+	{
+		String result = "Protein: " + Protein;
+		if( Glucose > 0 )
+			result +=  "\r\n" + "Glucose: " + Glucose;
+		return result;
+	}
 }

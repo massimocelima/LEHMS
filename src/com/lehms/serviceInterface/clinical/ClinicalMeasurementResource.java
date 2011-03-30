@@ -48,7 +48,7 @@ public class ClinicalMeasurementResource implements IClinicalMeasurementResource
 	
 	public GetMeasurementSummaryListResponse GetPreviousMeasurements(String client) throws Exception
 	{
-		return GetPreviousMeasurementChannel().Get(client, GetMeasurementSummaryListResponse.class);
+		return GetPreviousMeasurmentChannel().Get(client, GetMeasurementSummaryListResponse.class);
 	}
 	
 	public CreateMeasurementResponse Save(Measurement measurement) throws Exception
@@ -59,6 +59,11 @@ public class ClinicalMeasurementResource implements IClinicalMeasurementResource
 	private IChannel GetSummaryChannel()
 	{
 		return _channelFactory.Create(_profileProvider.getProfile().GetMeasurementSummaryResourceEndPoint());
+	}
+
+	private IChannel GetPreviousMeasurmentChannel()
+	{
+		return _channelFactory.Create(_profileProvider.getProfile().GetPreviousMeasurmentChannelResourceEndPoint());
 	}
 
 	private IChannel GetPreviousMeasurementChannel()

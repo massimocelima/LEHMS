@@ -50,10 +50,12 @@ public class MeasurementTypeAdapter extends ArrayAdapter<MeasurementType> {
 		TextView nameTextView = (TextView)view.findViewById(R.id.clinical_measurment_type_item_name);
 		TextView descriptionTextView = (TextView)view.findViewById(R.id.clinical_measurment_type_item_description);
 		ImageView image = (ImageView)view.findViewById(R.id.clinical_measurment_type_item_image);
-		
+		TextView previousMeasurmentTextView = (TextView)view.findViewById(R.id.clinical_measurment_type_item_previous_measurment);
+				
 		nameTextView.setText(item.Name);
 		descriptionTextView.setText(item.Description);
-
+		previousMeasurmentTextView.setText(item.PreviousMeasurmentData);
+		
 		SetImage(item.Type, image);
 		
 		return view;

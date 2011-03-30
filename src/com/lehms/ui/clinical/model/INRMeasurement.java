@@ -11,4 +11,10 @@ public class INRMeasurement extends Measurement implements Serializable  {
 	
 	public double Value;
 	public double Sec;
+	
+	@Override
+	public String toString()
+	{
+		return "INR: " + Value;
+	}
 }

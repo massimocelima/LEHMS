@@ -205,7 +205,11 @@ public class UIHelper {
 	{
 		String result = "";
 		if( address.Appartment != null && ! address.Appartment.equalsIgnoreCase(""))
-			result += address.Appartment + "/";
+		{
+			int appartmentNo = Integer.getInteger(address.Appartment, 0);
+			if( appartmentNo > 0 )
+				result += address.Appartment + "/";
+		}
 		
 		result += address.StreetNumber; 
 		result += " " + address.Street; 
@@ -266,8 +270,17 @@ public class UIHelper {
 		}
 		else
 		{
-			eventRepository.create(event);
-			UIHelper.ShowToast(context, title + " saved");
+			eventRepository.open();
+			
+			try
+			{
+				eventRepository.create(event);
+				UIHelper.ShowToast(context, title + " saved");
+			}
+			finally
+			{
+				try { eventRepository.close(); } catch (Exception e) {}
+			}
 		}
 	}
 	

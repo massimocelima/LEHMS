@@ -30,4 +30,16 @@
         <item>By Email</item>
     </string-array>
 
+    <string-array name="send_measurment_selection">
+        <item>Office</item>
+        <item>Doctor</item>
+        <item>Other</item>
+    </string-array>
+
+    <string-array name="send_measurment_history_selection">
+        <item>3 days</item>
+        <item>1 week</item>
+        <item>2 weeks</item>
+        <item>28 days</item>
+    </string-array>
 </resources>

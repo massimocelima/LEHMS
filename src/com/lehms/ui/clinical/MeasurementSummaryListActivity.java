@@ -10,11 +10,15 @@ import com.lehms.R;
 import com.lehms.UIHelper;
 import com.lehms.adapters.JobAdapter;
 import com.lehms.adapters.ProgressNoteAdapter;
+import com.lehms.messages.GetClientDetailsResponse;
 import com.lehms.messages.GetMeasurementSummaryListResponse;
 import com.lehms.messages.GetProgressNotesResponse;
+import com.lehms.messages.dataContracts.ClientDataContract;
 import com.lehms.messages.dataContracts.ClientSummaryDataContract;
 import com.lehms.messages.dataContracts.ProgressNoteDataContract;
 import com.lehms.messages.dataContracts.RosterDataContract;
+import com.lehms.serviceInterface.IClientResource;
+import com.lehms.serviceInterface.IOfficeContactProvider;
 import com.lehms.serviceInterface.IProgressNoteResource;
 import com.lehms.serviceInterface.clinical.IClinicalMeasurementResource;
 import com.lehms.ui.clinical.model.MeasurementSummary;
@@ -22,6 +26,8 @@ import com.lehms.ui.clinical.model.MeasurementType;
 import com.lehms.ui.clinical.model.MeasurementTypeAdapter;
 import com.lehms.ui.clinical.model.MeasurementTypeEnum;
 import com.lehms.util.AppLog;
+import com.lehms.util.IMeasurmentReportProvider;
+import com.lehms.util.MeasurmentReportDocument;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -51,13 +57,17 @@ public class MeasurementSummaryListActivity extends RoboListActivity {
 	private int _currentPageIndex = 0;
 	private static final int PAGE_SIZE = 10;
 	
-	@InjectExtra(EXTRA_CLIENT) public ClientSummaryDataContract _client;
+	@InjectExtra(EXTRA_CLIENT) public ClientDataContract _client;
 	@InjectExtra(EXTRA_MEASUREMENT_TYPE) public MeasurementType _measurementType;
 
 	@InjectView(R.id.activity_title_image) ImageView _titleImageView;
 	@InjectView(R.id.activity_title) TextView _titleTextView;
 	@InjectView(R.id.activity_sub_title) TextView _subTitleTextView;
 
+	@Inject IMeasurmentReportProvider _measurmentReportProvider;
+	@Inject IOfficeContactProvider _officeContactProvider; 
+	@Inject IClientResource _clientResource;
+	
 	private ImageView _refreshImageView;
 	private TextView _refreshTextView;
 	private TextView _noConnectionTextView;
@@ -72,7 +82,7 @@ public class MeasurementSummaryListActivity extends RoboListActivity {
 		setContentView(R.layout.activity_measurement_summary_list);
 		
 		if(savedInstanceState != null && savedInstanceState.get(EXTRA_CLIENT) != null )
-			_client = (ClientSummaryDataContract)savedInstanceState.get(EXTRA_CLIENT);
+			_client = (ClientDataContract)savedInstanceState.get(EXTRA_CLIENT);
 
 		if(savedInstanceState != null && savedInstanceState.get(EXTRA_MEASUREMENT_TYPE) != null )
 			_measurementType = (MeasurementType)savedInstanceState.get(EXTRA_MEASUREMENT_TYPE);
@@ -151,24 +161,24 @@ public class MeasurementSummaryListActivity extends RoboListActivity {
 	
 	private void fillDataAsync(Boolean refreshData)
 	{
-		if( ! UIHelper.IsOnline(this))
-		{
-			_adapter = new MeasurementSummaryAdapter(this, R.layout.measurement_summary_item, new ArrayList<MeasurementSummary>());
-			getListView().setAdapter(_adapter);
+		//if( ! UIHelper.IsOnline(this))
+		//{
+		//	_adapter = new MeasurementSummaryAdapter(this, R.layout.measurement_summary_item, new ArrayList<MeasurementSummary>());
+		//	getListView().setAdapter(_adapter);
 
-			_refreshImageView.setVisibility(View.GONE);
-			_refreshTextView.setVisibility(View.GONE);
-			_noConnectionTextView.setVisibility(View.VISIBLE);
-		}
-		else
-		{
+		//	_refreshImageView.setVisibility(View.GONE);
+		//	_refreshTextView.setVisibility(View.GONE);
+		//	_noConnectionTextView.setVisibility(View.VISIBLE);
+		//}
+		//else
+		//{
 			_refreshImageView.setVisibility(View.VISIBLE);
 			_refreshTextView.setVisibility(View.VISIBLE);
 			_noConnectionTextView.setVisibility(View.GONE);
 
 			LoadMeasurementSummariesTask task = new LoadMeasurementSummariesTask(this, refreshData);
 			task.execute();
-		}
+		//}
 	}
 	
 	
@@ -187,6 +197,118 @@ public class MeasurementSummaryListActivity extends RoboListActivity {
 			}
 			
 		}
+	}
+	
+	public void onSendMeasurmentsClick(View view)
+	{
+		AlertDialog dialog = new AlertDialog.Builder(this)
+        .setTitle("Who do you want to send the measurments to:")
+        .setItems(R.array.send_measurment_selection, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+            	
+            	try
+            	{
+	            	MeasurmentReportDocument doc = _measurmentReportProvider.createReport(_client, _adapter.getList(), _measurementType.Type);
+	            	
+	            	switch(which)
+	            	{
+	            	case 0:
+	            		//OFFICE
+	            		NavigationHelper.sendEmail(MeasurementSummaryListActivity.this, 
+	            				_officeContactProvider.getOfficeEmail(), doc.Subject, doc.Body);
+	            		break;
+	            	case 1:
+	            		//DOCTOR
+	            		GetClientDetailsResponse response = _clientResource.GetClientDetails(Long.parseLong(_client.ClientId));
+	            		NavigationHelper.sendEmail(MeasurementSummaryListActivity.this, 
+	            				response.Doctor.Email, doc.Subject, doc.Body);
+	            		break;
+	            	case 2:
+	            		//OTHER
+	            		NavigationHelper.sendEmail(MeasurementSummaryListActivity.this, 
+	            				"", doc.Subject, doc.Body);
+	            		break;
+	            	}
+            	
+	        	}
+	        	catch(Exception e)
+	        	{
+	        		UIHelper.ShowAlertDialog(MeasurementSummaryListActivity.this, 
+	        				"Error faxing measurments", 
+	        				"Error faxing measurments: " + e.getMessage());
+	        	}
+           }
+        })
+        .setCancelable(true)
+        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+            }
+        })
+        .create();
+	
+		dialog.show();
+	}
+
+	public void onFaxMeasurmentsClick(View view)
+	{
+		AlertDialog dialog = new AlertDialog.Builder(this)
+        .setTitle("Who do you want to send the measurments to:")
+        .setItems(R.array.send_measurment_selection, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+            	      
+            	try
+            	{
+            		
+		        	MeasurmentReportDocument doc = _measurmentReportProvider.createReport( _client, _adapter.getList(), _measurementType.Type);
+		        	
+		        	switch(which)
+		        	{
+		        	case 0:
+		        		//OFFICE
+		        		NavigationHelper.sendEmail(MeasurementSummaryListActivity.this, 
+		        				_measurmentReportProvider.getFaxNumberForEmail(_officeContactProvider.getOfficeFax()), 
+		        				doc.Subject, 
+		        				doc.Body);
+		        		break;
+		        	case 1:
+		        		//DOCTOR
+		        		GetClientDetailsResponse response = _clientResource.GetClientDetails(Long.parseLong(_client.ClientId));
+		        		NavigationHelper.sendEmail(MeasurementSummaryListActivity.this, 
+		        				_measurmentReportProvider.getFaxNumberForEmail(response.Doctor.FaxNumber), 
+		        				doc.Subject, 
+		        				doc.Body);
+		        		break;
+		        	case 2:
+		        		//OTHER
+		        		NavigationHelper.sendEmail(MeasurementSummaryListActivity.this, 
+		        				_measurmentReportProvider.getFaxNumberForEmail(""), 
+		        				doc.Subject, 
+		        				doc.Body);
+		        		break;
+		        	}
+            	
+            	}
+            	catch(Exception e)
+            	{
+            		UIHelper.ShowAlertDialog(MeasurementSummaryListActivity.this, 
+            				"Error faxing measurments", 
+            				"Error faxing measurments: " + e.getMessage());
+            	}
+           }
+        })
+        .setCancelable(true)
+        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+            }
+        })
+        .create();
+	
+		dialog.show();
+	}
+	
+	public void onViewChartClick(View view)
+	{
+		
 	}
 	
 	private class LoadMeasurementSummariesTask extends AsyncTask<Void, Integer, GetMeasurementSummaryListResponse>

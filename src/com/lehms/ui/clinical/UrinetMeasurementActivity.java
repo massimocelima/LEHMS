@@ -13,7 +13,9 @@ import com.lehms.persistence.IEventFactory;
 import com.lehms.persistence.IEventRepository;
 import com.lehms.serviceInterface.IActiveJobProvider;
 import com.lehms.serviceInterface.IEventExecuter;
+import com.lehms.serviceInterface.IPreviousMeasurmentProvider;
 import com.lehms.ui.clinical.model.INRMeasurement;
+import com.lehms.ui.clinical.model.Measurement;
 import com.lehms.ui.clinical.model.UrineMeasurement;
 import com.lehms.ui.clinical.model.WeightMeasurement;
 import com.lehms.util.AppLog;
@@ -53,7 +55,8 @@ public class UrinetMeasurementActivity  extends RoboActivity implements ISaveEve
 	@Inject IEventExecuter _eventExecuter;
 	@Inject IEventFactory _eventEventFactory;
 	@Inject IActiveJobProvider _activeJobProvider;
-	
+	@Inject IPreviousMeasurmentProvider _previousMeasurmentProvider;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 
@@ -151,8 +154,11 @@ public class UrinetMeasurementActivity  extends RoboActivity implements ISaveEve
 			if(_activeJobProvider.get() != null)
 				((com.lehms.ui.clinical.model.Measurement)measurement).JobId = _activeJobProvider.get().JobId;
 			
+
 			Event event = _eventEventFactory.create(measurement, EventType.UrineTaken);
 			try {
+				_previousMeasurmentProvider.putPreviousMeasurment(_client.ClientId, (Measurement)measurement);
+				
 				UIHelper.SaveEvent(this, this, _eventRepository, _eventExecuter, event, this.getTitle().toString());
 				UIHelper.ShowToast(this, "INR Measurement Saved");
 

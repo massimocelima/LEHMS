@@ -1,5 +1,6 @@
 package com.lehms;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
@@ -70,6 +71,7 @@ public class RosterActivity  extends RoboListActivity
 	private GestureDetector _gestureDetector;
     private GuestureListener _gestureListener;
 	
+    private ArrayList<Date> _viewdRosters = new ArrayList<Date>();
     
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -85,15 +87,22 @@ public class RosterActivity  extends RoboListActivity
 		ListView listView = getListView();
 		listView.setTextFilterEnabled(true);
 		listView.setOnTouchListener(_gestureListener);
-		
 
 		listView.setOnTouchListener(_gestureListener);
 		
 		listView.setOnItemClickListener(new OnItemClickListener() { 
 			    public void onItemClick(AdapterView<?> parent, View view, 
 			        int position, long id) { 
-			      // When clicked, show a toast with the TextView text 
-			    	ShowJob(position, id);
+			    	
+					try
+					{
+				      // When clicked, show a toast with the TextView text 
+				    	ShowJob(position, id);
+					}
+					catch(Exception ex)
+					{
+						UIHelper.ShowAlertDialog(RosterActivity.this, "Error", "Error: " + ex.getMessage());
+					}
 			    } 
 			  }); 
 		
@@ -234,7 +243,7 @@ public class RosterActivity  extends RoboListActivity
 			
 			try {
 				_rosterRepository.open();
-				if( ! _reloadFromServer )
+				if( ! _reloadFromServer && _viewdRosters.contains(_rosterDate) )
 					roster = _rosterRepository.fetchRosterFor(_rosterDate);
 				if( roster == null )
 				{
@@ -245,6 +254,9 @@ public class RosterActivity  extends RoboListActivity
 					{
 						roster = _rosterResource.GetRosterFor(_rosterDate);
 						_rosterRepository.saveRoster(roster);
+						
+						if(!_viewdRosters.contains(_rosterDate))
+							_viewdRosters.add(_rosterDate);
 					}
 				}
 				//_rosterRepository.close();

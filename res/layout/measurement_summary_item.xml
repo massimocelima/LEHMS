@@ -33,7 +33,7 @@
 
 		<TextView 
 			android:id="@+id/measurement_summary_item_primary_label"
-		    android:layout_width="120dip"
+		    android:layout_width="150dip"
 		    android:layout_height="wrap_content"
 		    style="@style/TextBody"
 		    android:text="label"
@@ -61,7 +61,7 @@
 
 		<TextView 
 			android:id="@+id/measurement_summary_item_secondary_label"
-		    android:layout_width="120dip"
+		    android:layout_width="150dip"
 		    android:layout_height="wrap_content"
 		    style="@style/TextBody"
 		>
