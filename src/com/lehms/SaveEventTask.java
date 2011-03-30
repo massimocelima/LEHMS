@@ -19,13 +19,17 @@ public class SaveEventTask extends AsyncTask<Event, Integer, Object>
  	private IEventExecuter _executer;
  	private String _title;
  	private ISaveEventResultHandler _handler;
+ 	private Boolean _exitOnSuccess;
  	
- 	public SaveEventTask(Activity context, IEventExecuter executer, String title, ISaveEventResultHandler handler)
+ 	public SaveEventTask(Activity context, IEventExecuter executer, String title, 
+ 			ISaveEventResultHandler handler,
+ 			Boolean exitOnSuccess)
  	{
  		_context = context;
  		_executer = executer;
  		_title = title;
  		_handler = handler;
+ 		_exitOnSuccess = exitOnSuccess;
  		
          _progressDialog = new ProgressDialog(context);
          _progressDialog.setMessage("Saving " + title + "...");
@@ -87,7 +91,8 @@ public class SaveEventTask extends AsyncTask<Event, Integer, Object>
 			else
 			{
 				_handler.onSuccess(result);
-				_context.finish();
+				if(_exitOnSuccess)
+					_context.finish();
 			}
 		}
 		

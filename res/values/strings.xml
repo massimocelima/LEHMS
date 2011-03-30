@@ -15,6 +15,7 @@
     <string name="application_settings_department_summary">The name of the deparment you are registered with</string>
     <string name="navigation_location_dialog_location_text">Location</string>
     <string name="killometers_traveled">Count kilometres travelled from previous client to current client. Do not enter travel from home to first client or from last client to home.</string>
+    <string name="killometers_traveled_end">Count kilometres travelled during the service provision here, e.g. for transport or shopping trips.</string>
     <string name="application_settings_office_phone">Office Phone Number</string>
     <string name="application_settings_office_phone_summary">The number used by lehms ton contact the office</string>
     <string name="application_settings_office_email_summary">The email used by lehms to contact the office</string>

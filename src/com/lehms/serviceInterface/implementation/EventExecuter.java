@@ -11,6 +11,9 @@ import com.lehms.messages.CreateFormDataRequest;
 import com.lehms.messages.CreateFormDataResponse;
 import com.lehms.messages.CreateMeasurementResponse;
 import com.lehms.messages.CreateProgressNoteRequest;
+import com.lehms.messages.JobEndActionRequest;
+import com.lehms.messages.JobStartActionRequest;
+import com.lehms.messages.JobStartActionResponse;
 import com.lehms.messages.dataContracts.AttachmentDataContract;
 import com.lehms.messages.dataContracts.PhotoType;
 import com.lehms.messages.dataContracts.ProgressNoteDataContract;
@@ -20,6 +23,7 @@ import com.lehms.persistence.EventType;
 import com.lehms.persistence.IEventRepository;
 import com.lehms.serviceInterface.IEventExecuter;
 import com.lehms.serviceInterface.IFormDataResource;
+import com.lehms.serviceInterface.IJobResource;
 import com.lehms.serviceInterface.IProgressNoteResource;
 import com.lehms.serviceInterface.clinical.IClinicalMeasurementResource;
 import com.lehms.ui.clinical.model.Measurement;
@@ -32,17 +36,20 @@ public class EventExecuter implements IEventExecuter {
 	private IProgressNoteResource _progressNoteResource;
 	private IFormDataResource _formDataResource;
 	private IClinicalMeasurementResource _clinicalMeasurementResource;
+	private IJobResource _jobResource;
 	
 	@Inject
 	public EventExecuter(IProgressNoteResource progressNoteResource,
 			IFormDataResource formDataResource,
 			IEventRepository eventRepository, 
-			IClinicalMeasurementResource clinicalMeasurementResource)
+			IClinicalMeasurementResource clinicalMeasurementResource,
+			IJobResource jobResource)
 	{
 		_progressNoteResource = progressNoteResource;
 		_eventRepository = eventRepository;
 		_formDataResource = formDataResource;
 		_clinicalMeasurementResource = clinicalMeasurementResource;
+		_jobResource = jobResource;
 	}
 	
 	@Override
@@ -149,17 +156,18 @@ public class EventExecuter implements IEventExecuter {
 		response = _clinicalMeasurementResource.Save(measurement);
 		
 		return response;
-
 	}
 	
 	public Object ExecuteJobCompletedEvent(Event event) throws Exception
 	{
-		throw new Exception("Not implemented: " + event.Type.toString());
+		JobEndActionRequest request = (JobEndActionRequest)event.Data;
+		return _jobResource.End(request);
 	}	
 	
 	public Object ExecuteJobStartedEvent(Event event) throws Exception
 	{
-		throw new Exception("Not implemented: " + event.Type.toString());
+		JobStartActionRequest request = (JobStartActionRequest)event.Data;
+		return _jobResource.Start(request);
 	}
 	
 	public Object ExecuteLocationTrackingEvent(Event event) throws Exception

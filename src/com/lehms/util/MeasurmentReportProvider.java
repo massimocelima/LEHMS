@@ -29,7 +29,6 @@ public class MeasurmentReportProvider implements IMeasurmentReportProvider{
 		result.Body = createBodyFromMeasurments( measurements, type);
 		return result;
 	}
-
 	
 	public String getFaxNumberForEmail(String faxNumber)
 	{

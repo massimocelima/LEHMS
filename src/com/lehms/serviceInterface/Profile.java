@@ -73,7 +73,7 @@ public class Profile {
 	{
 		return GetBaseUrl() + "/Alarm";
 	}
-	
+		
 	public String GetApkResourceEndPoint()
 	{
 		return GetBaseUrl() + "/Application/Apk";
@@ -84,6 +84,16 @@ public class Profile {
 		return GetBaseUrl() + "/Application/ApkVersionInfo";
 	}
     
+	public String GetJobStartActionResourceEndPoint()
+	{
+		return GetBaseUrl() + "/JobStartAction";
+	}
+	
+	public String GetJobEndActionResourceEndPoint()
+	{
+		return GetBaseUrl() + "/JobEndAction";
+	}
+	
 	public String GetMeasurementSummaryResourceEndPoint()
 	{
 		return GetBaseUrl() + "/Measurement/MeasurementSummary";

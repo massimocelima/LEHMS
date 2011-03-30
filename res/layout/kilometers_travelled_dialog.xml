@@ -5,11 +5,22 @@
     android:orientation="vertical">
 
     <TextView 
+        android:id="@+id/killometers_travelled_text_start"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
         android:layout_marginLeft="20dip"
         android:layout_marginRight="20dip"
         android:text="@string/killometers_traveled"
+        android:gravity="left"
+        style="@style/DialogText" />
+
+    <TextView 
+        android:id="@+id/killometers_travelled_text_end"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_marginLeft="20dip"
+        android:layout_marginRight="20dip"
+        android:text="@string/killometers_traveled_end"
         android:gravity="left"
         style="@style/DialogText" />
             

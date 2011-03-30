@@ -4,9 +4,16 @@ import java.util.Date;
 
 import com.google.inject.Inject;
 import com.lehms.controls.*;
+import com.lehms.messages.JobEndActionRequest;
+import com.lehms.messages.JobStartActionRequest;
 import com.lehms.messages.dataContracts.*;
+import com.lehms.persistence.Event;
+import com.lehms.persistence.EventType;
+import com.lehms.persistence.IEventFactory;
+import com.lehms.persistence.IEventRepository;
 import com.lehms.persistence.IRosterRepository;
 import com.lehms.serviceInterface.IActiveJobProvider;
+import com.lehms.serviceInterface.IEventExecuter;
 import com.lehms.util.AppLog;
 
 import android.app.AlertDialog;
@@ -34,7 +41,7 @@ import roboguice.activity.RoboActivity;
 import roboguice.inject.InjectExtra;
 import roboguice.inject.InjectView;
 
-public class JobDetailsActivity extends RoboActivity {
+public class JobDetailsActivity extends RoboActivity implements ISaveEventResultHandler  {
 
 	public final static String EXTRA_JOB_ID = "job_id";
 	public final static String EXTRA_ROSTER_DATE = "ROSTER_DATE";
@@ -69,6 +76,9 @@ public class JobDetailsActivity extends RoboActivity {
 	
 	@Inject IRosterRepository _rosterRepository; 
 	@Inject IActiveJobProvider _activeJobProvider;
+	@Inject IEventRepository _eventRepository;
+	@Inject IEventExecuter _eventExecuter;
+	@Inject IEventFactory _eventEventFactory;
 
 	private QuickAction _quickActions;
 	private QuickAction _quickActionsPrgressNotes;
@@ -170,12 +180,68 @@ public class JobDetailsActivity extends RoboActivity {
 	
 	public void onBeginJobClick(View view)
 	{
-		ShowKilometersTravelledDialog(JobDetailsActivity.BEGIN_JOB_ACTION);
+        LayoutInflater factory = LayoutInflater.from(this);
+        final View navigationLocationDialogView = factory.inflate(R.layout.kilometers_travelled_dialog, null);
+        AlertDialog dialog = new AlertDialog.Builder(this)
+            .setTitle("Enter the kilometers you have traveled:")
+            .setView(navigationLocationDialogView)
+            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int whichButton) {
+                	
+                	navigationLocationDialogView.findViewById(R.id.killometers_travelled_text_end).setVisibility(View.GONE);
+                	navigationLocationDialogView.findViewById(R.id.killometers_travelled_text_start).setVisibility(View.VISIBLE);
+
+                	EditText killometers = (EditText)navigationLocationDialogView.findViewById(R.id.killometers_travelled_value);
+                	try
+                	{
+                    	float kilometersTravelled = Float.parseFloat( killometers.getText().toString() );
+                    	BeginJob(kilometersTravelled);
+                	} catch (Exception ex)
+                	{
+                		UIHelper.ShowAlertDialog(JobDetailsActivity.this, "Error starting job", "Could not stary job: " + ex.getMessage());
+                	}
+                }
+            })
+            .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int whichButton) {
+                }
+            })
+            .create();
+		
+        dialog.show();
 	}
 
 	public void onEndJobClick(View view)
 	{
-		ShowKilometersTravelledDialog(JobDetailsActivity.END_JOB_ACTION);
+        LayoutInflater factory = LayoutInflater.from(this);
+        final View navigationLocationDialogView = factory.inflate(R.layout.kilometers_travelled_dialog, null);
+        AlertDialog dialog = new AlertDialog.Builder(this)
+            .setTitle("Enter the kilometers you have traveled:")
+            .setView(navigationLocationDialogView)
+            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int whichButton) {
+                	
+                	navigationLocationDialogView.findViewById(R.id.killometers_travelled_text_end).setVisibility(View.VISIBLE);
+                	navigationLocationDialogView.findViewById(R.id.killometers_travelled_text_start).setVisibility(View.GONE);
+                	
+                	EditText killometers = (EditText)navigationLocationDialogView.findViewById(R.id.killometers_travelled_value);
+                	try
+                	{
+                    	float kilometersTravelled = Float.parseFloat( killometers.getText().toString() );
+                    	EndJob(kilometersTravelled);
+                	} catch (Exception ex)
+                	{
+                		UIHelper.ShowAlertDialog(JobDetailsActivity.this, "Error starting job", "Could not stary job: " + ex.getMessage());
+                	}
+                }
+            })
+            .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int whichButton) {
+                }
+            })
+            .create();
+		
+        dialog.show();
 	}
 	
 	public void onClientDetailsExpanderClick(View view)
@@ -219,49 +285,6 @@ public class JobDetailsActivity extends RoboActivity {
 		}
 	}
 	
-	private void KilometersTravelledDialogResult(int resultType, float kilometersTravelled)
-	{
-		if(resultType == JobDetailsActivity.END_JOB_ACTION)
-			EndJob(kilometersTravelled);
-		else
-			BeginJob(kilometersTravelled);
-	}
-
-
-	private int _resultTypeInternal;
-
-	private void ShowKilometersTravelledDialog(int resultType)
-	{
-		_resultTypeInternal = resultType;
-		
-        LayoutInflater factory = LayoutInflater.from(this);
-        final View navigationLocationDialogView = factory.inflate(R.layout.kilometers_travelled_dialog, null);
-        AlertDialog dialog = new AlertDialog.Builder(this)
-            .setTitle("Enter the kilometers you have traveled:")
-            .setView(navigationLocationDialogView)
-            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int whichButton) {
-                	EditText killometers = (EditText)navigationLocationDialogView.findViewById(R.id.killometers_travelled_value);
-                	try
-                	{
-                    	float kilometersTravelled = Float.parseFloat( killometers.getText().toString() );
-                    	KilometersTravelledDialogResult(_resultTypeInternal, kilometersTravelled);
-                	} catch (Exception ex)
-                	{
-                		UIHelper.ShowAlertDialog(JobDetailsActivity.this, "Error starting job", "Could not stary job: " + ex.getMessage());
-                	}
-                }
-            })
-            .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int whichButton) {
-                }
-            })
-            .create();
-		
-        dialog.show();
-	}
-
-	
 	public void BeginJob(float kilometersTravelled)
 	{
 		try {
@@ -272,6 +295,16 @@ public class JobDetailsActivity extends RoboActivity {
 			JobDetailsDataContract job = GetJob(); 
 			job.Start(kilometersTravelled);
 			
+			JobStartActionRequest request = new JobStartActionRequest();
+			request.KilometersTravelled = (float) kilometersTravelled;
+			request.JobId = job.JobId;
+			request.ActionDate = new Date();
+			
+			Event event = _eventEventFactory.create(request, EventType.JobStarted);
+
+			UIHelper.SaveEvent(this, this, _eventRepository, _eventExecuter, event, this.getTitle().toString(), false);
+			UIHelper.ShowToast(this, this.getTitle() + " Saved");
+
 			_rosterRepository.saveRoster(GetRoster());
 
 			LoadJob(job);
@@ -293,7 +326,17 @@ public class JobDetailsActivity extends RoboActivity {
 
 			JobDetailsDataContract job = GetJob(); 
 			job.End(kilometersTravelled);
-		
+
+			JobEndActionRequest request = new JobEndActionRequest();
+			request.KilometersTravelled = (float) kilometersTravelled;
+			request.JobId = job.JobId;
+			request.ActionDate = new Date();
+			
+			Event event = _eventEventFactory.create(request, EventType.JobCompleted);
+
+			UIHelper.SaveEvent(this, this, _eventRepository, _eventExecuter, event, this.getTitle().toString(), false);
+			UIHelper.ShowToast(this, this.getTitle() + " Saved");
+			
 			_rosterRepository.saveRoster(GetRoster());
 
 			LoadJob(job);
@@ -534,6 +577,19 @@ catch(Exception ex)
 	protected void onDestroy() {
 		_activeJobProvider.set(null);
 		super.onDestroy();
+	}
+
+
+	@Override
+	public void onSuccess(Object data) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onError(Exception e) {
+		UIHelper.ShowAlertDialog(this, "Error saving job", "Error ssving job: " + e.getMessage());
+		AppLog.error("Error ssving job", e);
 	}
 	
 

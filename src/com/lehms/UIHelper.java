@@ -255,7 +255,7 @@ public class UIHelper {
 		Intent intent = new Intent(Intent.ACTION_CALL_BUTTON);
 		context.startActivity(intent);
 	}
-	
+
 	public static void SaveEvent(Activity context,
 			ISaveEventResultHandler handler,
 			IEventRepository eventRepository, 
@@ -263,9 +263,21 @@ public class UIHelper {
 			Event event, 
 			String title) throws Exception
 	{
+		SaveEvent(context, handler, eventRepository, executer, event, title, true);
+	}
+
+	
+	public static void SaveEvent(Activity context,
+			ISaveEventResultHandler handler,
+			IEventRepository eventRepository, 
+			IEventExecuter executer, 
+			Event event, 
+			String title,
+			Boolean exitOnSuccess) throws Exception
+	{
 		if(IsOnline(context))
 		{
-			SaveEventTask task = new SaveEventTask(context, executer, title, handler);
+			SaveEventTask task = new SaveEventTask(context, executer, title, handler, exitOnSuccess);
 			task.execute(event);
 		}
 		else
