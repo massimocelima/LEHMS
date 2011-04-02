@@ -1,8 +1,16 @@
 package com.lehms;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.lang.reflect.Type;
+import java.util.Date;
 import java.util.List;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -45,7 +53,8 @@ public class LehmsApplication extends RoboApplication
 			IDefualtDeviceAddressProvider,
 			ITracker,
 			IPreviousMeasurmentProvider,
-			IDutyManager
+			IDutyManager,
+			ICache
 {
     public static final String KEY_PROFILE_PREF = "application_settings_profile_pref";
     public static final String KEY_DEVICE_ID_PREF = "application_settings_device_id_pref";
@@ -65,6 +74,9 @@ public class LehmsApplication extends RoboApplication
     public static final String KEY_ON_DUTY = "application_on_duty_pref";
 
 	private ISerializer _serializer;
+	
+	private UserDataContract _user = null;
+	private JobDetailsDataContract _job = null;
 	
 	@Override
 	public void onCreate() {
@@ -93,11 +105,14 @@ public class LehmsApplication extends RoboApplication
 	
 	@Override
 	public UserDataContract getCurrent() throws Exception {
-		return getSerializable( "current_user", UserDataContract.class);
+		if(_user == null)
+			_user = getSerializable( "current_user", UserDataContract.class);
+		return _user;
 	}
 
 	@Override
 	public void setCurrent(UserDataContract user) throws Exception {
+		_user = null;
 		putSerializable("current_user", user);
 	}
 
@@ -201,11 +216,14 @@ public class LehmsApplication extends RoboApplication
 
 	@Override
 	public JobDetailsDataContract get() {
-		return getSerializable("current_job", JobDetailsDataContract.class);
+		if(_job == null)
+			_job = getSerializable("current_job", JobDetailsDataContract.class);
+		return _job;
 	}
 
 	@Override
 	public void set(JobDetailsDataContract job) {
+		_job = null;
 		putSerializable("current_job", job);
 	}
 
@@ -338,7 +356,7 @@ public class LehmsApplication extends RoboApplication
 	@Override
 	public Boolean IsOnDuty() {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        return prefs.getBoolean(KEY_ON_DUTY, true);
+        return prefs.getBoolean(KEY_ON_DUTY, false);
 	}
 
 	@Override
@@ -354,34 +372,59 @@ public class LehmsApplication extends RoboApplication
         this.stopService(serviceIntent);
 	}
 
-	
-	
+	@Override
+	public CacheItem get(String name) throws Exception {
+		
+		try
+		{
+			FileInputStream fis = openFileInput(name + ".dat");
+			ObjectInputStream in = new ObjectInputStream(fis);
+			CacheItem result = (CacheItem)in.readObject();
+			in.close();
+			return result;		
+		}
+		catch(Exception e)
+		{
+			return null;
+		}
+	}
+
+	@Override
+	public void put(String name, CacheItem item) throws Exception {
+
+		try { deleteFile(name + ".dat"); } catch (Exception e) {}
+		FileOutputStream fos = openFileOutput(name + ".dat", Context.MODE_PRIVATE);
+		ObjectOutputStream out = new ObjectOutputStream(fos);
+		out.writeObject(item);
+		out.close();
+	}
 	
 	private <T> void putSerializable(String name, T serializable)
 	{
-		try {
-			String serilisedData = _serializer.Serializer(serializable);
-		    SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-		    Editor editor = sharedPref.edit();
-		    editor.putString(name, serilisedData);
-		    editor.commit();
-		} catch (Exception e) {
-			AppLog.error("Error saving " + name + ": " + e.getMessage());
-		}
+		try
+		{
+			try { deleteFile(name + ".dat"); } catch (Exception e) {}
+			FileOutputStream fos = openFileOutput(name + ".dat", Context.MODE_PRIVATE);
+			ObjectOutputStream out = new ObjectOutputStream(fos);
+			out.writeObject(serializable);
+			out.close();
+		} catch(Exception ex) {}
 	}
 
 	private <T> T getSerializable(String name, Class<T> resultType)
 	{
-		T result = null;
-		try {
-		    SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-		    String serilisedData = sharedPref.getString(name, null);
-		    if(serilisedData != null)
-		    	result = _serializer.Deserializer(serilisedData, resultType);
-		} catch (Exception e) {
-			AppLog.error("Error getting + " + name + ": " + e.getMessage());
+		try
+		{
+			FileInputStream fis = openFileInput(name + ".dat");
+			ObjectInputStream in = new ObjectInputStream(fis);
+			T result = (T)in.readObject();
+			in.close();
+			return result;		
 		}
-		return result;
+		catch(Exception e)
+		{
+			return null;
+		}
 	}
 
 	private <T> void putSerializable(T serializable)
@@ -393,4 +436,5 @@ public class LehmsApplication extends RoboApplication
 	{
 		return getSerializable(resultType.getName(), resultType);
 	}
+
 }

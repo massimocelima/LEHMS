@@ -1,10 +1,14 @@
 package com.lehms;
 
+import java.lang.reflect.Type;
+import java.util.Calendar;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 import com.lehms.controls.*;
 
+import com.google.gson.reflect.TypeToken;
 import com.google.inject.Inject;
 import com.lehms.adapters.ClientSummaryAdapter;
 import com.lehms.adapters.FormDefinitionAdapter;
@@ -14,6 +18,8 @@ import com.lehms.messages.dataContracts.ClientDataContract;
 import com.lehms.messages.dataContracts.ClientSummaryDataContract;
 import com.lehms.messages.dataContracts.RosterDataContract;
 import com.lehms.messages.formDefinition.FormDefinition;
+import com.lehms.serviceInterface.CacheItem;
+import com.lehms.serviceInterface.ICache;
 import com.lehms.serviceInterface.IClientResource;
 import com.lehms.serviceInterface.IFormDefinitionResource;
 import com.lehms.util.AppLog;
@@ -43,9 +49,11 @@ import roboguice.inject.InjectView;
 public class FormsActivity  extends LehmsRoboListActivity { //implements AsyncQueryListener 
 
 	public final static String EXTRA_CLIENT = "client";
-	
-	@InjectExtra(EXTRA_CLIENT) protected ClientDataContract _client;
+
 	@Inject protected IFormDefinitionResource _formDefinitionResource;
+	@Inject protected ICache _cache;
+
+	@InjectExtra(EXTRA_CLIENT) protected ClientDataContract _client;
 	@InjectView(R.id.activity_forms_title) TextView _title; 
 	@InjectView(R.id.activity_forms_sub_title) TextView _subTitle; 
 	@InjectView(R.id.activity_forms_sub_title2) TextView _subTitle2; 
@@ -70,7 +78,7 @@ public class FormsActivity  extends LehmsRoboListActivity { //implements AsyncQu
 		_subTitle.setText(_client.FirstName + " " + _client.LastName);
 		_subTitle2.setText(_client.ClientId);
 		
-		LoadForms();
+		LoadForms(false);
 				
 		final ActionItem qaNewForm = new ActionItem();
 		
@@ -119,8 +127,8 @@ public class FormsActivity  extends LehmsRoboListActivity { //implements AsyncQu
 			outState.putSerializable(EXTRA_CLIENT, _client);
 		}
 	
-	private void LoadForms(){
-		LoadFormsTask task = new LoadFormsTask(this);
+	private void LoadForms(Boolean reload){
+		LoadFormsTask task = new LoadFormsTask(this, reload);
 		task.execute();
 	}
 	
@@ -131,7 +139,7 @@ public class FormsActivity  extends LehmsRoboListActivity { //implements AsyncQu
 	
 	public void onRefreshClick(View view)
 	{
-		LoadForms();
+		LoadForms(true);
 	}
 	
 	public void onEmergencyClick(View view)
@@ -144,10 +152,12 @@ public class FormsActivity  extends LehmsRoboListActivity { //implements AsyncQu
     	private Activity _context;
     	private ProgressDialog _progressDialog;
     	private Exception _exception;
+    	private Boolean _reaload;
 
-    	public LoadFormsTask(Activity context)
+    	public LoadFormsTask(Activity context, Boolean reaload)
     	{
     		_context = context;
+    		_reaload = reaload;
     		
             _progressDialog = new ProgressDialog(context);
             _progressDialog.setMessage("Loading form definitions please wait...");
@@ -165,10 +175,27 @@ public class FormsActivity  extends LehmsRoboListActivity { //implements AsyncQu
 		protected GetFormDefinitionResponse doInBackground(Void... arg0) {
 			
 			GetFormDefinitionResponse result = null;
-			
-			try {
-				
-				result = _formDefinitionResource.Get();
+						
+			try 
+			{
+				if(_reaload)
+				{
+					result = _formDefinitionResource.Get();
+					CacheHelper.put(_cache, result, "form_definitions", 60 * 24);
+				}
+				else
+				{
+					CacheItem cacheItem = _cache.get("form_definitions");
+					if( cacheItem == null || 
+							( UIHelper.IsOnline(_context) && cacheItem.hasExpired() ))
+					{
+						result = _formDefinitionResource.Get();
+						CacheHelper.put(_cache, result, "form_definitions", 60 * 24);
+					}
+					else
+						result = (GetFormDefinitionResponse)cacheItem.Item;
+				}
+
 			} catch (Exception e) {
 				AppLog.error(e.getMessage());
 				_exception = e;

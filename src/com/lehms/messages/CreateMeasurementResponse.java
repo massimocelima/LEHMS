@@ -1,8 +1,9 @@
 package com.lehms.messages;
 
+import java.io.Serializable;
 import java.util.UUID;
 
-public class CreateMeasurementResponse
+public class CreateMeasurementResponse implements Serializable 
 {
      public UUID Id;
 

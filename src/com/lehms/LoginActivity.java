@@ -52,7 +52,7 @@ public class LoginActivity extends RoboActivity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        
+                
         //_usernameEditText.setText("Test1.t");
         //_passwordEditText.setText("utz6");
         _usernameEditText.setText("claude.r");
@@ -183,7 +183,7 @@ public class LoginActivity extends RoboActivity {
 			else if( result.IsAuthenticated )
 			{
 				try {
-					_identityProvider.setCurrent(result.User);
+					//_identityProvider.setCurrent(result.User);
 					_progressDialog.dismiss();
 
 					if(_updateRequired)

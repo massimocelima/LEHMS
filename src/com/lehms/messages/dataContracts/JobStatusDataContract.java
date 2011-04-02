@@ -1,10 +1,11 @@
 package com.lehms.messages.dataContracts;
 
+import java.io.Serializable;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
 
-public enum JobStatusDataContract 
+public enum JobStatusDataContract  implements Serializable 
 {
      Pending(0),
      Started(1),

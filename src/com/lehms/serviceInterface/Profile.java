@@ -158,7 +158,7 @@ public class Profile {
 			result = "http://192.168.0.112/INS.Gateway.WASHost";
 			break;
 		case DevelopmentEmulation:
-			result = "http://192.168.1.8/INS.Gateway.WASHost";
+			result = "http://192.168.1.2/INS.Gateway.WASHost";
 			//result = "http://10.0.0.3/INS.Gateway.WASHost";
 			//result = "http://192.168.43.57/INS.Gateway.WASHost";
 			//result = "http://192.168.1.3/INS.Gateway.WASHost";

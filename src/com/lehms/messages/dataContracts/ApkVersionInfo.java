@@ -1,5 +1,7 @@
 package com.lehms.messages.dataContracts;
 
-public class ApkVersionInfo {
+import java.io.Serializable;
+
+public class ApkVersionInfo implements Serializable  {
 	public String Version;
 }

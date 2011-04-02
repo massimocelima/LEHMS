@@ -1,10 +1,11 @@
 package com.lehms.messages;
 
+import java.io.Serializable;
 import java.util.List;
 
 import com.lehms.messages.dataContracts.*;
 
-public class GetClientDetailsResponse {
+public class GetClientDetailsResponse  implements Serializable {
     public ClientDataContract Client;
     public DoctorDataContract Doctor;
     public PharmacyDataContract Pharmcy;

@@ -1,8 +1,9 @@
 package com.lehms.messages;
 
+import java.io.Serializable;
 import java.util.UUID;
 
-public class UploadAttachmentResponse {
+public class UploadAttachmentResponse implements Serializable  {
 
 	public UUID AttachmentId;
 

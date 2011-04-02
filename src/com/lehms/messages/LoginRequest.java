@@ -1,6 +1,8 @@
 package com.lehms.messages;
 
-public class LoginRequest {
+import java.io.Serializable;
+
+public class LoginRequest implements Serializable  {
 
 	public String Username;
 	public String Password;

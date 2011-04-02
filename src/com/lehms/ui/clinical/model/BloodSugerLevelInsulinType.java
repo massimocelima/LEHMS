@@ -1,6 +1,8 @@
 package com.lehms.ui.clinical.model;
 
-public enum BloodSugerLevelInsulinType {
+import java.io.Serializable;
+
+public enum BloodSugerLevelInsulinType implements Serializable  {
 	None,
 	Actrapid,
 	Humalog,

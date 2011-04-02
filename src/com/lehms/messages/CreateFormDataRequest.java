@@ -1,11 +1,12 @@
 package com.lehms.messages;
 
+import java.io.Serializable;
 import java.util.UUID;
 
 import com.lehms.messages.dataContracts.AttachmentDataContract;
 import com.lehms.messages.formDefinition.FormData;
 
-public class CreateFormDataRequest {
+public class CreateFormDataRequest implements Serializable  {
 
      public FormData Data;
      

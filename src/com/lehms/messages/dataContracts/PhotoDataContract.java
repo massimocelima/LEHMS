@@ -1,8 +1,9 @@
 package com.lehms.messages.dataContracts;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class PhotoDataContract {
+public class PhotoDataContract implements Serializable  {
 
 	public String Name;
 	public Date CreatedDate;

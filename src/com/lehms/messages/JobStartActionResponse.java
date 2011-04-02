@@ -1,5 +1,7 @@
 package com.lehms.messages;
 
-public class JobStartActionResponse {
+import java.io.Serializable;
+
+public class JobStartActionResponse implements Serializable  {
 
 }

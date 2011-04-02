@@ -1,5 +1,7 @@
 package com.lehms.messages;
 
-public class RaiseAlarmResponse {
+import java.io.Serializable;
+
+public class RaiseAlarmResponse  implements Serializable  {
 
 }
