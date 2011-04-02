@@ -8,6 +8,7 @@ import java.util.Set;
 
 import com.google.inject.Inject;
 import com.lehms.Dashboard;
+import com.lehms.LehmsRoboListActivity;
 import com.lehms.NavigationHelper;
 import com.lehms.R;
 import com.lehms.controls.*;
@@ -57,7 +58,7 @@ import roboguice.activity.RoboListActivity;
 import roboguice.inject.InjectExtra;
 import roboguice.inject.InjectView;
 
-public class ClinicalDetailsListActivity  extends RoboListActivity { //implements AsyncQueryListener 
+public class ClinicalDetailsListActivity  extends LehmsRoboListActivity { //implements AsyncQueryListener 
 
 	public static final String EXTRA_CLIENT = "client";
 	public static final int REQUEST_CODE_MEASUREMENT = 0; 

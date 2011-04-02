@@ -9,8 +9,10 @@ import com.lehms.messages.dataContracts.UserDataContract;
 import com.lehms.receivers.AlarmReceiver;
 import com.lehms.service.GPSLoggerService;
 import com.lehms.serviceInterface.IAuthorisationProvider;
+import com.lehms.serviceInterface.IDutyManager;
 import com.lehms.serviceInterface.IIdentityProvider;
 import com.lehms.serviceInterface.IOfficeContactProvider;
+import com.lehms.serviceInterface.ITracker;
 import com.lehms.util.AppLog;
 import com.lehms.util.MathUtils;
 
@@ -45,11 +47,13 @@ import android.widget.TextView;
 import roboguice.activity.RoboActivity;  
 import roboguice.inject.InjectView;  
 
-public class Dashboard extends RoboActivity implements OnGestureListener
+public class Dashboard extends LehmsRoboActivity implements OnGestureListener
 {
 	@Inject protected IIdentityProvider _identityProvider;
 	@Inject protected IOfficeContactProvider _officeContactProvider;
 	@Inject protected IAuthorisationProvider _authorisationProvider;
+	@Inject protected IDutyManager _dutyManager;
+	
 	@InjectView(R.id.footer_text) protected TextView _footerText;
 	
 	@InjectView(R.id.dashboard_tab_host) protected TabHost _tabHost;
@@ -100,12 +104,8 @@ public class Dashboard extends RoboActivity implements OnGestureListener
 			AppLog.error("Failed to set footer in dashboard");
 		}
 		
-		if(_authorisationProvider.isAuthorised(Permission.Track))
-		{
-			// Starts the GPS logging
-	        Intent serviceIntent = new Intent(this, GPSLoggerService.class);
-	        this.startService(serviceIntent);
-		}
+		
+		_dutyManager.OnDuty();
 		
 		StartDataSynchService();
 	}
@@ -223,11 +223,6 @@ public class Dashboard extends RoboActivity implements OnGestureListener
 		NavigationHelper.goTakePicture(this);
 	}
 	
-	public void onEmergencyClick(View view)
-	{
-		NavigationHelper.goEmergency(this);
-	}
-	
 	public void onEmergencyTestClick(View view)
 	{
 		NavigationHelper.goTestEmergency(this);
@@ -322,11 +317,7 @@ public class Dashboard extends RoboActivity implements OnGestureListener
 	protected void onDestroy() {
 		super.onDestroy();
 
-		if(_authorisationProvider.isAuthorised(Permission.Track))
-		{
-	        Intent serviceIntent = new Intent(this, GPSLoggerService.class);
-	        this.stopService(serviceIntent);
-		}
+		_dutyManager.OffDuty();
 		
 		AlarmManager manager = (AlarmManager)getSystemService(Service.ALARM_SERVICE);
 		PendingIntent loggerIntent = PendingIntent.getBroadcast(this, 0,new Intent(this,AlarmReceiver.class), 0);
@@ -349,7 +340,7 @@ public class Dashboard extends RoboActivity implements OnGestureListener
 		PendingIntent loggerIntent = PendingIntent.getBroadcast(this, 0,new Intent(this, AlarmReceiver.class), 0);
 		manager.cancel(loggerIntent);
 			
-		long duration = 10000 * 60;
+		long duration = 1000 * 60;
 		manager.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP,
 				SystemClock.elapsedRealtime(), duration, loggerIntent);
 	}

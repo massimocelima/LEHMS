@@ -4,10 +4,12 @@ import java.io.IOException;
 
 import com.google.inject.Inject;
 import com.lehms.ISaveEventResultHandler;
+import com.lehms.LehmsRoboActivity;
 import com.lehms.NavigationHelper;
 import com.lehms.R;
 import com.lehms.UIHelper;
 
+import com.lehms.messages.dataContracts.ClientDataContract;
 import com.lehms.messages.dataContracts.ClientSummaryDataContract;
 import com.lehms.persistence.Event;
 import com.lehms.persistence.EventType;
@@ -31,11 +33,11 @@ import roboguice.activity.RoboActivity;
 import roboguice.inject.InjectExtra;
 import roboguice.inject.InjectView;
 
-public class WeightMeasurementActivity  extends RoboActivity implements ISaveEventResultHandler  { 
+public class WeightMeasurementActivity  extends LehmsRoboActivity implements ISaveEventResultHandler  { 
 
 	public static final String EXTRA_CLIENT = "client";
 	
-	@InjectExtra(EXTRA_CLIENT) ClientSummaryDataContract _client;
+	@InjectExtra(EXTRA_CLIENT) ClientDataContract _client;
 	
 	@InjectView(R.id.activity_title) TextView _title;
 	@InjectView(R.id.activity_sub_title) TextView _subtitle;
@@ -59,7 +61,7 @@ public class WeightMeasurementActivity  extends RoboActivity implements ISaveEve
 		setContentView(R.layout.activity_measurement_weight);
 		
 		if(savedInstanceState != null && savedInstanceState.get(EXTRA_CLIENT) != null)
-			_client = (ClientSummaryDataContract)savedInstanceState.get(EXTRA_CLIENT);
+			_client = (ClientDataContract)savedInstanceState.get(EXTRA_CLIENT);
 		
 		_subtitle.setText(_client.FirstName + " " + _client.LastName);
 		

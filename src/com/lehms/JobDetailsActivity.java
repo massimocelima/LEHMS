@@ -13,6 +13,7 @@ import com.lehms.persistence.IEventFactory;
 import com.lehms.persistence.IEventRepository;
 import com.lehms.persistence.IRosterRepository;
 import com.lehms.serviceInterface.IActiveJobProvider;
+import com.lehms.serviceInterface.IDutyManager;
 import com.lehms.serviceInterface.IEventExecuter;
 import com.lehms.util.AppLog;
 
@@ -41,7 +42,7 @@ import roboguice.activity.RoboActivity;
 import roboguice.inject.InjectExtra;
 import roboguice.inject.InjectView;
 
-public class JobDetailsActivity extends RoboActivity implements ISaveEventResultHandler  {
+public class JobDetailsActivity extends LehmsRoboActivity implements ISaveEventResultHandler  {
 
 	public final static String EXTRA_JOB_ID = "job_id";
 	public final static String EXTRA_ROSTER_DATE = "ROSTER_DATE";
@@ -65,7 +66,14 @@ public class JobDetailsActivity extends RoboActivity implements ISaveEventResult
 	@InjectView(R.id.activity_job_details_duration_value) TextView _duration;
 	@InjectView(R.id.activity_job_details_notes_value) TextView _notes;
 	@InjectView(R.id.activity_job_details_begin_time_value) TextView _beginTime;
+	@InjectView(R.id.activity_job_details_begin_time_km_value) TextView _beginTimeKm;
+	@InjectView(R.id.activity_job_details_begin_time_container) View _beginTimeContainer;
 	@InjectView(R.id.activity_job_details_end_time_value) TextView _endTime;
+	@InjectView(R.id.activity_job_details_end_time_km_value) TextView _endTimeKm;
+	@InjectView(R.id.activity_job_details_end_time_container) View _endTimeContainer;
+	
+	
+	
 	@InjectView(R.id.activity_job_details_status_value) TextView _status;
 	@InjectView(R.id.activity_job_details_client_details_expander) ImageButton _clientDetailsExpander;
 
@@ -79,6 +87,7 @@ public class JobDetailsActivity extends RoboActivity implements ISaveEventResult
 	@Inject IEventRepository _eventRepository;
 	@Inject IEventExecuter _eventExecuter;
 	@Inject IEventFactory _eventEventFactory;
+	@Inject IDutyManager _dutyManager;
 
 	private QuickAction _quickActions;
 	private QuickAction _quickActionsPrgressNotes;
@@ -137,9 +146,17 @@ public class JobDetailsActivity extends RoboActivity implements ISaveEventResult
 		_notes.setText( job.Description );
 		_serviceDetails.setText( job.Comments );
 		if( job.StartTime != null )
+		{
 			_beginTime.setText( UIHelper.FormatTime( job.StartTime ));
+			_beginTimeKm.setText( job.TKLM + " Km" );
+			_beginTimeContainer.setVisibility(View.VISIBLE);
+		}
 		if( job.EndTime != null )
+		{
 			_endTime.setText( UIHelper.FormatTime( job.EndTime ));
+			_endTimeKm.setText( job.SKLM + " Km" );
+			_endTimeContainer.setVisibility(View.VISIBLE);
+		}
 		
 		_status.setText( job.StatusEnum().name() );
 		
@@ -182,14 +199,15 @@ public class JobDetailsActivity extends RoboActivity implements ISaveEventResult
 	{
         LayoutInflater factory = LayoutInflater.from(this);
         final View navigationLocationDialogView = factory.inflate(R.layout.kilometers_travelled_dialog, null);
+        
+    	navigationLocationDialogView.findViewById(R.id.killometers_travelled_text_end).setVisibility(View.GONE);
+    	navigationLocationDialogView.findViewById(R.id.killometers_travelled_text_start).setVisibility(View.VISIBLE);
+
         AlertDialog dialog = new AlertDialog.Builder(this)
             .setTitle("Enter the kilometers you have traveled:")
             .setView(navigationLocationDialogView)
             .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int whichButton) {
-                	
-                	navigationLocationDialogView.findViewById(R.id.killometers_travelled_text_end).setVisibility(View.GONE);
-                	navigationLocationDialogView.findViewById(R.id.killometers_travelled_text_start).setVisibility(View.VISIBLE);
 
                 	EditText killometers = (EditText)navigationLocationDialogView.findViewById(R.id.killometers_travelled_value);
                 	try
@@ -215,14 +233,15 @@ public class JobDetailsActivity extends RoboActivity implements ISaveEventResult
 	{
         LayoutInflater factory = LayoutInflater.from(this);
         final View navigationLocationDialogView = factory.inflate(R.layout.kilometers_travelled_dialog, null);
+
+        navigationLocationDialogView.findViewById(R.id.killometers_travelled_text_end).setVisibility(View.VISIBLE);
+    	navigationLocationDialogView.findViewById(R.id.killometers_travelled_text_start).setVisibility(View.GONE);
+    	
         AlertDialog dialog = new AlertDialog.Builder(this)
             .setTitle("Enter the kilometers you have traveled:")
             .setView(navigationLocationDialogView)
             .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int whichButton) {
-                	
-                	navigationLocationDialogView.findViewById(R.id.killometers_travelled_text_end).setVisibility(View.VISIBLE);
-                	navigationLocationDialogView.findViewById(R.id.killometers_travelled_text_start).setVisibility(View.GONE);
                 	
                 	EditText killometers = (EditText)navigationLocationDialogView.findViewById(R.id.killometers_travelled_value);
                 	try
@@ -288,8 +307,6 @@ public class JobDetailsActivity extends RoboActivity implements ISaveEventResult
 	public void BeginJob(float kilometersTravelled)
 	{
 		try {
-			//TODO: get the result and do something with it;
-
 			_rosterRepository.open();
 
 			JobDetailsDataContract job = GetJob(); 
@@ -303,8 +320,10 @@ public class JobDetailsActivity extends RoboActivity implements ISaveEventResult
 			Event event = _eventEventFactory.create(request, EventType.JobStarted);
 
 			UIHelper.SaveEvent(this, this, _eventRepository, _eventExecuter, event, this.getTitle().toString(), false);
-			UIHelper.ShowToast(this, this.getTitle() + " Saved");
 
+			if(!_dutyManager.IsOnDuty())
+				_dutyManager.OnDuty();
+			
 			_rosterRepository.saveRoster(GetRoster());
 
 			LoadJob(job);
@@ -335,14 +354,12 @@ public class JobDetailsActivity extends RoboActivity implements ISaveEventResult
 			Event event = _eventEventFactory.create(request, EventType.JobCompleted);
 
 			UIHelper.SaveEvent(this, this, _eventRepository, _eventExecuter, event, this.getTitle().toString(), false);
-			UIHelper.ShowToast(this, this.getTitle() + " Saved");
 			
 			_rosterRepository.saveRoster(GetRoster());
 
 			LoadJob(job);
-
-			Toast toast = Toast.makeText(this, "Job Finished", Toast.LENGTH_SHORT);
-			toast.show();
+			
+			NavigationHelper.goJobComplete(this, job);
 
 		} catch (Exception e) {
 			UIHelper.ShowAlertDialog(this, "Job not finished", "Job not finished: " + e.getMessage() );

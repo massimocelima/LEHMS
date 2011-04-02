@@ -52,7 +52,7 @@ public class UIHelper {
 	{
 		return UUID.fromString("00000000-0000-0000-0000-000000000000");
 	}
-
+	
     public static String getVersionNumber(Context context) { 
         String version = ""; 
         try { 
@@ -288,6 +288,8 @@ public class UIHelper {
 			{
 				eventRepository.create(event);
 				UIHelper.ShowToast(context, title + " saved");
+				if(exitOnSuccess)
+					context.finish();
 			}
 			finally
 			{

@@ -53,7 +53,7 @@ import roboguice.activity.RoboListActivity;
 import roboguice.inject.InjectExtra;
 import roboguice.inject.InjectView;
 
-public class RaiseAlarmActivity  extends RoboActivity { 
+public class RaiseAlarmActivity extends LehmsRoboActivity { 
 
 	public static final String EXTRA_ALARM_TYPE = "alarm_type";
 	

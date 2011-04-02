@@ -40,7 +40,7 @@ import roboguice.activity.RoboListActivity;
 import roboguice.inject.InjectExtra;
 import roboguice.inject.InjectView;
 
-public class FormsActivity  extends RoboListActivity { //implements AsyncQueryListener 
+public class FormsActivity  extends LehmsRoboListActivity { //implements AsyncQueryListener 
 
 	public final static String EXTRA_CLIENT = "client";
 	

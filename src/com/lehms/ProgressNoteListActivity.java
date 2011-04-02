@@ -33,7 +33,7 @@ import roboguice.activity.RoboListActivity;
 import roboguice.inject.InjectExtra;
 import roboguice.inject.InjectView;;
 
-public class ProgressNoteListActivity extends RoboListActivity {
+public class ProgressNoteListActivity extends LehmsRoboListActivity {
 
 	public static final String EXTRA_CLIENT_ID = "client_id"; 
 	public static final String EXTRA_CLIENT_NAME = "client_name"; 

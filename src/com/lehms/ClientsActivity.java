@@ -34,7 +34,7 @@ import android.widget.Toast;
 import roboguice.activity.RoboActivity;
 import roboguice.activity.RoboListActivity;
 
-public class ClientsActivity  extends RoboListActivity { //implements AsyncQueryListener 
+public class ClientsActivity  extends LehmsRoboListActivity { //implements AsyncQueryListener 
 
 	@Inject protected IClientResource _clientResource;
 	private ListQuickAction _qa;

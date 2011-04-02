@@ -5,11 +5,13 @@ import java.util.Date;
 import java.util.UUID;
 
 import com.google.inject.Inject;
+import com.lehms.LehmsRoboListActivity;
 import com.lehms.NavigationHelper;
 import com.lehms.R;
 import com.lehms.UIHelper;
 import com.lehms.adapters.JobAdapter;
 import com.lehms.adapters.ProgressNoteAdapter;
+import com.lehms.graph.GraphActivity;
 import com.lehms.messages.GetClientDetailsResponse;
 import com.lehms.messages.GetMeasurementSummaryListResponse;
 import com.lehms.messages.GetProgressNotesResponse;
@@ -49,7 +51,7 @@ import roboguice.activity.RoboListActivity;
 import roboguice.inject.InjectExtra;
 import roboguice.inject.InjectView;;
 
-public class MeasurementSummaryListActivity extends RoboListActivity {
+public class MeasurementSummaryListActivity extends LehmsRoboListActivity {
 
 	public static final String EXTRA_CLIENT= "client"; 
 	public static final String EXTRA_MEASUREMENT_TYPE= "measurement_type"; 
@@ -307,8 +309,8 @@ public class MeasurementSummaryListActivity extends RoboListActivity {
 	}
 	
 	public void onViewChartClick(View view)
-	{
-		
+	{	
+		NavigationHelper.openGraph(this, _adapter.getList());	
 	}
 	
 	private class LoadMeasurementSummariesTask extends AsyncTask<Void, Integer, GetMeasurementSummaryListResponse>

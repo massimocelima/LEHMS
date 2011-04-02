@@ -76,7 +76,7 @@ import roboguice.activity.RoboActivity;
 import roboguice.inject.InjectExtra;
 import roboguice.inject.InjectView;
 
-public class FormDetailsActivity extends RoboActivity implements ISaveEventResultHandler, IViewIdGenerator { 
+public class FormDetailsActivity extends LehmsRoboActivity implements ISaveEventResultHandler, IViewIdGenerator { 
 
 	public final static String EXTRA_CLIENT = "client";
 	public final static String EXTRA_FORM_DEFINITION = "form_definition";

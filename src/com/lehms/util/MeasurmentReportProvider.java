@@ -111,7 +111,7 @@ public class MeasurmentReportProvider implements IMeasurmentReportProvider{
 		return body;
 	}
 	
-	private String getMeasurementTitle(MeasurementTypeEnum type)
+	public static String getMeasurementTitle(MeasurementTypeEnum type)
 	{
 		String result = "";
 		switch (type) {

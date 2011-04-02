@@ -45,7 +45,7 @@ import roboguice.activity.RoboListActivity;
 import roboguice.inject.InjectExtra;
 import roboguice.inject.InjectView;
 
-public class ViewPhotosActivity  extends RoboListActivity { //implements AsyncQueryListener 
+public class ViewPhotosActivity extends LehmsRoboListActivity { //implements AsyncQueryListener 
 
 	public static final String EXTRA_CLIENT = "client";
 	public static final String EXTRA_PHOTO_TYPE = "type";

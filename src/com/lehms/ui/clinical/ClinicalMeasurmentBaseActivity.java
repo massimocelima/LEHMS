@@ -3,11 +3,13 @@ package com.lehms.ui.clinical;
 
 import com.google.inject.Inject;
 import com.lehms.ISaveEventResultHandler;
+import com.lehms.LehmsRoboActivity;
 import com.lehms.NavigationHelper;
 import com.lehms.R;
 import com.lehms.UIHelper;
 import com.lehms.controls.ActionItem;
 import com.lehms.controls.QuickAction;
+import com.lehms.messages.dataContracts.ClientDataContract;
 import com.lehms.messages.dataContracts.ClientSummaryDataContract;
 import com.lehms.persistence.Event;
 import com.lehms.persistence.EventType;
@@ -34,7 +36,7 @@ import roboguice.activity.RoboActivity;
 import roboguice.inject.InjectExtra;
 import roboguice.inject.InjectView;
 
-public abstract class ClinicalMeasurmentBaseActivity<T> extends RoboActivity implements ISaveEventResultHandler {
+public abstract class ClinicalMeasurmentBaseActivity<T> extends LehmsRoboActivity implements ISaveEventResultHandler {
 	
 	public static final String EXTRA_CLIENT = "client";
 	public static final String EXTRA_AUTO_ENTRY = "auto"; 
@@ -52,7 +54,7 @@ public abstract class ClinicalMeasurmentBaseActivity<T> extends RoboActivity imp
 	private QuickAction _qaTakeMeasurment;
 
 	@InjectExtra( optional=true, value=EXTRA_AUTO_ENTRY) protected Boolean _isAuto;
-	@InjectExtra(EXTRA_CLIENT) ClientSummaryDataContract _client;
+	@InjectExtra(EXTRA_CLIENT) ClientDataContract _client;
 
 	@Inject IEventRepository _eventRepository;
 	@Inject IEventExecuter _eventExecuter;
@@ -73,7 +75,7 @@ public abstract class ClinicalMeasurmentBaseActivity<T> extends RoboActivity imp
 		super.onCreate(savedInstanceState);
 
 		if(savedInstanceState != null && savedInstanceState.get(EXTRA_CLIENT) != null)
-			_client = (ClientSummaryDataContract)savedInstanceState.get(EXTRA_CLIENT);
+			_client = (ClientDataContract)savedInstanceState.get(EXTRA_CLIENT);
 
 		if(_takeMeasurmentButton != null)
 			CreateQuickActions();

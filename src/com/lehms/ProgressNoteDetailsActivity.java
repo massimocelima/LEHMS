@@ -47,7 +47,7 @@ import roboguice.activity.RoboActivity;
 import roboguice.inject.*;;
 
 
-public class ProgressNoteDetailsActivity extends RoboActivity implements ISaveEventResultHandler {
+public class ProgressNoteDetailsActivity extends LehmsRoboActivity implements ISaveEventResultHandler {
 
 	//public static final String EXTRA_PROGRESS_NOTE_ID = "progress_note_id";
 	public static final String EXTRA_CLIENT_ID = "client_id";

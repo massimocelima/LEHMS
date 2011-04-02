@@ -2,18 +2,22 @@ package com.lehms;
 
 import java.io.File;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
+import com.lehms.graph.GraphActivity;
 import com.lehms.messages.dataContracts.AlarmType;
 import com.lehms.messages.dataContracts.ClientDataContract;
 import com.lehms.messages.dataContracts.ClientSummaryDataContract;
 import com.lehms.messages.dataContracts.DoctorDataContract;
+import com.lehms.messages.dataContracts.JobDetailsDataContract;
 import com.lehms.messages.dataContracts.PhotoType;
 import com.lehms.messages.dataContracts.ProgressNoteDataContract;
 import com.lehms.messages.formDefinition.FormData;
 import com.lehms.messages.formDefinition.FormDefinition;
 import com.lehms.ui.clinical.ClinicalDetailsListActivity;
 import com.lehms.ui.clinical.MeasurementSummaryListActivity;
+import com.lehms.ui.clinical.model.MeasurementSummary;
 import com.lehms.ui.clinical.model.MeasurementType;
 
 import android.app.Activity;
@@ -44,6 +48,13 @@ public class NavigationHelper {
 		UIHelper.ShowUnderConstructionMessage(context);
 	}
 
+	public static void goJobComplete(Context context, JobDetailsDataContract job)
+	{
+        Intent intent = new Intent(context, JobEndActivity.class);
+        intent.putExtra(JobEndActivity.EXTRA_JOB, job);
+        context.startActivity(intent);
+	}
+	
 	public static void goTestEmergency(Context context)
 	{
         Intent intent = new Intent(context, RaiseAlarmActivity.class);
@@ -220,6 +231,13 @@ public class NavigationHelper {
 		emailIntent.putExtra(Intent.EXTRA_STREAM, uri);
 
 		context.startActivity(Intent.createChooser(emailIntent, "Send mail..."));
+	}
+
+	public static void openGraph(Context context, List<MeasurementSummary> list) {
+
+        final Intent intent = new Intent(context, GraphActivity.class);
+        intent.putExtra(GraphActivity.EXTRA_MEASURMENT_SUMMERIES, list.toArray());
+        context.startActivity(intent);
 	}
 	
 }

@@ -36,7 +36,7 @@ import roboguice.activity.RoboActivity;
 import roboguice.inject.InjectExtra;
 import roboguice.inject.InjectView;
 
-public class TakePhotoActivity  extends RoboActivity { //implements AsyncQueryListener 
+public class TakePhotoActivity extends LehmsRoboActivity { //implements AsyncQueryListener 
 
     public static final int CAPTURE_PICTURE_INTENT = 1;
 

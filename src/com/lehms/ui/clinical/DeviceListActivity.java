@@ -9,6 +9,7 @@ import roboguice.activity.RoboActivity;
 import roboguice.inject.InjectExtra;
 
 import com.google.inject.ImplementedBy;
+import com.lehms.LehmsRoboActivity;
 import com.lehms.R;
 import com.lehms.UIHelper;
 import com.lehms.ui.clinical.device.IDeviceDiscoveredEventHandler;
@@ -41,7 +42,7 @@ import android.widget.AdapterView.OnItemClickListener;
  * by the user, the MAC address of the device is sent back to the parent
  * Activity in the result Intent.
  */
-public class DeviceListActivity extends RoboActivity implements IDeviceDiscoveredEventHandler {
+public class DeviceListActivity extends LehmsRoboActivity implements IDeviceDiscoveredEventHandler {
     
     // Required Intent extra
     public static final String EXTRA_DEVICE_PROVIDER_CLASS = "device_provider_class";

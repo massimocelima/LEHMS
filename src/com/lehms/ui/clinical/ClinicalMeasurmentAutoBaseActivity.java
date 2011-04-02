@@ -4,6 +4,7 @@ package com.lehms.ui.clinical;
 import java.io.Serializable;
 
 import com.lehms.ISaveEventResultHandler;
+import com.lehms.LehmsRoboActivity;
 import com.lehms.R;
 import com.lehms.UIHelper;
 import com.lehms.controls.ActionItem;
@@ -28,7 +29,7 @@ import roboguice.activity.RoboActivity;
 import roboguice.inject.InjectExtra;
 import roboguice.inject.InjectView;
 
-public abstract class ClinicalMeasurmentAutoBaseActivity<T> extends RoboActivity {
+public abstract class ClinicalMeasurmentAutoBaseActivity<T> extends LehmsRoboActivity {
 
 	public final static String EXTRA_DEVICE =  "device"; 
 	public final static String EXTRA_MEASUREMENT = "measurement"; 

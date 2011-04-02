@@ -30,7 +30,7 @@ import roboguice.activity.RoboListActivity;
 import roboguice.inject.InjectExtra;
 import roboguice.inject.InjectView;
 
-public class FormDetailsListActivity extends RoboListActivity  { 
+public class FormDetailsListActivity extends LehmsRoboListActivity  { 
 
 	public final static String EXTRA_CLIENT = "client";
 	public final static String EXTRA_FORM_DEFINITION = "form_definition";

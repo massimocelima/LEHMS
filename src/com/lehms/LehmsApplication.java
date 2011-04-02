@@ -1,7 +1,9 @@
 package com.lehms;
 
+import java.io.Serializable;
 import java.util.List;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.preference.PreferenceManager;
@@ -14,6 +16,7 @@ import com.lehms.messages.dataContracts.LocationDataContract;
 import com.lehms.messages.dataContracts.Permission;
 import com.lehms.messages.dataContracts.RoleDataContract;
 import com.lehms.messages.dataContracts.UserDataContract;
+import com.lehms.service.GPSLoggerService;
 import com.lehms.serviceInterface.*;
 import com.lehms.ui.clinical.device.ECGAATOSMeasurementDevice;
 import com.lehms.ui.clinical.model.BloodPressureMeasurement;
@@ -41,7 +44,8 @@ public class LehmsApplication extends RoboApplication
 			IActiveJobProvider,
 			IDefualtDeviceAddressProvider,
 			ITracker,
-			IPreviousMeasurmentProvider
+			IPreviousMeasurmentProvider,
+			IDutyManager
 {
     public static final String KEY_PROFILE_PREF = "application_settings_profile_pref";
     public static final String KEY_DEVICE_ID_PREF = "application_settings_device_id_pref";
@@ -55,17 +59,11 @@ public class LehmsApplication extends RoboApplication
     public static final String KEY_SERVCIDE_PHONE_PREF = "application_settings_service_phone_pref";
     public static final String KEY_CALL_CENTRE_PHONE_PREF = "application_settings_call_centre_phone_pref";
     
-    
-
-    
     public static final String KEY_USER = "application_data_user";
     public static final String KEY_JOB = "application_data_job";
 
-    //public static final String KEY_USER_JOB = "current_user_pref";
-    //public static final String KEY_CURRENT_JOB = "current_job_pref";
+    public static final String KEY_ON_DUTY = "application_on_duty_pref";
 
-    private JobDetailsDataContract _job = null; 
-	private UserDataContract _currentUser;
 	private ISerializer _serializer;
 	
 	@Override
@@ -76,6 +74,10 @@ public class LehmsApplication extends RoboApplication
 		// Inits the container for the container factory
 		ContainerFactory.SetContainer(new Container(this));
 		_serializer  = ContainerFactory.Create().resolve(ISerializer.class);
+		
+		// Starts the tracking and anything else to do with being on duty
+		if(IsOnDuty())
+			OnDuty();
 	}
 	
 	@Override
@@ -91,12 +93,12 @@ public class LehmsApplication extends RoboApplication
 	
 	@Override
 	public UserDataContract getCurrent() throws Exception {
-		return _currentUser;
+		return getSerializable( "current_user", UserDataContract.class);
 	}
 
 	@Override
 	public void setCurrent(UserDataContract user) throws Exception {
-		_currentUser = user;
+		putSerializable("current_user", user);
 	}
 
 	@Override
@@ -106,7 +108,11 @@ public class LehmsApplication extends RoboApplication
 
 	@Override
 	public Boolean isAuthenticated() {
-		return _currentUser != null;
+		try {
+			return getCurrent() != null;
+		} catch (Exception e) {
+			return false;
+		}
 	}
 	
 	public Profile getProfile()
@@ -195,12 +201,12 @@ public class LehmsApplication extends RoboApplication
 
 	@Override
 	public JobDetailsDataContract get() {
-		return _job;
+		return getSerializable("current_job", JobDetailsDataContract.class);
 	}
 
 	@Override
 	public void set(JobDetailsDataContract job) {
-		_job = job;
+		putSerializable("current_job", job);
 	}
 
 	@Override
@@ -312,5 +318,79 @@ public class LehmsApplication extends RoboApplication
 		}
 		return null;
 	}
+
+	@Override
+	public void OnDuty() {
+		startTracking();
+        Editor editor = PreferenceManager.getDefaultSharedPreferences(this).edit();
+        editor.putBoolean(KEY_ON_DUTY, true);
+        editor.commit();
+	}
+
+	@Override
+	public void OffDuty() {
+		stopTracking();
+        Editor editor = PreferenceManager.getDefaultSharedPreferences(this).edit();
+        editor.putBoolean(KEY_ON_DUTY, false);
+        editor.commit();
+	}
 	
+	@Override
+	public Boolean IsOnDuty() {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        return prefs.getBoolean(KEY_ON_DUTY, true);
+	}
+
+	@Override
+	public void startTracking() {
+		// Starts the GPS logging
+        Intent serviceIntent = new Intent(this, GPSLoggerService.class);
+        this.startService(serviceIntent);
+	}
+
+	@Override
+	public void stopTracking() {
+        Intent serviceIntent = new Intent(this, GPSLoggerService.class);
+        this.stopService(serviceIntent);
+	}
+
+	
+	
+	
+	private <T> void putSerializable(String name, T serializable)
+	{
+		try {
+			String serilisedData = _serializer.Serializer(serializable);
+		    SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+		    Editor editor = sharedPref.edit();
+		    editor.putString(name, serilisedData);
+		    editor.commit();
+		} catch (Exception e) {
+			AppLog.error("Error saving " + name + ": " + e.getMessage());
+		}
+	}
+
+	private <T> T getSerializable(String name, Class<T> resultType)
+	{
+		T result = null;
+		try {
+		    SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+		    String serilisedData = sharedPref.getString(name, null);
+		    if(serilisedData != null)
+		    	result = _serializer.Deserializer(serilisedData, resultType);
+		} catch (Exception e) {
+			AppLog.error("Error getting + " + name + ": " + e.getMessage());
+		}
+		return result;
+	}
+
+	private <T> void putSerializable(T serializable)
+	{
+		putSerializable(serializable.getClass().getName(), serializable);
+	}
+	
+	private <T> T getSerializable(Class<T> resultType)
+	{
+		return getSerializable(resultType.getName(), resultType);
+	}
 }

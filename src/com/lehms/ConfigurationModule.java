@@ -53,6 +53,7 @@ public class ConfigurationModule extends AbstractAndroidModule {
 		bind(IDefualtDeviceAddressProvider.class).toInstance(_context);
 		bind(ITracker.class).toInstance(_context);
 		bind(IPreviousMeasurmentProvider.class).toInstance(_context);
+		bind(IDutyManager.class).toInstance(_context);
 		
 		bind(IChannelFactory.class).toInstance(
 				new HttpChannelFactory(new JsonSerializer(), 

@@ -34,7 +34,7 @@ import roboguice.activity.RoboListActivity;
 import roboguice.inject.InjectExtra;
 import roboguice.inject.InjectView;
 
-public class ClientDetailsActivity  extends RoboActivity { //implements AsyncQueryListener 
+public class ClientDetailsActivity  extends LehmsRoboActivity { //implements AsyncQueryListener 
 
 	public static final String EXTRA_CLIENT_ID = "ClientId";
 	

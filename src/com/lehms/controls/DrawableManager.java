@@ -84,14 +84,16 @@ public class DrawableManager {
 	private InputStream fetch(String urlString) throws MalformedURLException, IOException {         
 		DefaultHttpClient httpClient = new DefaultHttpClient();         
 		HttpGet request = new HttpGet(urlString);         
-		HttpResponse response = httpClient.execute(request);
 		
 		try {
 			UserDataContract user = _identityProvider.getCurrent();
 			request.addHeader("Authorization", 
 					//"basic " + Base64.encode( (_departmentProvider.getDepartment() + "\\" + user.Username + ":" + user.Password).getBytes(), Base64.DEFAULT ));
 					"basic " + _departemtProvider.getDepartment() + "\\" + user.Username + ":" + user.Password);
+			
 		} catch (Exception e) {}
+		
+		HttpResponse response = httpClient.execute(request);
 		
 		return response.getEntity().getContent();     
 	}
