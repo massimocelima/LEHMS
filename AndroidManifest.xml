@@ -181,6 +181,9 @@
 		<service android:name="com.lehms.service.DataSyncService"/>
 		<receiver android:name="com.lehms.receivers.AlarmReceiver"/>
 
+		<meta-data android:name="AA_DB_NAME" android:value="Lehms.db" />
+		<meta-data android:name="AA_DB_VERSION" android:value="2" />
+		
    </application>
     
     <uses-permission android:name="android.permission.RECEIVE_SMS" />

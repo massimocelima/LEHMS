@@ -8,17 +8,24 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.lang.reflect.Type;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.os.Build;
 import android.preference.PreferenceManager;
+import android.util.Log;
 
 import com.google.inject.Module;
 import com.lehms.IoC.Container;
 import com.lehms.IoC.ContainerFactory;
+import com.lehms.activerecord.ActiveRecordBase;
+import com.lehms.activerecord.DatabaseManager;
+import com.lehms.activerecord.IApplicationContext;
 import com.lehms.messages.dataContracts.JobDetailsDataContract;
 import com.lehms.messages.dataContracts.LocationDataContract;
 import com.lehms.messages.dataContracts.Permission;
@@ -54,7 +61,8 @@ public class LehmsApplication extends RoboApplication
 			ITracker,
 			IPreviousMeasurmentProvider,
 			IDutyManager,
-			ICache
+			ICache,
+			IApplicationContext
 {
     public static final String KEY_PROFILE_PREF = "application_settings_profile_pref";
     public static final String KEY_DEVICE_ID_PREF = "application_settings_device_id_pref";
@@ -82,7 +90,9 @@ public class LehmsApplication extends RoboApplication
 	public void onCreate() {
 		super.onCreate();
 		PreferenceManager.setDefaultValues(this, R.xml.application_settings, false);
-		
+
+		initiliseDatabase();
+
 		// Inits the container for the container factory
 		ContainerFactory.SetContainer(new Container(this));
 		_serializer  = ContainerFactory.Create().resolve(ISerializer.class);
@@ -90,10 +100,12 @@ public class LehmsApplication extends RoboApplication
 		// Starts the tracking and anything else to do with being on duty
 		if(IsOnDuty())
 			OnDuty();
+		
 	}
 	
 	@Override
 	public void onTerminate() {
+		terminateDatabase();
 		super.onTerminate();
 	}
 	
@@ -437,4 +449,52 @@ public class LehmsApplication extends RoboApplication
 		return getSerializable(resultType.getName(), resultType);
 	}
 
+	
+	
+	private DatabaseManager mDatabaseManager;
+	private Set<ActiveRecordBase<?>> mEntities;
+
+	private void initiliseDatabase()
+	{
+	    this.mDatabaseManager = new DatabaseManager(this);
+	    this.mEntities = new HashSet();
+	}
+
+	private void terminateDatabase()
+	{
+	    if (this.mDatabaseManager != null) {
+	        this.mDatabaseManager.closeDB();
+	    }
+	}
+	
+	@Override
+	public DatabaseManager getDatabaseManager() {
+	    return this.mDatabaseManager;
+	}
+
+	@Override
+	public void addEntity(ActiveRecordBase<?> entity) {
+	    this.mEntities.add(entity);
+	}
+
+	@Override
+	public void addEntities(Set<ActiveRecordBase<?>> entities) {
+	    this.mEntities.addAll(entities);
+	}
+
+	@Override
+	public void removeEntity(ActiveRecordBase<?> entity) {
+	    this.mEntities.remove(entity);
+	}
+
+	@Override
+	public ActiveRecordBase<?> getEntity(Class<? extends ActiveRecordBase<?>> entityType, long id) {
+	    for (ActiveRecordBase entity : this.mEntities) {
+	        if ((entity.getClass() == entityType) && (entity.getId().longValue() == id)) {
+	        	return entity;
+	        }
+	    }
+	
+	    return null;
+	}
 }

@@ -4,11 +4,14 @@ import java.io.BufferedInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.Date;
+import java.util.UUID;
 
 import roboguice.activity.RoboActivity;
 import roboguice.inject.*;
 
 import com.google.inject.Inject;
+import com.lehms.domain.ProgressNote;
 import com.lehms.messages.LoginResponse;
 import com.lehms.service.DataSyncService;
 import com.lehms.serviceInterface.*;
@@ -59,6 +62,21 @@ public class LoginActivity extends RoboActivity {
         _passwordEditText.setText("claude.r");
         
         _vaersonLabel.setText("Version " + UIHelper.getVersionNumber(this));
+        
+        /*
+        ProgressNote note = new ProgressNote(this);
+        note.AttachmentId = UUID.randomUUID();
+        note.Note = "Test";
+        note.Subject = "Hello World";
+        note.CreatedDate = new Date();
+        note.Identity = UUID.randomUUID();
+        note.save();
+        
+        long id = note.getId();
+        
+        ProgressNote note2 = ProgressNote.load(this, ProgressNote.class, id);
+        long id2 = note2.getId();
+        */
     }
 
     public void OnLoginClick(View view)
