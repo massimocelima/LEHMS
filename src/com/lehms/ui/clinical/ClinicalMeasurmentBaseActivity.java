@@ -47,7 +47,7 @@ public abstract class ClinicalMeasurmentBaseActivity<T> extends LehmsRoboActivit
 	public static final int REQUEST_AUTO_MEASURMENT = 0;
 
 	
-	@InjectView (R.id.activity_measurment_take_measurement) Button _takeMeasurmentButton;
+	protected @InjectView (value = R.id.activity_measurment_take_measurement) Button _takeMeasurmentButton;
 	@InjectView(R.id.activity_title) TextView _title;
 	@InjectView(R.id.activity_sub_title) TextView _subtitle;
 	
@@ -77,23 +77,27 @@ public abstract class ClinicalMeasurmentBaseActivity<T> extends LehmsRoboActivit
 		if(savedInstanceState != null && savedInstanceState.get(EXTRA_CLIENT) != null)
 			_client = (ClientDataContract)savedInstanceState.get(EXTRA_CLIENT);
 
-		if(_takeMeasurmentButton != null)
+		if(getDeviceProvider() != null)
 			CreateQuickActions();
 	};
 
 	protected void init()
 	{
 		_subtitle.setText(_client.FirstName + " " + _client.LastName);
-		
-		if(isAutoEntryForm())
+		if(getDeviceProvider() == null)
+			_takeMeasurmentButton.setVisibility(View.GONE);
+		else
 		{
-			if( ! UIHelper.HasBluetoth() )
-				UIHelper.ShowAlertDialog(this, "No bluetooth found on device", "No bluetooth found on device");
-			else
-				openAutoEntryForm();
+			if(isAutoEntryForm())
+			{
+				if( ! UIHelper.HasBluetoth() )
+					UIHelper.ShowAlertDialog(this, "No bluetooth found on device", "No bluetooth found on device");
+				else
+					openAutoEntryForm();
+			}
+			
+			CreateQuickActions();
 		}
-		
-		CreateQuickActions();
 	}
 	
 	@Override 

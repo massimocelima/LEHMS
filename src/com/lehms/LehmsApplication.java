@@ -41,6 +41,7 @@ import com.lehms.ui.clinical.model.INRMeasurement;
 import com.lehms.ui.clinical.model.Measurement;
 import com.lehms.ui.clinical.model.MeasurementSummary;
 import com.lehms.ui.clinical.model.MeasurementTypeEnum;
+import com.lehms.ui.clinical.model.RespiratoryRateMeasurement;
 import com.lehms.ui.clinical.model.SPO2Measurement;
 import com.lehms.ui.clinical.model.TemperatureMeasurement;
 import com.lehms.ui.clinical.model.UrineMeasurement;
@@ -345,6 +346,10 @@ public class LehmsApplication extends RoboApplication
 			return UrineMeasurement.class;
 		case Weight:
 			return WeightMeasurement.class;
+		case RespiratoryRate:
+			return RespiratoryRateMeasurement.class;
+		//default:
+		//	throw new Exception("Measurment Type " + measurementType.toString() + " undefind.");
 		}
 		return null;
 	}

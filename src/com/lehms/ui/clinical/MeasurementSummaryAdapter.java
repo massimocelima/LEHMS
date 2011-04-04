@@ -121,6 +121,10 @@ public class MeasurementSummaryAdapter extends ArrayAdapter<MeasurementSummary> 
 		case Weight:
 			primaryLabelTextView.setText("Weight (kg):" );
 			break;
+		case RespiratoryRate:
+			primaryLabelTextView.setText("Rate:" );
+			break;
+			
 		}
 	}
 }

@@ -11,5 +11,6 @@ public enum MeasurementTypeEnum implements Serializable {
 	BSL,
 	INR,
 	Weight,
-	Urine
+	Urine,
+	RespiratoryRate 
 }

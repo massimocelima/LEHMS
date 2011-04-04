@@ -90,6 +90,9 @@ public class MeasurementTypeAdapter extends ArrayAdapter<MeasurementType> {
 		case Weight:
 			image.setImageResource(R.drawable.list_btn_clinical_details_weight);
 			break;
+		case RespiratoryRate:
+			image.setImageResource(R.drawable.list_btn_clinical_details_lung);
+			break;
 		}
 	}
 	
@@ -120,6 +123,9 @@ public class MeasurementTypeAdapter extends ArrayAdapter<MeasurementType> {
 			break;
 		case Weight:
 			image.setImageResource(R.drawable.dashboard_btn_clinical_details_weight);
+			break;
+		case RespiratoryRate:
+			image.setImageResource(R.drawable.dashboard_btn_clinical_details_lung);
 			break;
 		}
 	}

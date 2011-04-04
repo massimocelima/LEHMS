@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/home_root"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    >
+ 
+   <LinearLayout style="@style/TitleBar">
+        
+		<ImageButton style="@style/TitleBarAction"
+            android:contentDescription="Home"
+            android:src="@drawable/ic_title_home"
+            android:onClick="onHomeClick" />
+        
+        <ImageView style="@style/TitleBarSeparator" />
+        <TextView style="@style/TitleBarText" android:text="Clinical Care Details" />
+        <!-- <View style="@style/TitleBarSpring" /> -->
+
+		<ImageView style="@style/TitleBarSeparator" />
+        <ImageButton style="@style/TitleBarAction"
+            android:contentDescription="Emergency"
+            android:src="@drawable/ic_title_emergency"
+            android:onClick="onEmergencyClick" />
+            
+    </LinearLayout>
+ 
+   	<ScrollView
+	  android:layout_width="fill_parent"
+	  android:layout_height="wrap_content"
+	  android:layout_weight="1"
+	  android:id="@+id/activity_scroll_view"
+	  >
+
+	    <LinearLayout 
+	        android:layout_height="fill_parent" 
+			android:layout_width="fill_parent" 
+		    android:orientation="vertical"
+	        >
+	  
+		    <LinearLayout 
+		        style="@style/HeaderContainer">
+		
+				<ImageView 
+					android:layout_height="wrap_content" 
+					android:layout_width="wrap_content" 
+					android:src="@drawable/dashboard_btn_clinical_details_lung"></ImageView>
+					
+			    <LinearLayout 
+				    android:orientation="vertical"
+				    android:layout_width="wrap_content"
+				    android:layout_height="wrap_content"
+				    android:layout_weight="1"
+				    >
+					
+					<TextView 
+						android:id="@+id/activity_title"
+				        android:layout_width="wrap_content"
+				        android:layout_height="wrap_content"
+				        android:text="Respiratory Rate"
+				        style="@style/HeaderTitle" />
+			   		<TextView 
+						android:id="@+id/activity_sub_title"
+				        android:layout_width="wrap_content"
+				        android:layout_height="wrap_content"
+				        style="@style/HeaderSubTitle" />
+			   		<TextView 
+						android:id="@+id/activity_sub_title2"
+				        android:layout_width="wrap_content"
+				        android:layout_height="wrap_content"
+				        style="@style/HeaderSubTitle" />
+		        </LinearLayout>
+		
+			</LinearLayout>
+			
+			<LinearLayout
+			   	android:id="@+id/activity_container"
+				android:layout_width="fill_parent"
+			  	android:layout_height="fill_parent"
+			  	android:orientation="vertical">
+			  	
+			  	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+				    android:orientation="vertical"
+				    android:layout_width="fill_parent"
+				    android:layout_height="wrap_content"
+					style="@style/FormItem"
+				    >
+				
+					<TextView 
+						android:id="@+id/activity_measurement_respiratory_rate_label"
+					    android:layout_width="fill_parent"
+					    android:layout_height="wrap_content"
+					  	android:textAppearance="?android:attr/textAppearanceSmall" 
+					  	android:textColor="?android:attr/textColorPrimary" 
+					  	android:text="Rate"
+					>
+					</TextView>
+					<EditText 
+						android:id="@+id/activity_measurement_respiratory_rate_edit"
+					    android:layout_width="fill_parent"
+					    android:layout_height="wrap_content"
+					  	android:textAppearance="?android:attr/textAppearanceSmall" 
+					  	android:textColor="?android:attr/textColorPrimary" 
+					  	android:inputType="number"
+					>
+					</EditText>
+					
+				</LinearLayout>
+			  	
+			</LinearLayout>
+	  
+		</LinearLayout>
+		  
+	</ScrollView>
+	
+	<LinearLayout
+			android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:orientation="horizontal"
+	        style="@android:style/ButtonBar"
+	        >
+
+	    <Button 
+			android:id="@+id/activity_measurment_take_measurement"
+			android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:text="Take Measurement"
+	        android:drawableLeft="@drawable/quick_actions_ic_bluetooth"
+		/>
+		
+		<LinearLayout
+				android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:orientation="horizontal"
+		        android:layout_weight="1"
+		        android:gravity="right"
+		        >
+	        
+		    <Button 
+				android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:text="Cancel"
+		        android:onClick="onCancelClick" />
+	
+		    <Button 
+				android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:text="Save"
+		        android:onClick="onSaveClick" />
+	    </LinearLayout>
+
+	</LinearLayout>
+  
+</LinearLayout>

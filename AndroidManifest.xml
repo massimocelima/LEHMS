@@ -147,6 +147,11 @@
                   android:configChanges="orientation" 
                   />
                   
+        <activity android:name="com.lehms.ui.clinical.RespiratoryRateMeasurementActivity"
+                  android:label="Respiratory Rate Measurement" 
+                  android:configChanges="orientation" 
+                  />
+                  
 		<activity android:name="com.lehms.ui.clinical.DeviceListActivity"
                   android:label="Device List"
                   android:theme="@android:style/Theme.Dialog"

@@ -15,5 +15,6 @@ public enum EventType {
 	SPO2Taken,
 	TemperatureTaken,
 	UrineTaken,
-	WeightTaken
+	WeightTaken,
+	RespiratoryRateTaken
 }

@@ -69,6 +69,7 @@ public class EventExecuter implements IEventExecuter {
 		case TemperatureTaken:
 		case UrineTaken:
 		case WeightTaken:
+		case RespiratoryRateTaken:
 			return ExecuteCreateMeasurmentEvent(event);
 		case JobCompleted:
 			return ExecuteJobCompletedEvent(event);

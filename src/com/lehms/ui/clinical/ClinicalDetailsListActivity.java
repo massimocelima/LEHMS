@@ -153,7 +153,8 @@ public class ClinicalDetailsListActivity  extends LehmsRoboListActivity { //impl
 				
 				if( _selectedMeasurmentType.Type != MeasurementTypeEnum.Urine && 
 						_selectedMeasurmentType.Type != MeasurementTypeEnum.INR && 
-						_selectedMeasurmentType.Type != MeasurementTypeEnum.Weight )
+						_selectedMeasurmentType.Type != MeasurementTypeEnum.Weight && 
+						_selectedMeasurmentType.Type != MeasurementTypeEnum.RespiratoryRate )
 					_qa.addActionItem(qaTakeAutoMeasurment);
 				
 				_qa.setAnimStyle(ListQuickAction.ANIM_AUTO);
@@ -218,6 +219,10 @@ public class ClinicalDetailsListActivity  extends LehmsRoboListActivity { //impl
 		case Urine:
 			intent = new Intent(this, UrinetMeasurementActivity.class);
 	        intent.putExtra(UrinetMeasurementActivity.EXTRA_CLIENT, _client);
+			break;
+		case RespiratoryRate:
+			intent = new Intent(this, RespiratoryRateMeasurementActivity.class);
+	        intent.putExtra(RespiratoryRateMeasurementActivity.EXTRA_CLIENT, _client);
 			break;
 		default:
 			break;
@@ -431,7 +436,14 @@ public class ClinicalDetailsListActivity  extends LehmsRoboListActivity { //impl
 		type.Type = MeasurementTypeEnum.Weight;
 		type.ImageDrawableId = R.drawable.list_btn_clinical_details_weight;
 		items.add(type);
-		
+
+		type = new MeasurementType();
+		type.Name = "Respiratory Rate";
+		type.Description = "Respiratory Rate";
+		type.Type = MeasurementTypeEnum.RespiratoryRate;
+		type.ImageDrawableId = R.drawable.list_btn_clinical_details_lung;
+		items.add(type);
+
 		return items;
 	}
 	
@@ -504,7 +516,8 @@ public class ClinicalDetailsListActivity  extends LehmsRoboListActivity { //impl
 
 				//response = _clinicalMeasurementResource.GetPreviousMeasurements(_client.ClientId);
 			} catch (Exception e) {
-				AppLog.error(e.getMessage());
+				if(e.getMessage() != null)
+					AppLog.error(e.getMessage());
 				_exception = e;
 			} 
 			

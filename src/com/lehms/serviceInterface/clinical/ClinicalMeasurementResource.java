@@ -18,6 +18,7 @@ import com.lehms.ui.clinical.model.ECGMeasurement;
 import com.lehms.ui.clinical.model.INRMeasurement;
 import com.lehms.ui.clinical.model.Measurement;
 import com.lehms.ui.clinical.model.MeasurementType;
+import com.lehms.ui.clinical.model.RespiratoryRateMeasurement;
 import com.lehms.ui.clinical.model.SPO2Measurement;
 import com.lehms.ui.clinical.model.TemperatureMeasurement;
 import com.lehms.ui.clinical.model.UrineMeasurement;
@@ -91,6 +92,8 @@ public class ClinicalMeasurementResource implements IClinicalMeasurementResource
 			endPoint = _profileProvider.getProfile().GetUrineMeasurementResourceEndPoint();
 		if( measurement.getClass().equals(WeightMeasurement.class))
 			endPoint = _profileProvider.getProfile().GetWeightMeasurementResourceEndPoint();
+		if( measurement.getClass().equals(RespiratoryRateMeasurement.class))
+			endPoint = _profileProvider.getProfile().GetRespiratoryRateMeasurementResourceEndPoint();
 		return _channelFactory.Create(endPoint);
 
 	}
