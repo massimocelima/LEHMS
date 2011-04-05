@@ -80,11 +80,13 @@ public class JobEndActivity extends LehmsRoboListActivity {
 		    	{
 		    	case 0:
 		    		// Enter consumable cost
+		    		NavigationHelper.goConsumableCostSheet(JobEndActivity.this, _job.Client);
 		    		break;
 		    	case 1:
 		    		// Get clients signature
 		    		break;
 		    	case 2:
+		    		// Go off duty
 		    		_dutyManager.OffDuty();
 		    		_items.remove(2);
 		    		ListAdapter adapter = new ArrayAdapter<String>(JobEndActivity.this, android.R.layout.simple_list_item_1, _items);
@@ -109,11 +111,10 @@ public class JobEndActivity extends LehmsRoboListActivity {
 	{
 		NavigationHelper.goEmergency(this);
 	}
-	
-	
+		
 	public void onCloseClick(View view)
 	{
-		
+		finish();
 	}
 	
 	public void onBackPressed() {

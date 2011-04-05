@@ -7,6 +7,7 @@ import java.util.UUID;
 
 import com.google.inject.Inject;
 import com.lehms.UIHelper;
+import com.lehms.messages.AddConsumableCostItemRequest;
 import com.lehms.messages.CreateFormDataRequest;
 import com.lehms.messages.CreateFormDataResponse;
 import com.lehms.messages.CreateMeasurementResponse;
@@ -15,12 +16,14 @@ import com.lehms.messages.JobEndActionRequest;
 import com.lehms.messages.JobStartActionRequest;
 import com.lehms.messages.JobStartActionResponse;
 import com.lehms.messages.dataContracts.AttachmentDataContract;
+import com.lehms.messages.dataContracts.ConsumableCostItem;
 import com.lehms.messages.dataContracts.PhotoType;
 import com.lehms.messages.dataContracts.ProgressNoteDataContract;
 import com.lehms.messages.formDefinition.FormData;
 import com.lehms.persistence.Event;
 import com.lehms.persistence.EventType;
 import com.lehms.persistence.IEventRepository;
+import com.lehms.serviceInterface.IConsumableCostItemResource;
 import com.lehms.serviceInterface.IEventExecuter;
 import com.lehms.serviceInterface.IFormDataResource;
 import com.lehms.serviceInterface.IJobResource;
@@ -37,19 +40,22 @@ public class EventExecuter implements IEventExecuter {
 	private IFormDataResource _formDataResource;
 	private IClinicalMeasurementResource _clinicalMeasurementResource;
 	private IJobResource _jobResource;
+	private IConsumableCostItemResource _consumableCostItemResource;
 	
 	@Inject
 	public EventExecuter(IProgressNoteResource progressNoteResource,
 			IFormDataResource formDataResource,
 			IEventRepository eventRepository, 
 			IClinicalMeasurementResource clinicalMeasurementResource,
-			IJobResource jobResource)
+			IJobResource jobResource,
+			IConsumableCostItemResource consumableCostItemResource)
 	{
 		_progressNoteResource = progressNoteResource;
 		_eventRepository = eventRepository;
 		_formDataResource = formDataResource;
 		_clinicalMeasurementResource = clinicalMeasurementResource;
 		_jobResource = jobResource;
+		_consumableCostItemResource = consumableCostItemResource;
 	}
 	
 	@Override
@@ -77,6 +83,8 @@ public class EventExecuter implements IEventExecuter {
 			return ExecuteJobStartedEvent(event);
 		case LocationTracking:
 			return ExecuteLocationTrackingEvent(event);
+		case AddConsumableCost:
+			return ExecuteAddCOnsumableCostEvent(event);
 		}
 		
 		throw new Exception("Unimplemented event executer for " + event.Type.toString());
@@ -169,6 +177,12 @@ public class EventExecuter implements IEventExecuter {
 	{
 		JobStartActionRequest request = (JobStartActionRequest)event.Data;
 		return _jobResource.Start(request);
+	}
+	
+	public Object ExecuteAddCOnsumableCostEvent(Event event) throws Exception
+	{
+		AddConsumableCostItemRequest request = (AddConsumableCostItemRequest)event.Data;
+		return _consumableCostItemResource.Save(request);
 	}
 	
 	public Object ExecuteLocationTrackingEvent(Event event) throws Exception

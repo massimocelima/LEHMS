@@ -36,6 +36,8 @@ public class ConfigurationModule extends AbstractAndroidModule {
 		bind(IClinicalMeasurementResource.class).to(ClinicalMeasurementResource.class);
 		bind(IMeasurmentReportProvider.class).to(MeasurmentReportProvider.class); 
 		bind(IJobResource.class).to(JobResource.class); 
+		bind(IConsumableCostItemResource.class).to(ConsumableCostItemResource.class); 
+		
 		
 		bind(IEventExecuter.class).to(EventExecuter.class);
 		bind(IEventFactory.class).to(EventFactory.class);

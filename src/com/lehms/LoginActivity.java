@@ -11,7 +11,6 @@ import roboguice.activity.RoboActivity;
 import roboguice.inject.*;
 
 import com.google.inject.Inject;
-import com.lehms.domain.ProgressNote;
 import com.lehms.messages.LoginResponse;
 import com.lehms.service.DataSyncService;
 import com.lehms.serviceInterface.*;

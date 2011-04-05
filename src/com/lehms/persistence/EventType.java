@@ -6,6 +6,7 @@ public enum EventType {
 	ProgressNoteAdded,
 	LocationTracking,
 	FormCompleted,
+	AddConsumableCost,
 	
 	//Measurements
 	BloodPressureTaken,

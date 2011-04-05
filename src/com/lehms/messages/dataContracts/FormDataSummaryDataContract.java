@@ -10,5 +10,6 @@ public class FormDataSummaryDataContract implements Serializable {
     public String Code;
     public String CreatedId;
     public Date CreatedDate;
-    
+	public String ActivityReference;
+	
 }

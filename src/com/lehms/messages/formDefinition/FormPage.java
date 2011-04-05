@@ -9,5 +9,4 @@ public class FormPage implements Serializable  {
 	public UUID Id;
 	public String Title;
 	public List<FormElement> Elements;
-	
 }

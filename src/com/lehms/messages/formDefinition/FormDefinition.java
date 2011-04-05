@@ -17,7 +17,8 @@ public class FormDefinition implements Serializable {
 	public Date LastUpdated;
 	// Legacy - used to map this item to the older style of form elements
 	public String Code;
-
+	public String ActivityReference;
+	
     public void fillFormData(FormData data)
     {
     	List<FormElement> formElements = GetEditableElements();

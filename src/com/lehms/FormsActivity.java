@@ -113,7 +113,9 @@ public class FormsActivity  extends LehmsRoboListActivity { //implements AsyncQu
 					_qa = new ListQuickAction(view);
 					
 					_qa.addActionItem(qaNewForm);
-					_qa.addActionItem(qaViewForms);
+					if( _selectedFormDefinition.ActivityReference == null ||  
+							_selectedFormDefinition.ActivityReference.equals("") )
+						_qa.addActionItem(qaViewForms);
 					_qa.setAnimStyle(ListQuickAction.ANIM_AUTO);
 					
 					_qa.show();

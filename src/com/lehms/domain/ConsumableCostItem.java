@@ -10,10 +10,10 @@ import com.lehms.activerecord.ActiveRecordBase;
 import com.lehms.activerecord.annotation.Column;
 import com.lehms.activerecord.annotation.Table;
 
-@Table(name = "ProgressNotes")
-public class ProgressNote extends ActiveRecordBase<ProgressNote> {
+@Table(name = "ConsumableCostItem")
+public class ConsumableCostItem extends ActiveRecordBase<ConsumableCostItem> {
 
-	public ProgressNote(Context context) {
+	public ConsumableCostItem(Context context) {
 		super(context);		
 	}
 	

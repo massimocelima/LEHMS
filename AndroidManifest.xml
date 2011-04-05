@@ -3,7 +3,7 @@
 	  xmlns:android="http://schemas.android.com/apk/res/android"
       package="com.lehms"
       android:versionCode="1"
-      android:versionName="0.4.3"
+      android:versionName="0.4.4"
       >
 
 	<uses-sdk android:minSdkVersion="4" />
@@ -89,6 +89,11 @@
         <activity android:name="JobEndActivity"
                   android:label="Jom Complete" 
                   android:configChanges="orientation" 
+                  />
+
+        <activity android:name="ConsumableCostSheetActivity"
+                  android:label="Consumable Cost Sheet" 
+                  android:configChanges="orientation|keyboardHidden" 
                   />
 
         <activity android:name="com.lehms.graph.GraphActivity"

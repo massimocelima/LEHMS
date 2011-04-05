@@ -343,4 +343,17 @@ public class UIHelper {
 		return UUID.fromString("ea001101-0000-1000-8000-00805F9B34FB");  
 	}
 	
+	public static void handleException(Context context, Exception e, String message)
+	{
+		if(e != null )
+		{
+			AppLog.error(message, e);
+			UIHelper.ShowAlertDialog(context, message, message + ": " + e.getMessage());
+		}
+		else
+		{
+			AppLog.error(message);
+			UIHelper.ShowAlertDialog(context, message, message);
+		}
+	}
 }

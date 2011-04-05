@@ -94,6 +94,11 @@ public class Profile {
 		return GetBaseUrl() + "/JobEndAction";
 	}
 	
+	public String GetConsumableCostItemsResourceEndPoint()
+	{
+		return GetBaseUrl() + "/ConsumableCostItems";
+	}
+	
 	public String GetMeasurementSummaryResourceEndPoint()
 	{
 		return GetBaseUrl() + "/Measurement/MeasurementSummary";

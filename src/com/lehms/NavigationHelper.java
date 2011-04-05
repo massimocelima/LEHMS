@@ -48,6 +48,14 @@ public class NavigationHelper {
 		UIHelper.ShowUnderConstructionMessage(context);
 	}
 
+	public static void goConsumableCostSheet(Context context, ClientDataContract client)
+	{
+        Intent intent = new Intent(context, ConsumableCostSheetActivity.class);
+        intent.putExtra(FormDetailsListActivity.EXTRA_CLIENT, client);
+        context.startActivity(intent);
+	}
+
+	
 	public static void goJobComplete(Context context, JobDetailsDataContract job)
 	{
         Intent intent = new Intent(context, JobEndActivity.class);
@@ -131,11 +139,24 @@ public class NavigationHelper {
 
 	public static void createFormDetails(Context context, FormDefinition form, ClientDataContract client)
 	{
-        Intent intent = new Intent(context, FormDetailsActivity.class);
-        intent.putExtra(FormDetailsActivity.EXTRA_FORM_DEFINITION, form);
-        intent.putExtra(FormDetailsActivity.EXTRA_CLIENT, client);
-        intent.putExtra(FormDetailsActivity.EXTRA_IS_NEW, true);
-        context.startActivity(intent);
+		if(form.ActivityReference != null && ! form.ActivityReference.equals(""))
+		{
+			try {
+				Intent intent = new Intent(context, Class.forName(form.ActivityReference));
+		        intent.putExtra(FormDetailsActivity.EXTRA_CLIENT, client);
+		        context.startActivity(intent);
+			} catch (Exception e) {
+				UIHelper.handleException(context, e, "Error opening activity " + form.ActivityReference);
+			}
+		}
+		else
+		{	
+	        Intent intent = new Intent(context, FormDetailsActivity.class);
+	        intent.putExtra(FormDetailsActivity.EXTRA_FORM_DEFINITION, form);
+	        intent.putExtra(FormDetailsActivity.EXTRA_CLIENT, client);
+	        intent.putExtra(FormDetailsActivity.EXTRA_IS_NEW, true);
+	        context.startActivity(intent);
+		}
 	}	
 
 	public static void viewFormDetails(Context context, FormDefinition form, FormData formData, ClientDataContract client)
