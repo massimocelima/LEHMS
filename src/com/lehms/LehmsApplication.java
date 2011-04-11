@@ -30,6 +30,7 @@ import com.lehms.messages.dataContracts.JobDetailsDataContract;
 import com.lehms.messages.dataContracts.LocationDataContract;
 import com.lehms.messages.dataContracts.Permission;
 import com.lehms.messages.dataContracts.RoleDataContract;
+import com.lehms.messages.dataContracts.RosterDataContract;
 import com.lehms.messages.dataContracts.UserDataContract;
 import com.lehms.service.GPSLoggerService;
 import com.lehms.serviceInterface.*;
@@ -63,7 +64,8 @@ public class LehmsApplication extends RoboApplication
 			IPreviousMeasurmentProvider,
 			IDutyManager,
 			ICache,
-			IApplicationContext
+			IApplicationContext,
+			ITrackingSettings
 {
     public static final String KEY_PROFILE_PREF = "application_settings_profile_pref";
     public static final String KEY_DEVICE_ID_PREF = "application_settings_device_id_pref";
@@ -72,6 +74,11 @@ public class LehmsApplication extends RoboApplication
     public static final String KEY_OFFICE_EMAIL_PREF = "application_settings_office_email_pref";
     public static final String KEY_OFFICE_FAX_PREF = "application_settings_office_fax_pref";
 
+    public static final String KEY_TRACKING_DISTANCE_PREF = "application_settings_tracking_distance";
+    public static final String KEY_PROXIMITY_ENABLED_PREF = "application_settings_tracking_proximity_enabled";
+    public static final String KEY_PROXIMITY_PREF = "application_settings_tracking_proximity";
+
+    
     public static final String KEY_ALARM_PHONE_PREF = "application_settings_alarm_phone_pref";
     public static final String KEY_ALARM_SMS_PREF = "application_settings_alarm_sms_number_pref";
     public static final String KEY_SERVCIDE_PHONE_PREF = "application_settings_service_phone_pref";
@@ -502,4 +509,23 @@ public class LehmsApplication extends RoboApplication
 	
 	    return null;
 	}
+
+	@Override
+	public int getTrackingDistance() {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        return Integer.parseInt( prefs.getString(KEY_TRACKING_DISTANCE_PREF, "10") );
+	}
+
+	@Override
+	public int getProximityDistance() {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        return Integer.parseInt( prefs.getString(KEY_PROXIMITY_PREF, "25") );
+	}
+
+	@Override
+	public Boolean getProximityEnabled() {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        return prefs.getBoolean(KEY_PROXIMITY_ENABLED_PREF, false);
+	}
+
 }

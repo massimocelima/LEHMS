@@ -37,7 +37,7 @@ public class ConfigurationModule extends AbstractAndroidModule {
 		bind(IMeasurmentReportProvider.class).to(MeasurmentReportProvider.class); 
 		bind(IJobResource.class).to(JobResource.class); 
 		bind(IConsumableCostItemResource.class).to(ConsumableCostItemResource.class); 
-		
+		bind(ITrackingResource.class).to(TrackingResource.class); 
 		
 		bind(IEventExecuter.class).to(EventExecuter.class);
 		bind(IEventFactory.class).to(EventFactory.class);
@@ -57,6 +57,7 @@ public class ConfigurationModule extends AbstractAndroidModule {
 		bind(IPreviousMeasurmentProvider.class).toInstance(_context);
 		bind(IDutyManager.class).toInstance(_context);
 		bind(ICache.class).toInstance(_context);
+		bind(ITrackingSettings.class).toInstance(_context);
 		
 		bind(IChannelFactory.class).toInstance(
 				new HttpChannelFactory(new JsonSerializer(), 

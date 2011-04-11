@@ -19,6 +19,28 @@
 	
 	</LinearLayout>
 
+
+    <LinearLayout
+           android:orientation="vertical"
+           android:layout_width="fill_parent"
+           android:layout_height="wrap_content"
+           android:layout_weight="1">
+	
+		<include        
+			android:layout_width="fill_parent"
+			android:layout_height="fill_parent"
+			layout="@layout/dashboard_care_practice"        
+			android:id="@+id/dashboard_care_practice_content" />
+
+		<include        
+			android:layout_width="fill_parent"
+			android:layout_height="fill_parent"
+			layout="@layout/dashboard_personal_response"        
+			android:id="@+id/dashboard_personal_response_content" />
+				
+	</LinearLayout>
+
+<!-- 
 	<TabHost
 		android:id="@+id/dashboard_tab_host"
 		android:layout_width="fill_parent"
@@ -58,7 +80,8 @@
 			</FrameLayout>
 		</LinearLayout>
 	</TabHost>
-
+ -->
+ 
 	<include layout="@layout/dashboard_footer" /> 
 
 </LinearLayout>

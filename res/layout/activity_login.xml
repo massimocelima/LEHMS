@@ -21,19 +21,19 @@
     </LinearLayout>
 
 	<ScrollView
-	  android:layout_width="match_parent"
+	  android:layout_width="fill_parent"
 	  android:layout_height="wrap_content">
 	
 		<LinearLayout
 		  android:orientation="vertical"
-		  android:layout_width="match_parent"
+		  android:layout_width="fill_parent"
 		  android:layout_height="wrap_content"
 		  android:gravity="center"
 		 >
 		
 		    <LinearLayout
 			    android:orientation="horizontal"
-			    android:layout_width="match_parent"
+			    android:layout_width="fill_parent"
 			    android:layout_height="60dip"
 			    android:background="@drawable/login_title_background"
 		    >

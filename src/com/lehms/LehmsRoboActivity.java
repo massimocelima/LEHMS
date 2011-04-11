@@ -1,6 +1,10 @@
 package com.lehms;
 
 import com.google.inject.Inject;
+import com.lehms.messages.dataContracts.Permission;
+import com.lehms.serviceInterface.IAuthenticationProvider;
+import com.lehms.serviceInterface.IAuthenticationService;
+import com.lehms.serviceInterface.IAuthorisationProvider;
 import com.lehms.serviceInterface.IDutyManager;
 import com.lehms.serviceInterface.IIdentityProvider;
 
@@ -14,6 +18,7 @@ public class LehmsRoboActivity extends RoboActivity {
 
 	@Inject IDutyManager _dutyManager;
 	@Inject IIdentityProvider _identityProvider;
+	@Inject IAuthorisationProvider _authorisationProvider;
 	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -63,5 +68,10 @@ public class LehmsRoboActivity extends RoboActivity {
 	public IIdentityProvider getIdentityProvider()
 	{
 		return _identityProvider;
+	}
+	
+	public Boolean isAuthrosied(Permission permission)
+	{
+		return _authorisationProvider.isAuthorised(permission);
 	}
 }

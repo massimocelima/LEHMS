@@ -38,6 +38,7 @@ import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TabHost;
@@ -47,7 +48,7 @@ import android.widget.TextView;
 import roboguice.activity.RoboActivity;  
 import roboguice.inject.InjectView;  
 
-public class Dashboard extends LehmsRoboActivity implements OnGestureListener
+public class Dashboard extends LehmsRoboActivity //implements OnGestureListener
 {
 	@Inject protected IIdentityProvider _identityProvider;
 	@Inject protected IOfficeContactProvider _officeContactProvider;
@@ -56,42 +57,78 @@ public class Dashboard extends LehmsRoboActivity implements OnGestureListener
 	
 	@InjectView(R.id.footer_text) protected TextView _footerText;
 	
-	@InjectView(R.id.dashboard_tab_host) protected TabHost _tabHost;
-	@InjectView(android.R.id.tabs) protected TabWidget _tabWidget;
+	//@InjectView(R.id.dashboard_tab_host) protected TabHost _tabHost;
+	//@InjectView(android.R.id.tabs) protected TabWidget _tabWidget;
 	@InjectView(R.id.footer_container) protected LinearLayout _footerContainer;
-	
+
     Animation _rightInAnimation;
     Animation _rightOutAnimation;
     Animation _leftInAnimation;
     Animation _leftOutAnimation;
 
-	private GestureDetector _gestureDetector;
-    private GuestureListener _gestureListener;
+	//private GestureDetector _gestureDetector;
+    //private GuestureListener _gestureListener;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_dashboard);
-		InitAnimations();
+		//InitAnimations();
 	
-		_gestureDetector = new GestureDetector(this);
-		_gestureListener = new GuestureListener(_gestureDetector); 
+		//_gestureDetector = new GestureDetector(this);
+		//_gestureListener = new GuestureListener(_gestureDetector); 
 
-		_tabHost.setup();
-		_tabHost.setOnTouchListener(_gestureListener);
+		//_tabHost.setup();
+		//_tabHost.setOnTouchListener(_gestureListener);
 		
-		_tabHost.addTab(
-        		_tabHost.newTabSpec("tabCarePractice")
-    				.setIndicator(buildIndicator("Care Practice")) //, getResources().getDrawable(R.drawable.ic_tab_options))
-    				.setContent(R.id.dashboard_care_practice_content)); // new Intent(this, Notepadv3.class)));
+		if( isAuthrosied(Permission.RosterView) )
+		{
+			//_tabHost.addTab(
+	        //		_tabHost.newTabSpec("tabCarePractice")
+	    	//			.setIndicator(buildIndicator("Care Practice")) //, getResources().getDrawable(R.drawable.ic_tab_options))
+	    	//			.setContent(R.id.dashboard_care_practice_content)); // new Intent(this, Notepadv3.class)));
+			
+			if( ! isAuthrosied(Permission.ClientsView) )
+				findViewById(R.id.dashboard_btn_clients).setVisibility(View.GONE);
 
-		_tabHost.addTab(
-        		_tabHost.newTabSpec("tabPersonalResponse")
-    				.setIndicator(buildIndicator("Personal Response")) //, getResources().getDrawable(R.drawable.ic_tab_options))
-    				.setContent(R.id.dashboard_personal_response_content)); // new Intent(this, Notepadv3.class)));
+			if( ! isAuthrosied(Permission.TakePhoto) )
+				findViewById(R.id.dashboard_btn_camera).setVisibility(View.GONE);
+			
+			if( ! isAuthrosied(Permission.Contact) )
+				findViewById(R.id.dashboard_btn_call_call_centre).setVisibility(View.GONE);
+			
+			if( ! isAuthrosied(Permission.Help) )
+				findViewById(R.id.dashboard_btn_emergency).setVisibility(View.GONE);
 
-		SetTouchEventOnChildViews(_tabHost);
+			findViewById(R.id.dashboard_care_practice_content).setVisibility(View.VISIBLE);
+			findViewById(R.id.dashboard_personal_response_content).setVisibility(View.GONE);
+			
+		}
+		else
+		{
+			//_tabHost.addTab(
+	        //		_tabHost.newTabSpec("tabPersonalResponse")
+	    	//			.setIndicator(buildIndicator("Personal Response")) //, getResources().getDrawable(R.drawable.ic_tab_options))
+	    	//			.setContent(R.id.dashboard_personal_response_content)); // new Intent(this, Notepadv3.class)));
+			
+			// They can self care
+			if( ! isAuthrosied(Permission.OwnedClientDetailsView) )
+				findViewById(R.id.dashboard_btn_clinical_details).setVisibility(View.GONE);
+			if( ! isAuthrosied(Permission.Help) )
+				findViewById(R.id.dashboard_btn_test_emergency).setVisibility(View.GONE);
+			if( ! isAuthrosied(Permission.Contact) )
+				findViewById(R.id.dashboard_btn_call_call_centre).setVisibility(View.GONE);
+			if( ! isAuthrosied(Permission.Help) )
+				findViewById(R.id.dashboard_btn_emergency_self_care).setVisibility(View.GONE);
+
+			findViewById(R.id.dashboard_care_practice_content).setVisibility(View.GONE);
+			findViewById(R.id.dashboard_personal_response_content).setVisibility(View.VISIBLE);
+
+		}
+		
+		
+		//SetTouchEventOnChildViews(_tabHost);
 
 		try
 		{
@@ -101,15 +138,14 @@ public class Dashboard extends LehmsRoboActivity implements OnGestureListener
 		}
 		catch(Exception ex)
 		{
-			AppLog.error("Failed to set footer in dashboard");
+			UIHelper.handleException(this, ex, "Failed to set footer in dashboard");
 		}
-		
 		
 		_dutyManager.OnDuty();
 		
 		StartDataSynchService();
 	}
-
+/*
 	private void SetTouchEventOnChildViews(ViewGroup viewGroup)
 	{
 		for(int i = 0; i < viewGroup.getChildCount(); i++)
@@ -129,7 +165,7 @@ public class Dashboard extends LehmsRoboActivity implements OnGestureListener
         _leftInAnimation = AnimationUtils.loadAnimation(this, R.anim.slide_left_in);
         _leftOutAnimation = AnimationUtils.loadAnimation(this, R.anim.slide_left_out);
 	}
-	
+*/
 	public void onMyRosterClick(View view)
 	{
 		NavigationHelper.openRoster(this, new Date());
@@ -199,22 +235,6 @@ public class Dashboard extends LehmsRoboActivity implements OnGestureListener
             .create();
 		
         dialog.show();
-
-	    //String uri = "geo:0,0?q=MCNAMARA+TERMINAL+ROMULUS+MI+48174";             
-	    //Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));     
-	    //startActivity(i);
-		
-		//startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("google.navigation:q=" + an + address + city)));
-		//startActivity(new Intent(Intent.ACTION_CALL, Uri.parse("tel: " + phoneNumber)));
-		//Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
-		//        photoPickerIntent.setType("image/gif");
-		//        photoPickerIntent.setType("image/jpeg");
-		//        photoPickerIntent.setType("image/tiff");
-		//        photoPickerIntent.setType("image/png");
-		//        photoPickerIntent.setType("image/bmp");
-		//        startActivityForResult(photoPickerIntent, RESULT_IMAGE_RETURNED);
-		
-		//UIHelper.ShowUnderConstructionMessage(this);
 	}
 	
 	
@@ -230,7 +250,32 @@ public class Dashboard extends LehmsRoboActivity implements OnGestureListener
 	
 	public void onCallCallCentreClick(View view)
 	{
-		NavigationHelper.goContactCallCentre(this);
+		AlertDialog dialog = new AlertDialog.Builder(this)
+        .setTitle("Please select how you would like to contact the office")
+        .setItems(R.array.dashboard_contact_call_centre_selection, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+            	switch(which)
+            	{
+            	case 0:
+            		UIHelper.MakeCall( _officeContactProvider.getCallCentrePhoneNumber(), Dashboard.this);
+            		break;
+            	case 1:
+            		UIHelper.MakeCall( _officeContactProvider.getServicePhoneNumber(), Dashboard.this);
+            		break;
+            	case 2:
+            		UIHelper.OpenCall(Dashboard.this);
+            		break;
+            	}
+           }
+        })
+        .setCancelable(true)
+        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+            }
+        })
+        .create();
+	
+	dialog.show();
 	}
 	
 	public void onClinicalDetailsClick(View view)
@@ -239,7 +284,7 @@ public class Dashboard extends LehmsRoboActivity implements OnGestureListener
 		{
 			UserDataContract user = _identityProvider.getCurrent();
 			if(user.ClientId != null && ! user.ClientId.equals(""))
-				NavigationHelper.openClient(this,Long.parseLong(user.UserId));
+				NavigationHelper.openClient(this,Long.parseLong(user.ClientId));
 			else
 				throw new Exception("Client id not found.");
 		} 
@@ -249,7 +294,7 @@ public class Dashboard extends LehmsRoboActivity implements OnGestureListener
 			UIHelper.ShowAlertDialog(this, "Error opeing client", "Error opeing client: " + e.getMessage());
 		}
 	}
-	
+	/*
     private View buildIndicator(String string) {
     	
         final TextView indicator = (TextView) getLayoutInflater().inflate(R.layout.tab_indicator,
@@ -261,6 +306,8 @@ public class Dashboard extends LehmsRoboActivity implements OnGestureListener
 	public boolean onTouchEvent(MotionEvent event) {  
 		return _gestureDetector.onTouchEvent(event);
 	} 
+*/
+	/*
 
     // Begin OnGestureListener Implementation
     
@@ -311,7 +358,7 @@ public class Dashboard extends LehmsRoboActivity implements OnGestureListener
 	public boolean onSingleTapUp(MotionEvent arg0) { return false; }
 	
     // End OnGestureListener Implementation
-
+*/
 
 	@Override
 	protected void onDestroy() {

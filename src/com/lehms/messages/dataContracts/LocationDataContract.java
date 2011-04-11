@@ -14,4 +14,7 @@ public class LocationDataContract implements Serializable {
      public double Latitude;
      public double Longitude;
      public Date Taken;
+     
+     public String Username;
+     public String JobId;
 }

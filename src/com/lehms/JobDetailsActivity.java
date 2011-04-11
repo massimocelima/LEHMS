@@ -15,6 +15,7 @@ import com.lehms.persistence.IRosterRepository;
 import com.lehms.serviceInterface.IActiveJobProvider;
 import com.lehms.serviceInterface.IDutyManager;
 import com.lehms.serviceInterface.IEventExecuter;
+import com.lehms.serviceInterface.IOfficeContactProvider;
 import com.lehms.util.AppLog;
 
 import android.app.AlertDialog;
@@ -81,6 +82,7 @@ public class JobDetailsActivity extends LehmsRoboActivity implements ISaveEventR
 	@InjectView(R.id.activity_job_details_end_job) Button _btnEndJob;
 	@InjectView(R.id.activity_job_details_view) Button _btnView;
 	@InjectView(R.id.activity_job_details_progress_notes) Button _btnProgressNote;
+	@InjectView(R.id.activity_job_details_forms) Button _btnForms;
 	
 	@Inject IRosterRepository _rosterRepository; 
 	@Inject IActiveJobProvider _activeJobProvider;
@@ -88,6 +90,7 @@ public class JobDetailsActivity extends LehmsRoboActivity implements ISaveEventR
 	@Inject IEventExecuter _eventExecuter;
 	@Inject IEventFactory _eventEventFactory;
 	@Inject IDutyManager _dutyManager;
+	@Inject IOfficeContactProvider _officeContactProvider;
 
 	private QuickAction _quickActions;
 	private QuickAction _quickActionsPrgressNotes;
@@ -536,8 +539,35 @@ catch(Exception ex)
 		qaContact.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				NavigationHelper.goContact(JobDetailsActivity.this, GetJob().Client.ClientId);
+				
 				_quickActions.dismiss();
+
+				AlertDialog dialog = new AlertDialog.Builder(JobDetailsActivity.this)
+		        .setTitle("Please select how you would like to contact the office")
+		        .setItems(R.array.job_contact_selection, new DialogInterface.OnClickListener() {
+		            public void onClick(DialogInterface dialog, int which) {
+		            	switch(which)
+		            	{
+		            	case 0:
+		            		UIHelper.MakeCall( GetJob().Client.Phone, JobDetailsActivity.this);
+		            		break;
+		            	case 1:
+		            		UIHelper.MakeCall( _officeContactProvider.getOfficePhoneNumber(), JobDetailsActivity.this);
+		            		break;
+		            	case 2:
+		            		UIHelper.OpenCall(JobDetailsActivity.this);
+		            		break;
+		            	}
+		           }
+		        })
+		        .setCancelable(true)
+		        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+		            public void onClick(DialogInterface dialog, int whichButton) {
+		            }
+		        })
+		        .create();
+				
+				dialog.show();
 			}
 		});
 
@@ -558,30 +588,43 @@ catch(Exception ex)
 
 				_quickActions = new QuickAction(_btnView);
 				
-				_quickActions.addActionItem(qaClient);
-				_quickActions.addActionItem(qaClinicalDetails);
-				_quickActions.addActionItem(qaTakeAPicture);
-				_quickActions.addActionItem(qaContact);
-				_quickActions.addActionItem(qaNavigate);
+				if( isAuthrosied(Permission.ClientDetailsView))
+					_quickActions.addActionItem(qaClient);
+				if( isAuthrosied(Permission.ClinicalDetailsEdit))
+					_quickActions.addActionItem(qaClinicalDetails);
+				if( isAuthrosied(Permission.TakePhoto))
+					_quickActions.addActionItem(qaTakeAPicture);
+				if( isAuthrosied(Permission.Contact))
+					_quickActions.addActionItem(qaContact);
+				if( isAuthrosied(Permission.Navigate))
+					_quickActions.addActionItem(qaNavigate);
 
 				_quickActions.show();
 
 			}
 		});
 		
-		_btnProgressNote.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-
-				_quickActionsPrgressNotes = new QuickAction(_btnProgressNote);
-				
-				_quickActionsPrgressNotes.addActionItem(qaProgressNotes);
-				_quickActionsPrgressNotes.addActionItem(qaProgressNoteNew);
-
-				_quickActionsPrgressNotes.show();
-
-			}
-		});
+		if(isAuthrosied(Permission.ProgressNotesEdit))
+		{
+			_btnProgressNote.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View v) {
+	
+					_quickActionsPrgressNotes = new QuickAction(_btnProgressNote);
+					
+					_quickActionsPrgressNotes.addActionItem(qaProgressNotes);
+					_quickActionsPrgressNotes.addActionItem(qaProgressNoteNew);
+	
+					_quickActionsPrgressNotes.show();
+	
+				}
+			});
+		}
+		else
+			_btnProgressNote.setVisibility(View.GONE);
+		
+		if(!isAuthrosied(Permission.FormsView))
+			_btnForms.setVisibility(View.GONE);
 	}
 	
 	@Override

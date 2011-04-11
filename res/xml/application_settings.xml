@@ -85,4 +85,36 @@
 
     </PreferenceCategory>
     
+    <PreferenceCategory
+        android:title="Tracking">
+
+		<EditTextPreference
+                android:key="application_settings_tracking_distance"
+	            android:defaultValue="10"
+                android:title="Tracking Distance"
+                android:summary="This is the distance in meaters between each tracked point"
+                android:dialogTitle="Tracking Distance" 
+                android:numeric="integer"
+                />
+
+		<CheckBoxPreference
+                android:key="application_settings_tracking_proximity_enabled"
+	            android:defaultValue="true"
+                android:title="Proximity Job Start Enabled"
+                android:summary="Enables the automatic starting and ending of a job based off the proximity of the next job"
+                android:dialogTitle="Automatic Job Start Proximity" />
+
+		<EditTextPreference
+                android:key="application_settings_tracking_proximity"
+	            android:defaultValue="25"
+                android:title="Proximity Distance"
+                android:summary="Distance in meters before a job is automatically started"
+                android:dialogTitle="Proximity Meters" 
+                android:dependency="application_settings_tracking_proximity_enabled" 
+                android:numeric="integer"
+                />
+        
+    </PreferenceCategory>
+    
+    
 </PreferenceScreen>

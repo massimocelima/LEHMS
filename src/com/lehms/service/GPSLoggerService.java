@@ -1,11 +1,24 @@
 package com.lehms.service;
 
+import java.util.Date;
+
 import roboguice.service.RoboService;
 
 import com.google.inject.Inject;
+import com.lehms.JobDetailsActivity;
+import com.lehms.messages.dataContracts.JobDetailsDataContract;
 import com.lehms.messages.dataContracts.LocationDataContract;
+import com.lehms.messages.dataContracts.RosterDataContract;
+import com.lehms.persistence.Event;
+import com.lehms.persistence.EventType;
+import com.lehms.persistence.IEventFactory;
+import com.lehms.persistence.IEventRepository;
+import com.lehms.persistence.IRosterRepository;
+import com.lehms.serviceInterface.IActiveJobProvider;
+import com.lehms.serviceInterface.IIdentityProvider;
 import com.lehms.serviceInterface.ISerializer;
 import com.lehms.serviceInterface.ITracker;
+import com.lehms.serviceInterface.ITrackingSettings;
 import com.lehms.util.AppLog;
 
 import android.app.Notification;
@@ -40,6 +53,16 @@ public class GPSLoggerService extends RoboService implements LocationListener, G
     @Inject ISerializer _serializer;
     @Inject ITracker _tracker;
     
+    @Inject IActiveJobProvider _activeJobProvider;
+    @Inject IIdentityProvider _identityProvider;
+
+    @Inject ITrackingSettings _trackingSettings;
+
+    @Inject IRosterRepository _rosterRepository;
+
+    @Inject IEventRepository _eventRepository;
+    @Inject IEventFactory _eventFactory;
+
     //private final int PROXIMTY_TO_TARGET = 25; 
     
 	// Handler that receives messages from the thread
@@ -112,23 +135,79 @@ public class GPSLoggerService extends RoboService implements LocationListener, G
 	@Override
 	public void onLocationChanged(Location location) {
 		
-		double longitude = location.getLongitude();
-		double latitude = location.getLatitude();
-		double x = longitude + latitude;
-		// Store this data
+		if( _identityProvider.isAuthenticated() )
+		{
+			try
+			{
+				LocationDataContract locationDC = new LocationDataContract();
+				locationDC.Accuracy = location.getAccuracy();
+				locationDC.Latitude = location.getLatitude();
+				locationDC.Longitude = location.getLongitude();
+				locationDC.Taken = new Date();
+				
+				if(_identityProvider.isAuthenticated())
+					locationDC.Username = _identityProvider.getCurrent().Username;
+				if(_activeJobProvider.get() != null)
+					locationDC.JobId = _activeJobProvider.get().JobId;
+				
+				Event event = _eventFactory.create(locationDC, EventType.LocationTracking);
+				_eventRepository.create(event);
+
+				if(_tracker != null)
+					_tracker.putLastLocation(locationDC);
+				
+				startJobIfInProximity(location);
+				
+			}
+			catch(Exception ex)
+			{
+				AppLog.error("Error saving location.", ex);
+			}
+
+		}
+	}
+	
+	public JobDetailsDataContract startJobIfInProximity(Location location)
+	{
+		JobDetailsDataContract result = null;
+
+		if(_trackingSettings.getProximityEnabled())
+		{
+			try
+			{
+				RosterDataContract roster = _rosterRepository.fetchRosterFor(new Date());
+				
+				JobDetailsDataContract startedJob = roster.getStartedJob();
+				
+				for(JobDetailsDataContract job : roster.Jobs)
+				{
+					if( job != startedJob )
+					{
+						Location jobLocation = new Location("");
+						jobLocation.setLongitude(job.Client.Address.Location.Longitude);
+						jobLocation.setLatitude(job.Client.Address.Location.Latitude);
+						
+						float distance = location.distanceTo(jobLocation);
+						if(distance <= _trackingSettings.getProximityDistance())
+						{
+							//job.Start(kilometersTravelled);
+							//if(startedJob != null)
+								//startedJob.stop
+						}
+					}
+				}
+			}
+			catch(Exception ex)
+			{
+				AppLog.error("Error getting roster.", ex);
+			}
+		}
 		
-		
-		LocationDataContract locationDC = new LocationDataContract();
-		locationDC.Accuracy = location.getAccuracy();
-		locationDC.Latitude = latitude;
-		locationDC.Longitude = longitude;
-		if(_tracker != null)
-			_tracker.putLastLocation(locationDC);
+		return result;
 	}
 
 	@Override
 	public void onProviderDisabled(String arg0) {
-		// TODO Auto-generated method stub
 		StopGpsManager();
 		StartGpsManager();
 	}
@@ -152,8 +231,8 @@ public class GPSLoggerService extends RoboService implements LocationListener, G
 		_gpsLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 		
 		_gpsLocationManager.requestLocationUpdates( LocationManager.GPS_PROVIDER, 
-				0, 
-				10, 
+				0,
+				_trackingSettings.getTrackingDistance(), 
 				this, 
 				_serviceLooper );
 		//_gpsLocationManager.addProximityAlert( latitude, longitude, radius, expiration, intent)

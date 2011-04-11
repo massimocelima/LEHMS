@@ -8,13 +8,13 @@
     >
 
 	<TextView 
-	    android:layout_width="match_parent"
+	    android:layout_width="fill_parent"
 	    android:layout_height="wrap_content"
 	    android:id="@+id/device_item_name"
 	/>
 
 	<TextView 
-	    android:layout_width="match_parent"
+	    android:layout_width="fill_parent"
 	    android:layout_height="wrap_content"
 	    android:id="@+id/device_item_address"
 	/>

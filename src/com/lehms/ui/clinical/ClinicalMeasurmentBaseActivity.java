@@ -76,13 +76,13 @@ public abstract class ClinicalMeasurmentBaseActivity<T> extends LehmsRoboActivit
 
 		if(savedInstanceState != null && savedInstanceState.get(EXTRA_CLIENT) != null)
 			_client = (ClientDataContract)savedInstanceState.get(EXTRA_CLIENT);
-
-		if(getDeviceProvider() != null)
-			CreateQuickActions();
 	};
 
 	protected void init()
 	{
+		if(getDeviceProvider() != null)
+			CreateQuickActions();
+
 		_subtitle.setText(_client.FirstName + " " + _client.LastName);
 		if(getDeviceProvider() == null)
 			_takeMeasurmentButton.setVisibility(View.GONE);

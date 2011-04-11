@@ -9,12 +9,14 @@ import com.lehms.controls.QuickAction;
 import com.lehms.messages.GetClientDetailsResponse;
 import com.lehms.messages.dataContracts.ClientDataContract;
 import com.lehms.messages.dataContracts.ClientSummaryDataContract;
+import com.lehms.messages.dataContracts.Permission;
 import com.lehms.serviceInterface.IClientResource;
 import com.lehms.util.AppLog;
 
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -95,6 +97,9 @@ public class ClientDetailsActivity  extends LehmsRoboActivity { //implements Asy
 	@InjectView(R.id.activity_client_details_medical_conditions_value) TextView _medicalConditionsTextView;
 
 	@InjectView(R.id.activity_client_details_progress_notes) Button _btnProgressNote;
+	@InjectView(R.id.activity_client_details_forms) Button _btnForms;
+	@InjectView(R.id.activity_client_details_clinical_details) Button _btnClinicalDetails;
+	
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -417,8 +422,35 @@ public class ClientDetailsActivity  extends LehmsRoboActivity { //implements Asy
 		qaContact.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				NavigationHelper.goContact(ClientDetailsActivity.this, _clientId + "");
+
 				_quickAction.dismiss();
+
+				AlertDialog dialog = new AlertDialog.Builder(ClientDetailsActivity.this)
+		        .setTitle("Please select how you would like to contact the office")
+		        .setItems(R.array.client_contact_selection, new DialogInterface.OnClickListener() {
+		            public void onClick(DialogInterface dialog, int which) {
+		            	switch(which)
+		            	{
+		            	case 0:
+		            		UIHelper.MakeCall( _clientResponse.Client.Phone, ClientDetailsActivity.this);
+		            		break;
+		            	case 1:
+		            		UIHelper.MakeCall( _clientResponse.Doctor.PhoneNumber, ClientDetailsActivity.this);
+		            		break;
+		            	case 2:
+		            		UIHelper.OpenCall(ClientDetailsActivity.this);
+		            		break;
+		            	}
+		           }
+		        })
+		        .setCancelable(true)
+		        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+		            public void onClick(DialogInterface dialog, int whichButton) {
+		            }
+		        })
+		        .create();
+				
+				dialog.show();
 			}
 		});
 
@@ -452,29 +484,57 @@ public class ClientDetailsActivity  extends LehmsRoboActivity { //implements Asy
 			public void onClick(View v) {
 				_quickAction = new QuickAction(v);
 				
-				_quickAction.addActionItem(qaClinicalDetails);
-				_quickAction.addActionItem(qaNavigate);
-				_quickAction.addActionItem(qaNextService);
-				_quickAction.addActionItem(qaTakeAPicture);
-				_quickAction.addActionItem(qaContact);
+				if( isAuthrosied(Permission.ClinicalDetailsEdit))
+					_quickAction.addActionItem(qaClinicalDetails);
+
+				if( isAuthrosied(Permission.Navigate) )
+					_quickAction.addActionItem(qaNavigate);
+
+				if( isAuthrosied(Permission.RosterView) )
+					_quickAction.addActionItem(qaNextService);
+				
+				if( isAuthrosied(Permission.TakePhoto) )
+					_quickAction.addActionItem(qaTakeAPicture);
+
+				if( isAuthrosied(Permission.Contact) )
+					_quickAction.addActionItem(qaContact);
 				
 				_quickAction.show();
 			}
 		});
 		
-		_btnProgressNote.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-
-				_quickActionsPrgressNotes = new QuickAction(_btnProgressNote);
-				
-				_quickActionsPrgressNotes.addActionItem(qaProgressNotes);
-				_quickActionsPrgressNotes.addActionItem(qaProgressNoteNew);
-
-				_quickActionsPrgressNotes.show();
-
-			}
-		});
+		if(isAuthrosied(Permission.ProgressNotesEdit))
+		{
+			_btnProgressNote.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View v) {
+	
+					_quickActionsPrgressNotes = new QuickAction(_btnProgressNote);
+					
+					_quickActionsPrgressNotes.addActionItem(qaProgressNotes);
+					_quickActionsPrgressNotes.addActionItem(qaProgressNoteNew);
+	
+					_quickActionsPrgressNotes.show();
+	
+				}
+			});
+		}
+		else
+			_btnProgressNote.setVisibility(View.GONE);
+		
+		if(! isAuthrosied(Permission.FormsEdit))
+			_btnForms.setVisibility(View.GONE);
+		
+		if(isAuthrosied(Permission.OwnedClientDetailsView))
+		{
+			_btnClinicalDetails.setVisibility(View.VISIBLE);
+			_btnClinicalDetails.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					NavigationHelper.goCliniclaDetails(ClientDetailsActivity.this, _clientResponse.Client);
+				}
+			});
+		}
 	}
 	
 }

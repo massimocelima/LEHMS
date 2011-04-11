@@ -27,7 +27,9 @@ import com.lehms.util.AppLog;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.DialogInterface.OnCancelListener;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -164,13 +166,26 @@ public class FormsActivity  extends LehmsRoboListActivity { //implements AsyncQu
             _progressDialog = new ProgressDialog(context);
             _progressDialog.setMessage("Loading form definitions please wait...");
             _progressDialog.setIndeterminate(true);
-            _progressDialog.setCancelable(false);
+            _progressDialog.setCancelable(true);
+            
+            _progressDialog.setOnCancelListener(new OnCancelListener() 
+            {             
+            	@Override             
+            	public void onCancel(DialogInterface dialog) {                 
+            		cancel(true);             
+            	}         
+            });
     	}
     	
     	@Override
     	protected void onPreExecute() {
     		super.onPreExecute();
             _progressDialog.show();
+    	}
+    	
+    	@Override
+    	protected void onCancelled() {
+    		super.onCancelled();
     	}
     	
 		@Override
@@ -209,6 +224,10 @@ public class FormsActivity  extends LehmsRoboListActivity { //implements AsyncQu
 		@Override
 		protected void onPostExecute(GetFormDefinitionResponse result) {
 			super.onPostExecute(result);
+			
+			if(isCancelled())
+				return;
+
 			if( result == null )
 			{
 				if( _exception != null )

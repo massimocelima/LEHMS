@@ -10,16 +10,16 @@
          android:layout_width="fill_parent"
          android:layout_height="wrap_content"
          android:layout_weight="1">
-         <Button android:id="@+id/dashboard_btn_emergency"
+         <Button android:id="@+id/dashboard_btn_emergency_self_care"
              style="@style/DashboardButton"
              android:text="Help"
              android:onClick="onEmergencyClick"
              android:drawableTop="@drawable/dashboard_btn_emergency"/>
-         <Button android:id="@+id/dashboard_btn_clinical_details"
+         <Button android:id="@+id/dashboard_btn_test_emergency"
              style="@style/DashboardButton"
-             android:onClick="onClinicalDetailsClick"
-             android:text="Clinical Details"
-             android:drawableTop="@drawable/dashboard_btn_clinical_details"/>
+             android:text="Test Alarm"
+             android:onClick="onEmergencyTestClick"
+             android:drawableTop="@drawable/dashboard_btn_emergency_test"/>
      </LinearLayout>
 
      <LinearLayout
@@ -32,10 +32,10 @@
              android:onClick="onCallCallCentreClick"
              android:text="Contact Call Centre"
              android:drawableTop="@drawable/dashboard_btn_contact"/>
-         <Button android:id="@+id/dashboard_btn_emergency"
+         <Button android:id="@+id/dashboard_btn_clinical_details"
              style="@style/DashboardButton"
-             android:text="Test Alarm"
-             android:onClick="onEmergencyTestClick"
-             android:drawableTop="@drawable/dashboard_btn_emergency_test"/>
+             android:onClick="onClinicalDetailsClick"
+             android:text="Clinical Details"
+             android:drawableTop="@drawable/dashboard_btn_clinical_details"/>
      </LinearLayout>
  </LinearLayout>

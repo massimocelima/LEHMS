@@ -180,6 +180,14 @@
 	        android:text="Forms" />
 
 	    <Button 
+			android:id="@+id/activity_client_details_clinical_details"
+			android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:drawableLeft="@drawable/quick_actions_ic_nurse"
+	        android:text="Clinical Details" 
+	        android:visibility="gone"/>
+
+	    <Button 
 			android:id="@+id/activity_client_details_more"
 			android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"

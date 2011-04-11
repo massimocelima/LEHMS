@@ -33,16 +33,6 @@ public class NavigationHelper {
 	
 	private NavigationHelper() {}
 
-	public static void goContactCallCentre(Context context)
-	{
-		UIHelper.ShowUnderConstructionMessage(context);
-	}
-
-	public static void goContact(Context context, String clientId)
-	{
-		UIHelper.ShowUnderConstructionMessage(context);
-	}
-	
 	public static void goNextService(Context context, Long clientId)
 	{
 		UIHelper.ShowUnderConstructionMessage(context);

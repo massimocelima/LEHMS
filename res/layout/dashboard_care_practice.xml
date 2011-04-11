@@ -15,7 +15,7 @@
              android:onClick="onMyRosterClick"
              android:text="My Roster"
              android:drawableTop="@drawable/dashboard_btn_my_roster"/>
-         <Button android:id="@+id/dashboard_btn_map"
+         <Button android:id="@+id/dashboard_btn_clients"
              style="@style/DashboardButton"
              android:onClick="onClientsClick"
              android:text="Clients"

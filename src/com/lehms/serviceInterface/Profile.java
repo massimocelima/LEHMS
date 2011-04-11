@@ -73,7 +73,12 @@ public class Profile {
 	{
 		return GetBaseUrl() + "/Alarm";
 	}
-		
+
+	public String GetTrackingEndPoint()
+	{
+		return GetBaseUrl() + "/Tracking";
+	}
+	
 	public String GetApkResourceEndPoint()
 	{
 		return GetBaseUrl() + "/Application/Apk";

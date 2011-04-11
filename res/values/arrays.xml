@@ -29,6 +29,24 @@
         <item>By Phone</item>
         <item>By Email</item>
     </string-array>
+    
+    <string-array name="dashboard_contact_call_centre_selection">
+        <item>Call Centre By Phone</item>
+        <item>Service Centre By Phone</item>
+        <item>Other By Phone</item>
+    </string-array>
+
+    <string-array name="client_contact_selection">
+        <item>Call Client</item>
+        <item>Call Doctor</item>
+        <item>Call Other</item>
+    </string-array>
+
+    <string-array name="job_contact_selection">
+        <item>Call Client</item>
+        <item>Call Office</item>
+        <item>Call Other</item>
+    </string-array>
 
     <string-array name="send_measurment_selection">
         <item>Office</item>

@@ -245,9 +245,14 @@ public class UIHelper {
 	
 	public static void MakeCall(String phoneNumber, Context context)
 	{
-		Intent intent = new Intent(Intent.ACTION_CALL);
-		intent.setData(Uri.parse("tel:" + phoneNumber));
-		context.startActivity(intent);
+		if(phoneNumber == null || phoneNumber.equals(""))
+			UIHelper.ShowAlertDialog(context, "The number is invalid", "The number is invalid");
+		else
+		{
+			Intent intent = new Intent(Intent.ACTION_CALL);
+			intent.setData(Uri.parse("tel:" + phoneNumber));
+			context.startActivity(intent);
+		}
 	}
 
 	public static void OpenCall(Context context)

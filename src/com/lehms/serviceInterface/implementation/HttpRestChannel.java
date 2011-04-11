@@ -23,7 +23,6 @@ import org.apache.http.impl.client.DefaultHttpClient;
 
 import android.net.Uri;
 import android.text.format.DateFormat;
-import android.util.Base64;
 
 import com.lehms.messages.dataContracts.UserDataContract;
 import com.lehms.serviceInterface.ContentInputStream;
