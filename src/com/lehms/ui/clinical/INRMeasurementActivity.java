@@ -6,6 +6,7 @@ import com.lehms.NavigationHelper;
 import com.lehms.R;
 import com.lehms.UIHelper;
 
+import com.lehms.messages.dataContracts.ClientDataContract;
 import com.lehms.messages.dataContracts.ClientSummaryDataContract;
 import com.lehms.persistence.Event;
 import com.lehms.persistence.EventType;
@@ -32,7 +33,7 @@ public class INRMeasurementActivity  extends RoboActivity implements ISaveEventR
 
 	public static final String EXTRA_CLIENT = "client";
 	
-	@InjectExtra(EXTRA_CLIENT) ClientSummaryDataContract _client;
+	@InjectExtra(EXTRA_CLIENT) ClientDataContract _client;
 	
 	@InjectView(R.id.activity_title) TextView _title;
 	@InjectView(R.id.activity_sub_title) TextView _subtitle;
@@ -53,10 +54,9 @@ public class INRMeasurementActivity  extends RoboActivity implements ISaveEventR
 		setContentView(R.layout.activity_measurement_inr);
 		
 		if(savedInstanceState != null && savedInstanceState.get(EXTRA_CLIENT) != null)
-			_client = (ClientSummaryDataContract)savedInstanceState.get(EXTRA_CLIENT);
+			_client = (ClientDataContract)savedInstanceState.get(EXTRA_CLIENT);
 		
 		_subtitle.setText(_client.FirstName + " " + _client.LastName);
-		//_subtitle2.setText(_client.ClientId);
 	}
 	
 	@Override

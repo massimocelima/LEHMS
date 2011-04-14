@@ -146,7 +146,7 @@
 		        android:layout_height="wrap_content"
 		        android:drawableRight="@drawable/ic_next"
 		        android:onClick="onFinishClick"
-		        android:text="Finish" 
+		        android:text="Save" 
 		        android:visibility="gone"
 		        />
 	    </LinearLayout>

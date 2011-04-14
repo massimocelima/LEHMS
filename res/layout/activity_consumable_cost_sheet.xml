@@ -154,15 +154,21 @@
 	        android:layout_height="wrap_content"
 	        android:onClick="onCancelClick"
 	        android:width="100dip"
-	        android:text="Cancel" />
+	        android:text="Close" />
 
 	    <Button 
 			android:id="@+id/activity_consumable_cost_sheet_save"
 			android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
 	        android:onClick="onSaveClick"
-	        android:width="100dip"
-	        android:text="Save" />
+	        android:text="Save &amp; Close" />
+
+	    <Button 
+			android:id="@+id/activity_consumable_cost_sheet_save"
+			android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:onClick="onAddAnotherClick"
+	        android:text="Add Another" />
 	        
 	</LinearLayout>
 	

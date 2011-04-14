@@ -41,6 +41,7 @@ import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
@@ -164,6 +165,26 @@ public class FormDetailsActivity extends LehmsRoboActivity implements ISaveEvent
 		outState.putSerializable(EXTRA_IS_NEW, _isNew);
 	}
 	
+	@Override 
+	public void onBackPressed() {
+		AlertDialog dialog = new AlertDialog.Builder(this)
+        .setTitle("Close Without Saving?")
+        .setMessage("Are you sure you want to close this form and loose you changes?")
+        .setCancelable(true)
+        .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+            	FormDetailsActivity.this.finish();
+            }
+        })
+        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+            }
+        })
+        .create();
+	
+		dialog.show();
+	}
+	
 	public void onHomeClick(View view)
 	{
 		NavigationHelper.goHome(this);
@@ -196,7 +217,7 @@ public class FormDetailsActivity extends LehmsRoboActivity implements ISaveEvent
 
 	public void onCancelClick(View view)
 	{
-		finish();
+		onBackPressed();
 	}
 	
 	public void onFinishClick(View view)

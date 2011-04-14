@@ -119,7 +119,17 @@ public class ConsumableCostSheetActivity extends LehmsRoboActivity implements IS
 		super.onBackPressed();
 	}
 	
+	public void onAddAnotherClick(View view)
+	{
+		Save(false);
+	}
+	
 	public void onSaveClick(View view)
+	{
+		Save(true);
+	}
+	
+	private void Save(Boolean closeOnSave)
 	{
 		_eventRepository.open();
 
@@ -145,7 +155,7 @@ public class ConsumableCostSheetActivity extends LehmsRoboActivity implements IS
 				request.JobId = _activeJobProvider.get().JobId;
 			
 			Event event = _eventEventFactory.create(request, EventType.AddConsumableCost);
-			UIHelper.SaveEvent(this, this, _eventRepository, _eventExecuter, event, "Consumable Cost Item");
+			UIHelper.SaveEvent(this, this, _eventRepository, _eventExecuter, event, "Consumable Cost Item", closeOnSave);
 			
 		}
 		catch(Exception ex)
@@ -161,10 +171,9 @@ public class ConsumableCostSheetActivity extends LehmsRoboActivity implements IS
 
 	@Override
 	public void onSuccess(Object data) {
-		// Returns the progress note to the parent activity
 		UIHelper.ShowToast(this, "Consumable cost sheet saved."); 
-		
-		this.finish();
+		_itemSpinner.setSelection(0);
+		_quantityEditText.setText("");
 	}
 
 	@Override
@@ -243,7 +252,8 @@ public class ConsumableCostSheetActivity extends LehmsRoboActivity implements IS
 		}
 		
 		@Override
-		protected void onPostExecute(GetConsumableCostItemsResponse result) {
+		protected void onPostExecute(GetConsumableCostItemsResponse result) 
+		{
 			super.onPostExecute(result);
 			
 			if(isCancelled())
@@ -252,20 +262,20 @@ public class ConsumableCostSheetActivity extends LehmsRoboActivity implements IS
 			if( result == null )
 			{
 				UIHelper.handleException(ConsumableCostSheetActivity.this, _exception, "Error retriving items");
-				}
-				else
-				{
-			        ArrayAdapter<ConsumableCostItem> adapter = new ArrayAdapter<ConsumableCostItem>(ConsumableCostSheetActivity.this, 
-			        		android.R.layout.simple_spinner_item, 
-			        		result.Items);
-			        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		
-			        _itemSpinner.setAdapter(adapter);
-			        onItemClick(null);
-				}
-				if( _progressDialog.isShowing() )
-					_progressDialog.dismiss();
 			}
-		}
+			else
+			{
+		        ArrayAdapter<ConsumableCostItem> adapter = new ArrayAdapter<ConsumableCostItem>(ConsumableCostSheetActivity.this, 
+		        		android.R.layout.simple_spinner_item, 
+		        		result.Items);
+		        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 	
+		        _itemSpinner.setAdapter(adapter);
+		        onItemClick(null);
+			}
+			
+			if( _progressDialog.isShowing() )
+				_progressDialog.dismiss();
+		}
+	}
 }
