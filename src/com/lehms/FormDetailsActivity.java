@@ -167,22 +167,28 @@ public class FormDetailsActivity extends LehmsRoboActivity implements ISaveEvent
 	
 	@Override 
 	public void onBackPressed() {
-		AlertDialog dialog = new AlertDialog.Builder(this)
-        .setTitle("Close Without Saving?")
-        .setMessage("Are you sure you want to close this form and loose you changes?")
-        .setCancelable(true)
-        .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) {
-            	FormDetailsActivity.this.finish();
-            }
-        })
-        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) {
-            }
-        })
-        .create();
-	
-		dialog.show();
+		
+		if(_isNew)
+		{
+			AlertDialog dialog = new AlertDialog.Builder(this)
+	        .setTitle("Close Without Saving?")
+	        .setMessage("Are you sure you want to close this form and loose you changes?")
+	        .setCancelable(true)
+	        .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+	            public void onClick(DialogInterface dialog, int whichButton) {
+	            	FormDetailsActivity.this.finish();
+	            }
+	        })
+	        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+	            public void onClick(DialogInterface dialog, int whichButton) {
+	            }
+	        })
+	        .create();
+		
+			dialog.show();
+		}
+		else
+			finish();
 	}
 	
 	public void onHomeClick(View view)
