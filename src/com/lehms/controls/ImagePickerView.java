@@ -176,8 +176,11 @@ public class ImagePickerView {
 			}
 			else
 			{
-				String url = _profileProvider.getProfile().GetFormDataAttachmentResourceEndPoint() + "/" + data.AttachmentId.toString();
-				_drawableManager.fetchDrawableOnThread(url, _image);
+				if( ! data.AttachmentId.equals( UIHelper.EmptyUUID() ) )
+				{
+					String url = _profileProvider.getProfile().GetFormDataAttachmentResourceEndPoint() + "/" + data.AttachmentId.toString();
+					_drawableManager.fetchDrawableOnThread(url, _image);
+				}
 				_image.setVisibility(View.VISIBLE);
 				_spinner.setVisibility(View.GONE);
 			}

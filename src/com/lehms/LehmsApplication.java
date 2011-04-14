@@ -78,6 +78,9 @@ public class LehmsApplication extends RoboApplication
     public static final String KEY_PROXIMITY_ENABLED_PREF = "application_settings_tracking_proximity_enabled";
     public static final String KEY_PROXIMITY_PREF = "application_settings_tracking_proximity";
 
+    public static final String KEY_DISTANCE_PREF = "application_settings_tracking_distance";
+    public static final String KEY_DISTANCE_ACTIVE_PREF = "application_settings_tracking_distance_active";
+    public static final String KEY_DISTANCE_LAST_LOCATION_PREF = "application_settings_tracking_distance_last_loc";
     
     public static final String KEY_ALARM_PHONE_PREF = "application_settings_alarm_phone_pref";
     public static final String KEY_ALARM_SMS_PREF = "application_settings_alarm_sms_number_pref";
@@ -513,7 +516,8 @@ public class LehmsApplication extends RoboApplication
 	@Override
 	public int getTrackingDistance() {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        return Integer.parseInt( prefs.getString(KEY_TRACKING_DISTANCE_PREF, "10") );
+        int result = Integer.parseInt( prefs.getString(KEY_TRACKING_DISTANCE_PREF, "10") );
+        return result == 0 ? 10 : result;
 	}
 
 	@Override
@@ -526,6 +530,39 @@ public class LehmsApplication extends RoboApplication
 	public Boolean getProximityEnabled() {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         return prefs.getBoolean(KEY_PROXIMITY_ENABLED_PREF, false);
+	}
+
+	@Override
+	public Boolean isMeasuringDistance() {
+		return PreferenceManager.getDefaultSharedPreferences(this).getBoolean(KEY_DISTANCE_ACTIVE_PREF, false);
+	}
+	
+	@Override
+	public void beginMeasuringDistance() {
+        Editor editor = PreferenceManager.getDefaultSharedPreferences(this).edit();
+        editor.putString(KEY_DISTANCE_PREF, "0");
+        editor.putBoolean(KEY_DISTANCE_ACTIVE_PREF, true);
+        editor.commit();
+	}
+
+	@Override
+	public void addDistance(float meters) {
+		float distance = Float.parseFloat( PreferenceManager.getDefaultSharedPreferences(this)
+			.getString(KEY_DISTANCE_PREF, "0") );
+        Editor editor = PreferenceManager.getDefaultSharedPreferences(this).edit();
+        editor.putString(KEY_DISTANCE_PREF, new Float(distance + meters).toString());
+        editor.commit();
+	}
+
+	@Override
+	public float endMeasuringDistance() {
+		float distance = Float.parseFloat( PreferenceManager.getDefaultSharedPreferences(this)
+			.getString(KEY_DISTANCE_PREF, "0") );
+        Editor editor = PreferenceManager.getDefaultSharedPreferences(this).edit();
+        editor.putString(KEY_DISTANCE_PREF, "0");
+        editor.putBoolean(KEY_DISTANCE_ACTIVE_PREF, false);
+        editor.commit();
+		return distance;
 	}
 
 }

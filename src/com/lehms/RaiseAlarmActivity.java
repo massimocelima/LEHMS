@@ -82,15 +82,15 @@ public class RaiseAlarmActivity extends LehmsRoboActivity {
 		
 		_startTime = SystemClock.uptimeMillis();
 		
-		if(_alarmType == AlarmType.Test)
-		{
-			_titleTextView.setText("Test Alarm");
-			onRaiseAlarmClick(null);
-		}
-		else
-		{
-			_handler.postDelayed(_updateTimeTask, 1000);
-		}
+		//if(_alarmType == AlarmType.Test)
+		//{
+		//	_titleTextView.setText("Test Alarm");
+		//	onRaiseAlarmClick(null);
+		//}
+		//else
+		//{
+		_handler.postDelayed(_updateTimeTask, 1000);
+		//}
 	}
 
     @Override 
@@ -239,10 +239,10 @@ public class RaiseAlarmActivity extends LehmsRoboActivity {
 			}
 			else
 			{
-				if( _alarmType == AlarmType.Test )
-					createDialog("Test Alarm has been raised", "The test alarm has been raised.");
-				else
-				{
+				//if( _alarmType == AlarmType.Test )
+				//	createDialog("Test Alarm has been raised", "The test alarm has been raised.");
+				//else
+				//{
 					try {
 						UIHelper.MakeCall(_officeContactProvider.getCallCentrePhoneNumber(), RaiseAlarmActivity.this);
 						RaiseAlarmActivity.this.finalize();
@@ -250,8 +250,7 @@ public class RaiseAlarmActivity extends LehmsRoboActivity {
 						createDialog("Error trying to make call to call centre", "Error trying to make call to call centre: " + e.getMessage());
 						AppLog.error("Error trying to make call to call centre", e);
 					}
-					//createDialog("Alarm has been raised", "The alarm has been raised. If you you do not recieve a response within one minute please call 000.");
-				}
+				//}
 			}
 		}
 

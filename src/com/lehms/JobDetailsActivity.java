@@ -16,6 +16,7 @@ import com.lehms.serviceInterface.IActiveJobProvider;
 import com.lehms.serviceInterface.IDutyManager;
 import com.lehms.serviceInterface.IEventExecuter;
 import com.lehms.serviceInterface.IOfficeContactProvider;
+import com.lehms.serviceInterface.ITracker;
 import com.lehms.util.AppLog;
 
 import android.app.AlertDialog;
@@ -91,6 +92,7 @@ public class JobDetailsActivity extends LehmsRoboActivity implements ISaveEventR
 	@Inject IEventFactory _eventEventFactory;
 	@Inject IDutyManager _dutyManager;
 	@Inject IOfficeContactProvider _officeContactProvider;
+	@Inject protected ITracker _tracker;
 
 	private QuickAction _quickActions;
 	private QuickAction _quickActionsPrgressNotes;
@@ -211,15 +213,24 @@ public class JobDetailsActivity extends LehmsRoboActivity implements ISaveEventR
             .setView(navigationLocationDialogView)
             .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int whichButton) {
-
+                	
                 	EditText killometers = (EditText)navigationLocationDialogView.findViewById(R.id.killometers_travelled_value);
-                	try
+                	if(killometers.getText().toString().equals(""))
                 	{
-                    	float kilometersTravelled = Float.parseFloat( killometers.getText().toString() );
-                    	BeginJob(kilometersTravelled);
-                	} catch (Exception ex)
+                		UIHelper.ShowAlertDialog(JobDetailsActivity.this, 
+                				"Validation Error", "Please enter the number of kilometers travelled");
+                		dialog.cancel();
+                	}
+                	else
                 	{
-                		UIHelper.ShowAlertDialog(JobDetailsActivity.this, "Error starting job", "Could not stary job: " + ex.getMessage());
+	                	try
+	                	{
+	                    	float kilometersTravelled = Float.parseFloat( killometers.getText().toString() );
+	                    	BeginJob(kilometersTravelled);
+	                	} catch (Exception ex)
+	                	{
+	                		UIHelper.ShowAlertDialog(JobDetailsActivity.this, "Error starting job", "Could not start job: " + ex.getMessage());
+	                	}
                 	}
                 }
             })
@@ -247,13 +258,22 @@ public class JobDetailsActivity extends LehmsRoboActivity implements ISaveEventR
                 public void onClick(DialogInterface dialog, int whichButton) {
                 	
                 	EditText killometers = (EditText)navigationLocationDialogView.findViewById(R.id.killometers_travelled_value);
-                	try
+                	if(killometers.getText().toString().equals(""))
                 	{
-                    	float kilometersTravelled = Float.parseFloat( killometers.getText().toString() );
-                    	EndJob(kilometersTravelled);
-                	} catch (Exception ex)
+                		UIHelper.ShowAlertDialog(JobDetailsActivity.this, 
+                				"Validation Error", "Please enter the number of kilometers travelled");
+                		dialog.cancel();
+                	}
+                	else
                 	{
-                		UIHelper.ShowAlertDialog(JobDetailsActivity.this, "Error starting job", "Could not stary job: " + ex.getMessage());
+	                	try
+	                	{
+	                    	float kilometersTravelled = Float.parseFloat( killometers.getText().toString() );
+	                    	EndJob(kilometersTravelled);
+	                	} catch (Exception ex)
+	                	{
+	                		UIHelper.ShowAlertDialog(JobDetailsActivity.this, "Error starting job", "Could not stary job: " + ex.getMessage());
+	                	}
                 	}
                 }
             })
@@ -314,9 +334,13 @@ public class JobDetailsActivity extends LehmsRoboActivity implements ISaveEventR
 
 			JobDetailsDataContract job = GetJob(); 
 			job.Start(kilometersTravelled);
-			
+
+			float autoDistance = _tracker.endMeasuringDistance();
+			_tracker.beginMeasuringDistance();
+
 			JobStartActionRequest request = new JobStartActionRequest();
 			request.KilometersTravelled = (float) kilometersTravelled;
+			request.KilometersTravelledFromGps = autoDistance;
 			request.JobId = job.JobId;
 			request.ActionDate = new Date();
 			
@@ -348,9 +372,13 @@ public class JobDetailsActivity extends LehmsRoboActivity implements ISaveEventR
 
 			JobDetailsDataContract job = GetJob(); 
 			job.End(kilometersTravelled);
+			
+			float autoDistance = _tracker.endMeasuringDistance();
+			_tracker.beginMeasuringDistance();
 
 			JobEndActionRequest request = new JobEndActionRequest();
 			request.KilometersTravelled = (float) kilometersTravelled;
+			request.KilometersTravelledFromGps = autoDistance;
 			request.JobId = job.JobId;
 			request.ActionDate = new Date();
 			

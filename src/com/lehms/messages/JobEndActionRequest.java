@@ -7,5 +7,7 @@ public class JobEndActionRequest implements Serializable  {
 
 	public Date ActionDate;
 	public float KilometersTravelled;
+    public float KilometersTravelledFromGps;
     public String JobId;
+    
 }

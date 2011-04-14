@@ -3,12 +3,14 @@ package com.lehms;
 import java.util.Date;
 
 import com.google.inject.Inject;
+import com.lehms.messages.GetClientDetailsResponse;
 import com.lehms.messages.dataContracts.ClientSummaryDataContract;
 import com.lehms.messages.dataContracts.Permission;
 import com.lehms.messages.dataContracts.UserDataContract;
 import com.lehms.receivers.AlarmReceiver;
 import com.lehms.service.GPSLoggerService;
 import com.lehms.serviceInterface.IAuthorisationProvider;
+import com.lehms.serviceInterface.IClientResource;
 import com.lehms.serviceInterface.IDutyManager;
 import com.lehms.serviceInterface.IIdentityProvider;
 import com.lehms.serviceInterface.IOfficeContactProvider;
@@ -16,15 +18,18 @@ import com.lehms.serviceInterface.ITracker;
 import com.lehms.util.AppLog;
 import com.lehms.util.MathUtils;
 
+import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.PendingIntent;
+import android.app.ProgressDialog;
 import android.app.Service;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.provider.MediaStore;
@@ -50,13 +55,17 @@ import roboguice.inject.InjectView;
 
 public class Dashboard extends LehmsRoboActivity //implements OnGestureListener
 {
+	private GetClientDetailsResponse _clientResponse;
+	@Inject protected IClientResource _clientResource;
+
 	@Inject protected IIdentityProvider _identityProvider;
 	@Inject protected IOfficeContactProvider _officeContactProvider;
 	@Inject protected IAuthorisationProvider _authorisationProvider;
 	@Inject protected IDutyManager _dutyManager;
+	@Inject protected ITracker _tracker;
 	
 	@InjectView(R.id.footer_text) protected TextView _footerText;
-	
+
 	//@InjectView(R.id.dashboard_tab_host) protected TabHost _tabHost;
 	//@InjectView(android.R.id.tabs) protected TabWidget _tabWidget;
 	@InjectView(R.id.footer_container) protected LinearLayout _footerContainer;
@@ -104,6 +113,9 @@ public class Dashboard extends LehmsRoboActivity //implements OnGestureListener
 			findViewById(R.id.dashboard_care_practice_content).setVisibility(View.VISIBLE);
 			findViewById(R.id.dashboard_personal_response_content).setVisibility(View.GONE);
 			
+			// Only track the distance if we are a clinical worker
+			_tracker.beginMeasuringDistance();
+			
 		}
 		else
 		{
@@ -115,6 +127,9 @@ public class Dashboard extends LehmsRoboActivity //implements OnGestureListener
 			// They can self care
 			if( ! isAuthrosied(Permission.OwnedClientDetailsView) )
 				findViewById(R.id.dashboard_btn_clinical_details).setVisibility(View.GONE);
+			else
+				LoadClient();
+			
 			if( ! isAuthrosied(Permission.Help) )
 				findViewById(R.id.dashboard_btn_test_emergency).setVisibility(View.GONE);
 			if( ! isAuthrosied(Permission.Contact) )
@@ -284,14 +299,14 @@ public class Dashboard extends LehmsRoboActivity //implements OnGestureListener
 		{
 			UserDataContract user = _identityProvider.getCurrent();
 			if(user.ClientId != null && ! user.ClientId.equals(""))
-				NavigationHelper.openClient(this,Long.parseLong(user.ClientId));
+				NavigationHelper.goCliniclaDetails(this, _clientResponse.Client);
 			else
 				throw new Exception("Client id not found.");
 		} 
 		catch (Exception e)
 		{
 			AppLog.error("Error opening client: " + e.getMessage());
-			UIHelper.ShowAlertDialog(this, "Error opeing client", "Error opeing client: " + e.getMessage());
+			UIHelper.ShowAlertDialog(this, "Error opening client", "Error opening client: " + e.getMessage());
 		}
 	}
 	/*
@@ -391,4 +406,72 @@ public class Dashboard extends LehmsRoboActivity //implements OnGestureListener
 		manager.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP,
 				SystemClock.elapsedRealtime(), duration, loggerIntent);
 	}
+	
+	private void LoadClient(){
+		LoadClientTask task = new LoadClientTask(this);
+		task.execute();
+	}
+	
+	private class LoadClientTask extends AsyncTask<Void, Void, GetClientDetailsResponse>
+    {
+    	private Activity _context;
+    	private ProgressDialog _progressDialog;
+    	private Exception _exception;
+
+    	public LoadClientTask(Activity context)
+    	{
+    		_context = context;
+    		
+            _progressDialog = new ProgressDialog(context);
+            _progressDialog.setMessage("Loading client details please wait...");
+            _progressDialog.setIndeterminate(true);
+            _progressDialog.setCancelable(false);
+    	}
+    	
+    	@Override
+    	protected void onPreExecute() {
+    		super.onPreExecute();
+            _progressDialog.show();
+    	}
+    	
+		@Override
+		protected GetClientDetailsResponse doInBackground(Void... arg0) {
+			
+			try {
+				_clientResponse = _clientResource.GetClientDetails(Long.parseLong( _identityProvider.getCurrent().ClientId ));
+			} catch (Exception e) {
+				AppLog.error(e.getMessage());
+				_exception = e;
+			} 
+			
+			return _clientResponse;
+		}
+		
+		@Override
+		protected void onPostExecute(GetClientDetailsResponse result) {
+			super.onPostExecute(result);
+			
+			if( result == null )
+			{
+				if( _exception != null )
+					createDialog("Error", "Error opening client: " + _exception.getMessage());
+				else
+					createDialog("Error", "Error opening client");
+			}
+			
+			if( _progressDialog.isShowing() )
+				_progressDialog.dismiss();
+		}
+		
+	    private void createDialog(String title, String text) {
+	        AlertDialog ad = new AlertDialog.Builder(_context)
+	        	.setPositiveButton("Ok", null)
+	        	.setTitle(title)
+	        	.setMessage(text)
+	        	.create();
+	        ad.show();
+	    }
+		
+    }
+	
 }

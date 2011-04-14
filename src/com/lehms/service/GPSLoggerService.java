@@ -154,7 +154,10 @@ public class GPSLoggerService extends RoboService implements LocationListener, G
 				_eventRepository.create(event);
 
 				if(_tracker != null)
+				{
+					addDistance(location);
 					_tracker.putLastLocation(locationDC);
+				}
 				
 				startJobIfInProximity(location);
 				
@@ -164,6 +167,20 @@ public class GPSLoggerService extends RoboService implements LocationListener, G
 				AppLog.error("Error saving location.", ex);
 			}
 
+		}
+	}
+	
+	public void addDistance(Location location)
+	{
+		if(_tracker.isMeasuringDistance())
+		{
+			LocationDataContract lastLocation = _tracker.getLastLocation();
+			Location jobLocation = new Location("");
+			jobLocation.setLongitude(lastLocation.Longitude);
+			jobLocation.setLatitude(lastLocation.Latitude);
+			
+			float distance = location.distanceTo(jobLocation);
+			_tracker.addDistance(distance);
 		}
 	}
 	
@@ -183,16 +200,21 @@ public class GPSLoggerService extends RoboService implements LocationListener, G
 				{
 					if( job != startedJob )
 					{
-						Location jobLocation = new Location("");
-						jobLocation.setLongitude(job.Client.Address.Location.Longitude);
-						jobLocation.setLatitude(job.Client.Address.Location.Latitude);
-						
-						float distance = location.distanceTo(jobLocation);
-						if(distance <= _trackingSettings.getProximityDistance())
+						if( job.Client.Address != null && job.Client.Address.Location != null && 
+								job.Client.Address.Location.Latitude != 0 && 
+								job.Client.Address.Location.Longitude != 0 )
 						{
-							//job.Start(kilometersTravelled);
-							//if(startedJob != null)
-								//startedJob.stop
+							Location jobLocation = new Location("");
+							jobLocation.setLongitude(job.Client.Address.Location.Longitude);
+							jobLocation.setLatitude(job.Client.Address.Location.Latitude);
+							
+							float distance = location.distanceTo(jobLocation);
+							if(distance <= _trackingSettings.getProximityDistance())
+							{
+								//job.Start(kilometersTravelled);
+								//if(startedJob != null)
+									//startedJob.stop
+							}
 						}
 					}
 				}

@@ -48,6 +48,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.text.InputType;
 import android.text.format.DateFormat;
 import android.view.GestureDetector;
 import android.view.Gravity;
@@ -328,6 +329,9 @@ public class FormDetailsActivity extends LehmsRoboActivity implements ISaveEvent
 			case ImagePicker:
 				view = CreateImagePickerView(element);
 				break;
+			case Number:
+				view = CreateNumberTextBoxView(element);
+				break;
 			default:
 				view = CreateTextBoxView(element);
 				break;
@@ -460,6 +464,36 @@ public class FormDetailsActivity extends LehmsRoboActivity implements ISaveEvent
 		View view = layoutInflater.inflate(R.layout.form_textbox, _container, true);
 
 		EditText textbox = (EditText)view.findViewById(R.id.form_textbox_edit);
+		TextView label = (TextView)view.findViewById(R.id.form_textbox_label);
+		
+		if(element.Value != null && ! element.Value.equals(""))
+		{
+			if(element.Value.equals("[USER]"))
+			{
+				try { textbox.setText(_identityProvider.getCurrent().getCreatedByFormat()); }
+				catch (Exception ex) { textbox.setText(element.Value); }
+			}
+			else
+				textbox.setText(element.Value);
+		}
+		
+		textbox.setId(element.Id);
+		label.setText(element.Label);
+		label.setId(getNextId());
+		
+		textbox.setEnabled(_isNew && ! element.IsReadonly);
+		textbox.setFocusable(_isNew && ! element.IsReadonly);
+		
+		return view;
+	}
+	
+	public View CreateNumberTextBoxView(FormElement element)
+	{
+		LayoutInflater layoutInflater = (LayoutInflater)this.getSystemService(LAYOUT_INFLATER_SERVICE);
+		View view = layoutInflater.inflate(R.layout.form_textbox, _container, true);
+
+		EditText textbox = (EditText)view.findViewById(R.id.form_textbox_edit);
+		textbox.setInputType(InputType.TYPE_CLASS_NUMBER);
 		TextView label = (TextView)view.findViewById(R.id.form_textbox_label);
 		
 		if(element.Value != null && ! element.Value.equals(""))
@@ -749,6 +783,7 @@ public class FormDetailsActivity extends LehmsRoboActivity implements ISaveEvent
 			switch(element.Type)
 			{
 			case TextBox:
+			case Number:
 				EditText editText = (EditText)findViewById(element.Id);
 				element.Value = editText.getText().toString();
 				break;

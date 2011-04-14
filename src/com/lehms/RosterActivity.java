@@ -57,6 +57,7 @@ import roboguice.inject.InjectExtra;
 public class RosterActivity  extends RoboListActivity 
 {
 	public final static String EXTRA_ROSTER_DATE = "roster_date"; 
+	private final static int REQUEST_JOB = 0; 
 	
 	@InjectView(R.id.title_bar_title) TextView _titleBarTitle;
 	@InjectExtra(value = EXTRA_ROSTER_DATE, optional = true) Date _rosterDate;
@@ -116,12 +117,18 @@ public class RosterActivity  extends RoboListActivity
 		outState.putSerializable(EXTRA_ROSTER_DATE, _rosterDate);
 	}
 	
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		fillDataAsync(false);
+	}
+	
 	private void ShowJob(int position, long id)
 	{
 		Intent intent = new Intent(this, JobDetailsActivity.class);
 		intent.putExtra(JobDetailsActivity.EXTRA_JOB_ID, id);
 		intent.putExtra(JobDetailsActivity.EXTRA_ROSTER_DATE, _rosterDate.getTime());
-		startActivity(intent);
+		startActivityForResult(intent, REQUEST_JOB);
 	}
 	
 	private String GetUserDetails()

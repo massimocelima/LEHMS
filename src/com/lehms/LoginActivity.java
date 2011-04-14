@@ -47,7 +47,6 @@ public class LoginActivity extends RoboActivity {
     @Inject protected IProfileProvider _profileProvider;
     @Inject protected IApkResource _apkResource;
     @Inject protected DataSyncService _dataSyncService;
-
     
     @Override
     public void onCreate(Bundle savedInstanceState) {

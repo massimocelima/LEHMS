@@ -6,6 +6,6 @@
 	<classpathentry kind="lib" path="C:/Development/Android/Roboguice/guice-2.0-no_aop.jar"/>
 	<classpathentry kind="lib" path="C:/Development/Android/Roboguice/roboguice-1.1.jar"/>
 	<classpathentry kind="lib" path="C:/Development/Android/gson/google-gson-1.6-release/gson-1.6.jar"/>
-	<classpathentry kind="lib" path="C:/Development/Android/Charts/Androidplot-core-0.4a-release.jar"/>
+	<classpathentry kind="lib" path="C:/Development/Android/androidplot/Androidplot-core-0.4a-release.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
