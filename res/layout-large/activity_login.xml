@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:gravity="center_horizontal"
+    android:background="#FFe9f0f6"
+    >
+
+    <LinearLayout style="@style/TitleBar">
+
+        <ImageView style="@style/TitleBarSeparator" />
+        <TextView style="@style/TitleBarText" android:text="LEHMS V2" />
+
+        <ImageView style="@style/TitleBarSeparator" />
+        <ImageButton style="@style/TitleBarAction"
+            android:contentDescription="Search"
+            android:src="@drawable/ic_title_export"
+            android:onClick="onSettingsClick" />
+            
+    </LinearLayout>
+
+	<ScrollView
+	  android:layout_width="fill_parent"
+	  android:layout_height="wrap_content">
+	
+		<LinearLayout
+		  android:orientation="vertical"
+		  android:layout_width="fill_parent"
+		  android:layout_height="wrap_content"
+		  android:gravity="center"
+		 >
+		
+		    <LinearLayout
+			    android:orientation="horizontal"
+			    android:layout_width="fill_parent"
+			    android:layout_height="60dip"
+			    android:background="@drawable/login_title_background"
+		    >
+		        <ImageView 
+		        	android:layout_width="wrap_content"
+			        android:layout_height="wrap_content"
+		        	android:src="@drawable/login_title" 
+		        	android:layout_gravity="center"  />
+		    </LinearLayout>
+			
+		    <LinearLayout
+			    android:orientation="horizontal"
+			    android:layout_width="fill_parent"
+			    android:layout_height="20dip"
+		    >
+		    </LinearLayout>
+		
+			<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+			    android:orientation="vertical"
+			    android:layout_width="300dip"
+			    android:layout_height="wrap_content"
+			    android:gravity="center">
+		
+				<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+				    android:orientation="vertical"
+				    android:layout_width="fill_parent"
+				    android:layout_height="wrap_content"
+				    android:gravity="center"
+				    android:padding="20dip"
+				    android:background="@drawable/login_background">
+				
+					<TextView 	 
+				    	android:layout_width="fill_parent" 
+					    android:layout_height="wrap_content" 
+					    android:text="@string/login_username"
+					    style="@android:style/TextAppearance.Large"
+					    android:textColor="#FF000000"
+				    />
+					    
+				    <EditText 
+				    	android:layout_width="fill_parent" 
+					    android:layout_height="wrap_content" 
+					    android:hint="Enter your username"
+					    android:id="@+id/login_username_edit"
+					    android:singleLine="true"
+					    ></EditText>
+					
+					<TextView 	 
+				    	android:layout_width="fill_parent" 
+					    android:layout_height="wrap_content" 
+					    android:text="@string/login_password"
+					    style="@android:style/TextAppearance.Large"
+					    android:textColor="#FF000000"
+				    />
+					
+				    <EditText 
+				    	android:layout_width="fill_parent" 
+					    android:layout_height="wrap_content" 
+					    android:id="@+id/login_password_edit"
+					    android:hint="Enter your password"
+					    android:password="true"
+					    android:singleLine="true"
+					    ></EditText>
+					
+					<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+					    android:orientation="horizontal"
+					    android:layout_width="fill_parent"
+					    android:layout_height="wrap_content"
+					    android:gravity="center"
+					    >
+					    
+						<Button android:id="@+id/login_login_button"
+							android:onClick="OnLoginClick" 
+							android:text="@string/login_login"
+							android:layout_width="wrap_content" 
+							android:layout_height="wrap_content"
+							android:layout_weight="1"
+							 />
+							
+						<Button android:id="@+id/login_cancel_button"
+							android:onClick="OnCancelClick" 
+							android:text="@string/login_cancel"
+							android:layout_width="wrap_content" 
+							android:layout_height="wrap_content" 
+							android:layout_weight="1"
+							/>
+				
+					</LinearLayout>    
+					
+			    </LinearLayout>
+
+				<TextView 	 
+					android:id="@+id/version_label"
+			    	android:layout_width="wrap_content" 
+				    android:layout_height="wrap_content" 
+				    android:gravity="center"
+				    android:padding="10dip"
+				  	android:textAppearance="?android:attr/textAppearanceSmall" 
+				  	android:textColor="?android:attr/textColorSecondary" 
+				 />
+			    
+				<TextView 	 
+			    	android:layout_width="wrap_content" 
+				    android:layout_height="wrap_content" 
+				    android:gravity="center"
+				    android:padding="10dip"
+				    android:text="© Copyright 2000-2011 LEHMS All rights reserved Various trademarks held by their respective owners"
+				  	android:textAppearance="?android:attr/textAppearanceSmall" 
+				  	android:textColor="?android:attr/textColorSecondary" 
+				 />
+			 
+			 </LinearLayout>
+		
+		</LinearLayout>
+	</ScrollView>
+
+</LinearLayout>

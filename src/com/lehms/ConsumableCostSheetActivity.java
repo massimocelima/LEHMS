@@ -75,8 +75,6 @@ public class ConsumableCostSheetActivity extends LehmsRoboActivity implements IS
 	@Inject IActiveJobProvider _activeJobProvider;
 	
 	@InjectView(R.id.activity_title) TextView _titleTextView;
-	@InjectView(R.id.activity_sub_title) TextView _subTitleTextView;
-	@InjectView(R.id.activity_sub_title2) TextView _subTitle2TextView;
 
 	@InjectView(R.id.activity_consumable_cost_sheet_item) Spinner _itemSpinner;
 	@InjectView(R.id.activity_consumable_cost_sheet_cost) EditText _costEditText;
@@ -94,8 +92,7 @@ public class ConsumableCostSheetActivity extends LehmsRoboActivity implements IS
 		LoadConsumableCostSheetItemsTask task = new LoadConsumableCostSheetItemsTask();
 		task.execute(null);
 		
-		_subTitleTextView.setText(_client.FirstName + " " + _client.LastName);
-		_subTitleTextView.setText(_client.ClientId);
+		_titleTextView.setText(_client.FirstName + " " + _client.LastName);
 		
 		_itemSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
 

@@ -31,11 +31,6 @@
     <LinearLayout 
         style="@style/HeaderContainer">
 
-		<ImageView 
-			android:layout_height="wrap_content" 
-			android:layout_width="wrap_content" 
-			android:src="@drawable/dashboard_btn_forms_selected"></ImageView>
-			
 	    <LinearLayout 
 		    android:orientation="vertical"
 		    android:layout_width="wrap_content"
@@ -49,16 +44,7 @@
 		        android:layout_height="wrap_content"
 		        android:text="Consumable Cost Sheet"
 		        style="@style/HeaderTitle" />
-	   		<TextView 
-				android:id="@+id/activity_sub_title"
-		        android:layout_width="wrap_content"
-		        android:layout_height="wrap_content"
-		        style="@style/HeaderSubTitle" />
-	   		<TextView 
-				android:id="@+id/activity_sub_title2"
-		        android:layout_width="wrap_content"
-		        android:layout_height="wrap_content"
-		        style="@style/HeaderSubTitle" />
+
         </LinearLayout>
 
 	</LinearLayout>
@@ -86,11 +72,13 @@
 			    <LinearLayout
 			        android:layout_width="fill_parent"
 			        android:layout_height="wrap_content"
-			        android:orientation="vertical">
+			        android:orientation="horizontal">
 			    
 					<TextView 
 				        android:text="Item:"
-				        style="@style/FieldsetLabel" />
+				        style="@style/FieldsetLabel" 
+				        android:layout_width="100px"
+				        />
 				        
 				    <Spinner
 						android:id="@+id/activity_consumable_cost_sheet_item"
@@ -105,17 +93,34 @@
 			    <LinearLayout
 			        android:layout_width="fill_parent"
 			        android:layout_height="wrap_content"
-			        android:orientation="vertical">
+			        android:orientation="horizontal">
 					<TextView 
 				        android:text="Unit Cost:"
-				        style="@style/FieldsetLabel" />
+				        style="@style/FieldsetLabel" 
+				        android:layout_width="120px"
+				        />
 				
 					<EditText 
 						android:id="@+id/activity_consumable_cost_sheet_cost"
-						android:layout_width="fill_parent"
 						android:layout_height="wrap_content"
 						android:enabled="false"
+				        android:layout_width="100px"
 				        style="@style/FieldsetInput" />
+
+					<TextView 
+						android:id="@+id/activity_job_details_address"
+				        android:text=" x"
+				        style="@style/FieldsetLabel"
+				        android:layout_width="20px"
+				         />
+
+					<EditText
+						android:id="@+id/activity_consumable_cost_sheet_quantity"
+						android:layout_width="fill_parent"
+						android:layout_height="wrap_content"
+				        style="@style/FieldsetInput" 
+				        android:inputType="number"
+				        />
 		
 				</LinearLayout>
 			
@@ -124,21 +129,8 @@
 			    <LinearLayout
 			        android:layout_width="fill_parent"
 			        android:layout_height="wrap_content"
-			        android:orientation="vertical">
+			        android:orientation="horizontal">
 		
-					<TextView 
-						android:id="@+id/activity_job_details_address"
-				        android:text="Quantiry:"
-				        style="@style/FieldsetLabel" />
-				
-					<EditText
-						android:id="@+id/activity_consumable_cost_sheet_quantity"
-						android:layout_width="fill_parent"
-						android:layout_height="wrap_content"
-				        style="@style/FieldsetInput" 
-				        android:inputType="number"
-				        />
-			
 				</LinearLayout>
 		
 				  
