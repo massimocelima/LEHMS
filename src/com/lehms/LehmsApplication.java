@@ -65,7 +65,8 @@ public class LehmsApplication extends RoboApplication
 			IDutyManager,
 			ICache,
 			IApplicationContext,
-			ITrackingSettings
+			ITrackingSettings,
+			IInboxSettings
 {
     public static final String KEY_PROFILE_PREF = "application_settings_profile_pref";
     public static final String KEY_DEVICE_ID_PREF = "application_settings_device_id_pref";
@@ -86,6 +87,9 @@ public class LehmsApplication extends RoboApplication
     public static final String KEY_ALARM_SMS_PREF = "application_settings_alarm_sms_number_pref";
     public static final String KEY_SERVCIDE_PHONE_PREF = "application_settings_service_phone_pref";
     public static final String KEY_CALL_CENTRE_PHONE_PREF = "application_settings_call_centre_phone_pref";
+    
+    public static final String KEY_INBOX_NAMESPACE_PREF = "application_settings_inbox_namespace";
+    public static final String KEY_INBOX_INTENT_PREF = "application_settings_inbox_intent";
     
     public static final String KEY_USER = "application_data_user";
     public static final String KEY_JOB = "application_data_job";
@@ -289,51 +293,25 @@ public class LehmsApplication extends RoboApplication
 
 	@Override
 	public LocationDataContract getLastLocation() {
-		LocationDataContract result = null;
-		try {
-		    SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-		    String locationSerilised = sharedPref.getString("current_location", null);
-		    if(locationSerilised != null)
-		    	result = _serializer.Deserializer(locationSerilised, LocationDataContract.class);
-		} catch (Exception e) {
-			AppLog.error("Error saving current location: " + e.getMessage());
-		}
+		LocationDataContract result = getSerializable(LocationDataContract.class);
 		return result;
 	}
 
 	@Override
 	public void putLastLocation(LocationDataContract location) {
-		try {
-			String locationSerilised = _serializer.Serializer(location);
-		    SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-		    Editor editor = sharedPref.edit();
-		    editor.putString("current_location", locationSerilised);
-		    editor.commit();
-		} catch (Exception e) {
-			AppLog.error("Error saving current location: " + e.getMessage());
-		}		
+		putSerializable(location);
 	}
-
 	
 	@Override
 	public Measurement getPreviousMeasurment(String clientId, MeasurementTypeEnum measurementType) throws Exception {
-		Measurement result = null;
-	    SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-	    
 	    Class measurmentClass = getClassFromType(measurementType);
-	    String serilised = sharedPref.getString(clientId + "_" + measurmentClass.getName(), null);
-	    if(serilised != null)
-	    	result = _serializer.Deserializer(serilised, measurmentClass);
-		return result;
+	    Measurement result = getSerializable(clientId + "_" + measurmentClass.getName(), Measurement.class);
+	    return result;
 	}
 
 	@Override
 	public void putPreviousMeasurment(String clientId, Measurement measurement) throws Exception  {
-		String serilised = _serializer.Serializer(measurement);
-	    SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-	    Editor editor = sharedPref.edit();
-	    editor.putString(clientId + "_" + measurement.getClass().getName(), serilised);
-	    editor.commit();
+		putSerializable(clientId + "_" + measurement.getClass().getName(), measurement);
 	}
 	
 	private Class getClassFromType(MeasurementTypeEnum measurementType)
@@ -563,6 +541,18 @@ public class LehmsApplication extends RoboApplication
         editor.putBoolean(KEY_DISTANCE_ACTIVE_PREF, false);
         editor.commit();
 		return distance;
+	}
+
+	@Override
+	public String getNamespace() {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        return prefs.getString(KEY_INBOX_NAMESPACE_PREF, "com.android.email");
+ 	}
+
+	@Override
+	public String getIntentName() {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        return prefs.getString(KEY_INBOX_INTENT_PREF, "com.android.email.activity.Welcome");
 	}
 
 }

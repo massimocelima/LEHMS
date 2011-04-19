@@ -58,6 +58,7 @@ public class ConfigurationModule extends AbstractAndroidModule {
 		bind(IDutyManager.class).toInstance(_context);
 		bind(ICache.class).toInstance(_context);
 		bind(ITrackingSettings.class).toInstance(_context);
+		bind(IInboxSettings.class).toInstance(_context);
 		
 		bind(IChannelFactory.class).toInstance(
 				new HttpChannelFactory(new JsonSerializer(), 

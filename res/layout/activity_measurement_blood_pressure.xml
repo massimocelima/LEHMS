@@ -101,7 +101,7 @@
 					    android:layout_height="wrap_content"
 					  	android:textAppearance="?android:attr/textAppearanceSmall" 
 					  	android:textColor="?android:attr/textColorPrimary" 
-					  	android:inputType="number"
+					  	android:inputType="numberDecimal"
 					>
 					</EditText>
 					
@@ -129,7 +129,7 @@
 					    android:layout_height="wrap_content"
 					  	android:textAppearance="?android:attr/textAppearanceSmall" 
 					  	android:textColor="?android:attr/textColorPrimary" 
-					  	android:inputType="number"
+					  	android:inputType="numberDecimal"
 					>
 					</EditText>
 					

@@ -88,33 +88,69 @@
     <PreferenceCategory
         android:title="Tracking">
 
-		<EditTextPreference
-                android:key="application_settings_tracking_distance"
-	            android:defaultValue="10"
-                android:title="Tracking Distance"
-                android:summary="This is the distance in meaters between each tracked point"
-                android:dialogTitle="Tracking Distance" 
-                android:numeric="integer"
-                />
-
-		<CheckBoxPreference
-                android:key="application_settings_tracking_proximity_enabled"
-	            android:defaultValue="true"
-                android:title="Proximity Job Start Enabled"
-                android:summary="Enables the automatic starting and ending of a job based off the proximity of the next job"
-                android:dialogTitle="Automatic Job Start Proximity" />
-
-		<EditTextPreference
-                android:key="application_settings_tracking_proximity"
-	            android:defaultValue="25"
-                android:title="Proximity Distance"
-                android:summary="Distance in meters before a job is automatically started"
-                android:dialogTitle="Proximity Meters" 
-                android:dependency="application_settings_tracking_proximity_enabled" 
-                android:numeric="integer"
-                />
+        <PreferenceScreen
+                android:key="screen_preference_tracking"
+                android:title="Tracking Settings"
+                android:summary="Setting that control how you are tracked and what information is collected">
+	
+			<EditTextPreference
+	                android:key="application_settings_tracking_distance"
+		            android:defaultValue="10"
+	                android:title="Tracking Distance"
+	                android:summary="This is the distance in meaters between each tracked point"
+	                android:dialogTitle="Tracking Distance" 
+	                android:numeric="integer"
+	                />
+	
+			<CheckBoxPreference
+	                android:key="application_settings_tracking_proximity_enabled"
+		            android:defaultValue="true"
+	                android:title="Proximity Job Start Enabled"
+	                android:summary="Enables the automatic starting and ending of a job based off the proximity of the next job"
+	                android:dialogTitle="Automatic Job Start Proximity" />
+	
+			<EditTextPreference
+	                android:key="application_settings_tracking_proximity"
+		            android:defaultValue="25"
+	                android:title="Proximity Distance"
+	                android:summary="Distance in meters before a job is automatically started"
+	                android:dialogTitle="Proximity Meters" 
+	                android:dependency="application_settings_tracking_proximity_enabled" 
+	                android:numeric="integer"
+	                />
+        
+        </PreferenceScreen>
         
     </PreferenceCategory>
     
+    
+        
+    <PreferenceCategory
+        android:title="Inbox">
+
+        <PreferenceScreen
+                android:key="screen_preference_inboxsettings"
+                android:title="Inbox Settings"
+                android:summary="Settings that controls the email client to use">
+	
+			<EditTextPreference
+	                android:key="application_settings_inbox_namespace"
+		            android:defaultValue="com.android.email"
+	                android:title="Inbox Namespace"
+	                android:summary="The is the namespace for the mail client"
+	                android:dialogTitle="Inbox Namespace" 
+	                />
+	                
+			<EditTextPreference
+	                android:key="application_settings_inbox_intent"
+		            android:defaultValue="com.android.email.activity.Welcome"
+	                android:title="Inbox Intent"
+	                android:summary="The is the intent that will be called for the mail client"
+	                android:dialogTitle="Inbox Intent" 
+	                />
+	                
+	    </PreferenceScreen>
+	    
+	</PreferenceCategory>
     
 </PreferenceScreen>

@@ -19,6 +19,7 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.util.Linkify;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -112,7 +113,7 @@ public class ClientDetailsActivity  extends LehmsRoboActivity { //implements Asy
 		
 		if(savedInstanceState != null && savedInstanceState.get(EXTRA_CLIENT_ID) != null )
 			_clientId = savedInstanceState.getLong(EXTRA_CLIENT_ID);
-		
+
 		LoadClient();
 		CreateQuickActions();
 	}
@@ -200,7 +201,9 @@ public class ClientDetailsActivity  extends LehmsRoboActivity { //implements Asy
 				_subTitleTextView.setText( result.Client.ClientId );
 				_addressTextView.setText( UIHelper.FormatAddress(result.Client.Address) );
 				_dateOfBirthTextView.setText( UIHelper.FormatLongDate(result.Client.DateOfBirth) );
-				_phoneTextView.setText( result.Client.Phone );
+
+				_phoneTextView.setText( result.Client.Phone.replace(" ", "") );
+				Linkify.addLinks(_phoneTextView, Linkify.PHONE_NUMBERS );
 				
 				LoadContacts(result.Client);
 				LoadPharmacy(result);

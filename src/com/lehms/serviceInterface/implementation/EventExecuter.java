@@ -15,8 +15,10 @@ import com.lehms.messages.CreateProgressNoteRequest;
 import com.lehms.messages.JobEndActionRequest;
 import com.lehms.messages.JobStartActionRequest;
 import com.lehms.messages.JobStartActionResponse;
+import com.lehms.messages.UpdateTrackingRequest;
 import com.lehms.messages.dataContracts.AttachmentDataContract;
 import com.lehms.messages.dataContracts.ConsumableCostItem;
+import com.lehms.messages.dataContracts.LocationDataContract;
 import com.lehms.messages.dataContracts.PhotoType;
 import com.lehms.messages.dataContracts.ProgressNoteDataContract;
 import com.lehms.messages.formDefinition.FormData;
@@ -28,6 +30,7 @@ import com.lehms.serviceInterface.IEventExecuter;
 import com.lehms.serviceInterface.IFormDataResource;
 import com.lehms.serviceInterface.IJobResource;
 import com.lehms.serviceInterface.IProgressNoteResource;
+import com.lehms.serviceInterface.ITrackingResource;
 import com.lehms.serviceInterface.clinical.IClinicalMeasurementResource;
 import com.lehms.ui.clinical.model.Measurement;
 import com.lehms.util.AppLog;
@@ -41,6 +44,7 @@ public class EventExecuter implements IEventExecuter {
 	private IClinicalMeasurementResource _clinicalMeasurementResource;
 	private IJobResource _jobResource;
 	private IConsumableCostItemResource _consumableCostItemResource;
+	private ITrackingResource _trackingResource;
 	
 	@Inject
 	public EventExecuter(IProgressNoteResource progressNoteResource,
@@ -48,7 +52,8 @@ public class EventExecuter implements IEventExecuter {
 			IEventRepository eventRepository, 
 			IClinicalMeasurementResource clinicalMeasurementResource,
 			IJobResource jobResource,
-			IConsumableCostItemResource consumableCostItemResource)
+			IConsumableCostItemResource consumableCostItemResource, 
+			ITrackingResource trackingResource)
 	{
 		_progressNoteResource = progressNoteResource;
 		_eventRepository = eventRepository;
@@ -56,6 +61,7 @@ public class EventExecuter implements IEventExecuter {
 		_clinicalMeasurementResource = clinicalMeasurementResource;
 		_jobResource = jobResource;
 		_consumableCostItemResource = consumableCostItemResource;
+		_trackingResource = trackingResource;
 	}
 	
 	@Override
@@ -187,7 +193,10 @@ public class EventExecuter implements IEventExecuter {
 	
 	public Object ExecuteLocationTrackingEvent(Event event) throws Exception
 	{
-		throw new Exception("Not implemented: " + event.Type.toString());
+		LocationDataContract location = (LocationDataContract)event.Data;
+		UpdateTrackingRequest request = new UpdateTrackingRequest();
+		request.Locations.add(location);
+		return _trackingResource.Update(request);
 	}
 
 }

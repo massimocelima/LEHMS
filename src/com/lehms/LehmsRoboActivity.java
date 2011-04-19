@@ -1,5 +1,7 @@
 package com.lehms;
 
+import java.util.List;
+
 import com.google.inject.Inject;
 import com.lehms.messages.dataContracts.Permission;
 import com.lehms.serviceInterface.IAuthenticationProvider;
@@ -7,7 +9,11 @@ import com.lehms.serviceInterface.IAuthenticationService;
 import com.lehms.serviceInterface.IAuthorisationProvider;
 import com.lehms.serviceInterface.IDutyManager;
 import com.lehms.serviceInterface.IIdentityProvider;
+import com.lehms.serviceInterface.IInboxSettings;
 
+import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -19,6 +25,7 @@ public class LehmsRoboActivity extends RoboActivity {
 	@Inject IDutyManager _dutyManager;
 	@Inject IIdentityProvider _identityProvider;
 	@Inject IAuthorisationProvider _authorisationProvider;
+	@Inject IInboxSettings _inboxSettings;
 	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -37,6 +44,12 @@ public class LehmsRoboActivity extends RoboActivity {
 	    case R.id.menu_on_duty:
 	        _dutyManager.OnDuty();
 	        return true;
+	    case R.id.menu_inbox:
+	    	Intent intent = new Intent();
+	    	intent.setClassName(_inboxSettings.getNamespace(),_inboxSettings.getIntentName());
+	    	startActivity(intent);
+	    	
+	    	return true;
 	    default:
 	        return super.onOptionsItemSelected(item);
 	    }

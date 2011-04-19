@@ -176,7 +176,7 @@ public class Profile {
 			//result = "http://192.168.1.2/INS.Gateway.WASHost";
 			//result = "http://10.0.0.3/INS.Gateway.WASHost";
 			result = "http://192.168.43.57/INS.Gateway.WASHost";
-			//result = "http://192.168.1.3/INS.Gateway.WASHost";
+			//result = "http://192.168.1.4/INS.Gateway.WASHost";
 			//result = "http://10.0.2.2:7856";
 			break;
 		case Testing:

@@ -392,10 +392,24 @@ public class Dashboard extends LehmsRoboActivity //implements OnGestureListener
 	
 	@Override
 	public void onBackPressed() {
-		super.onBackPressed();
-		onDestroy();
+		
+		AlertDialog dialog = new AlertDialog.Builder(this)
+	        .setTitle("Are uou sure you want to quit the application.")
+	        .setCancelable(true)
+	        .setPositiveButton("Quit", new DialogInterface.OnClickListener() {
+	            public void onClick(DialogInterface dialog, int whichButton) {
+	            	Dashboard.this.finish();
+	            }
+	        })
+	        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+	            public void onClick(DialogInterface dialog, int whichButton) {
+	            }
+	        })
+	        .create();
+		
+		dialog.show();
 	}
-	
+		
 	private void StartDataSynchService()
 	{
 		AlarmManager manager = (AlarmManager)getSystemService(Service.ALARM_SERVICE);

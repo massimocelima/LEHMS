@@ -139,6 +139,8 @@ public class GPSLoggerService extends RoboService implements LocationListener, G
 		{
 			try
 			{
+				_eventRepository.open();
+				
 				LocationDataContract locationDC = new LocationDataContract();
 				locationDC.Accuracy = location.getAccuracy();
 				locationDC.Latitude = location.getLatitude();
@@ -166,6 +168,10 @@ public class GPSLoggerService extends RoboService implements LocationListener, G
 			{
 				AppLog.error("Error saving location.", ex);
 			}
+			finally
+			{
+				try { _eventRepository.close(); } catch(Exception e) {}
+			}
 
 		}
 	}
@@ -175,12 +181,15 @@ public class GPSLoggerService extends RoboService implements LocationListener, G
 		if(_tracker.isMeasuringDistance())
 		{
 			LocationDataContract lastLocation = _tracker.getLastLocation();
-			Location jobLocation = new Location("");
-			jobLocation.setLongitude(lastLocation.Longitude);
-			jobLocation.setLatitude(lastLocation.Latitude);
-			
-			float distance = location.distanceTo(jobLocation);
-			_tracker.addDistance(distance);
+			if(lastLocation != null)
+			{
+				Location jobLocation = new Location("");
+				jobLocation.setLongitude(lastLocation.Longitude);
+				jobLocation.setLatitude(lastLocation.Latitude);
+				
+				float distance = location.distanceTo(jobLocation);
+				_tracker.addDistance(distance);
+			}
 		}
 	}
 	
@@ -192,28 +201,32 @@ public class GPSLoggerService extends RoboService implements LocationListener, G
 		{
 			try
 			{
+				_rosterRepository.open();
+				
 				RosterDataContract roster = _rosterRepository.fetchRosterFor(new Date());
-				
-				JobDetailsDataContract startedJob = roster.getStartedJob();
-				
-				for(JobDetailsDataContract job : roster.Jobs)
+				if(roster != null)
 				{
-					if( job != startedJob )
+					JobDetailsDataContract startedJob = roster.getStartedJob();
+					
+					for(JobDetailsDataContract job : roster.Jobs)
 					{
-						if( job.Client.Address != null && job.Client.Address.Location != null && 
-								job.Client.Address.Location.Latitude != 0 && 
-								job.Client.Address.Location.Longitude != 0 )
+						if( job != startedJob )
 						{
-							Location jobLocation = new Location("");
-							jobLocation.setLongitude(job.Client.Address.Location.Longitude);
-							jobLocation.setLatitude(job.Client.Address.Location.Latitude);
-							
-							float distance = location.distanceTo(jobLocation);
-							if(distance <= _trackingSettings.getProximityDistance())
+							if( job.Client.Address != null && job.Client.Address.Location != null && 
+									job.Client.Address.Location.Latitude != 0 && 
+									job.Client.Address.Location.Longitude != 0 )
 							{
-								//job.Start(kilometersTravelled);
-								//if(startedJob != null)
-									//startedJob.stop
+								Location jobLocation = new Location("");
+								jobLocation.setLongitude(job.Client.Address.Location.Longitude);
+								jobLocation.setLatitude(job.Client.Address.Location.Latitude);
+								
+								float distance = location.distanceTo(jobLocation);
+								if(distance <= _trackingSettings.getProximityDistance())
+								{
+									//job.Start(kilometersTravelled);
+									//if(startedJob != null)
+										//startedJob.stop
+								}
 							}
 						}
 					}
@@ -222,6 +235,10 @@ public class GPSLoggerService extends RoboService implements LocationListener, G
 			catch(Exception ex)
 			{
 				AppLog.error("Error getting roster.", ex);
+			}
+			finally
+			{
+				try { _rosterRepository.close(); } catch(Exception ex) {}
 			}
 		}
 		
@@ -253,7 +270,7 @@ public class GPSLoggerService extends RoboService implements LocationListener, G
 		_gpsLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 		
 		_gpsLocationManager.requestLocationUpdates( LocationManager.GPS_PROVIDER, 
-				0,
+				10000,
 				_trackingSettings.getTrackingDistance(), 
 				this, 
 				_serviceLooper );

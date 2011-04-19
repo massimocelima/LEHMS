@@ -4,4 +4,6 @@
           android:title="On Duty" />
     <item android:id="@+id/menu_off_duty"
           android:title="Off Duty" />
+    <item android:id="@+id/menu_inbox"
+          android:title="Inbox" />
 </menu>
