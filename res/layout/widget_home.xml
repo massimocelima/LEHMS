@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:id="@+id/widget_home"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:focusable="true"
+    android:paddingTop="12dip"
+    android:background="@drawable/widget_frame_portrait_3">
+
+	<LinearLayout 
+	    android:orientation="horizontal"
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    android:layout_marginLeft="24dip"
+	 >
+	    <TextView
+	        android:id="@+id/widget_home_title"
+	        android:layout_width="wrap_content" 
+	        android:layout_height="wrap_content"
+	        android:layout_weight="1"
+	        android:text="Lehms Widget"
+	        style="@style/HeaderTitle" />
+
+	    <Button 
+	       android:layout_marginTop="6dip"
+	       android:layout_marginRight="6dip"
+	       android:id="@+id/emergency_button"
+	       android:layout_width="wrap_content"
+	       android:layout_height="wrap_content"
+	       android:background="@drawable/dashboard_btn_emergency"
+	       >
+	    </Button>
+	        
+	</LinearLayout>
+    
+	<TextView
+        android:id="@+id/widget_home_message"
+        android:layout_width="wrap_content" 
+        android:layout_height="wrap_content"
+        android:text="No Messages"
+	    android:layout_marginLeft="24dip"
+    />
+    
+</LinearLayout>

@@ -3,7 +3,7 @@
 	  xmlns:android="http://schemas.android.com/apk/res/android"
       package="com.lehms"
       android:versionCode="1"
-      android:versionName="0.4.9"
+      android:versionName="0.5.0"
       >
 
 	<uses-sdk android:minSdkVersion="4" />
@@ -191,6 +191,24 @@
 		<service android:name="com.lehms.service.DataSyncService"/>
 		<receiver android:name="com.lehms.receivers.AlarmReceiver"/>
 
+		<activity android:name="com.lehms.ui.widget.WidgetConfiguration">
+		    <intent-filter>
+		        <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
+		    </intent-filter>
+		</activity>
+
+		<receiver android:name="com.lehms.ui.widget.WidgetProvider" >
+		    <intent-filter>
+		        <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+		    </intent-filter>
+		    <meta-data android:name="android.appwidget.provider"
+		               android:resource="@xml/widget_provider_info" />
+		</receiver>
+		
+		<!-- 
+		<service android:name="com.lehms.ui.widget.WidgetProvider$UpdateService" />
+		-->
+		
 		<meta-data android:name="AA_DB_NAME" android:value="Lehms.db" />
 		<meta-data android:name="AA_DB_VERSION" android:value="2" />
 		

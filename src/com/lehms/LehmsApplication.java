@@ -494,8 +494,8 @@ public class LehmsApplication extends RoboApplication
 	@Override
 	public int getTrackingDistance() {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        int result = Integer.parseInt( prefs.getString(KEY_TRACKING_DISTANCE_PREF, "10") );
-        return result == 0 ? 10 : result;
+        Double result = new Double( Double.parseDouble(prefs.getString(KEY_TRACKING_DISTANCE_PREF, "10")) );
+        return result == 0 ? 10 : result.intValue();
 	}
 
 	@Override
