@@ -214,7 +214,11 @@ public class RaiseAlarmActivity extends LehmsRoboActivity {
  			
             String seperator = "%7C";
             String smsTextMessage = "";
-           	smsTextMessage = ((((("LEHMS" + seperator) + "alarm" + seperator) + alramTypeString + seperator) + _identityProvider.getCurrent().Username + seperator) + seperator) + "MobileId" + seperator;
+            String username = "";
+            if(_identityProvider.getCurrent() != null )
+            	username = _identityProvider.getCurrent().Username;
+            
+           	smsTextMessage = ((((("LEHMS" + seperator) + "alarm" + seperator) + alramTypeString + seperator) + username + seperator) + seperator) + "MobileId" + seperator;
            	if(location != null)
  	            smsTextMessage = (((smsTextMessage + formatter.format("yyMMddHHmmss", date) + seperator) + location.Latitude + seperator) + location.Longitude + seperator) + location.Accuracy + seperator;
             else

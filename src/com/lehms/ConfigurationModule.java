@@ -38,6 +38,7 @@ public class ConfigurationModule extends AbstractAndroidModule {
 		bind(IJobResource.class).to(JobResource.class); 
 		bind(IConsumableCostItemResource.class).to(ConsumableCostItemResource.class); 
 		bind(ITrackingResource.class).to(TrackingResource.class); 
+		bind(INotificationsResource.class).to(NotificationsResource.class); 
 		
 		bind(IEventExecuter.class).to(EventExecuter.class);
 		bind(IEventFactory.class).to(EventFactory.class);

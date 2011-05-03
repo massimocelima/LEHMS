@@ -40,6 +40,7 @@
         android:layout_height="wrap_content"
         android:text="No Messages"
 	    android:layout_marginLeft="24dip"
+		style="@style/Text.Widget"
     />
     
 </LinearLayout>

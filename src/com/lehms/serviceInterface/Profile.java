@@ -104,6 +104,11 @@ public class Profile {
 		return GetBaseUrl() + "/ConsumableCostItems";
 	}
 	
+	public String GetNotificationsResourceEndPoint()
+	{
+		return GetBaseUrl() + "/Notifications";
+	}
+	
 	public String GetMeasurementSummaryResourceEndPoint()
 	{
 		return GetBaseUrl() + "/Measurement/MeasurementSummary";

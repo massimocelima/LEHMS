@@ -5,7 +5,11 @@
  */
 package com.lehms.ui.widget;
 
+import roboguice.activity.RoboActivity;
+
+import com.google.inject.Inject;
 import com.lehms.R;
+import com.lehms.serviceInterface.INotificationsResource;
 
 import android.app.Activity;
 import android.app.AlarmManager;
@@ -20,7 +24,7 @@ import android.os.SystemClock;
 import android.view.View;
 import android.widget.EditText;
 
-public class WidgetConfiguration extends Activity {
+public class WidgetConfiguration extends RoboActivity {
 	
 	private int mAppWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID;
 
@@ -56,15 +60,15 @@ public class WidgetConfiguration extends Activity {
         public void onClick(View v) {
             final Context context = WidgetConfiguration.this;
 
-            // When the button is clicked, save the string in our prefs and return that they
-            // clicked OK.
-            //String titlePrefix = mAppWidgetPrefix.getText().toString();
-            //saveTitlePref(context, mAppWidgetId, titlePrefix);
+			Intent widgetUpdate = new Intent();
+			widgetUpdate.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+			widgetUpdate.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, new int[] { mAppWidgetId });
 
-            // Push widget update to surface with newly set prefix
-            AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
-            WidgetProvider.updateAppWidget(context, appWidgetManager,
-                    mAppWidgetId, "Lehms Widget");
+			PendingIntent newPending = PendingIntent.getBroadcast(getApplicationContext(), 0, widgetUpdate, PendingIntent.FLAG_UPDATE_CURRENT);
+            AlarmManager alarms = (AlarmManager) getApplicationContext().getSystemService(Context.ALARM_SERVICE);
+			int mins = Integer.parseInt(((EditText) findViewById(R.id.EditText01)).getText().toString());
+			alarms.cancel(newPending);
+			alarms.setRepeating(AlarmManager.ELAPSED_REALTIME, SystemClock.elapsedRealtime(),  mins*1000*60,newPending);
 
             // Make sure we pass back the original appWidgetId
             Intent resultValue = new Intent();

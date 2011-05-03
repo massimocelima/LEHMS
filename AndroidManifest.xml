@@ -3,7 +3,7 @@
 	  xmlns:android="http://schemas.android.com/apk/res/android"
       package="com.lehms"
       android:versionCode="1"
-      android:versionName="0.5.0"
+      android:versionName="0.5.1"
       >
 
 	<uses-sdk android:minSdkVersion="4" />
@@ -205,9 +205,7 @@
 		               android:resource="@xml/widget_provider_info" />
 		</receiver>
 		
-		<!-- 
 		<service android:name="com.lehms.ui.widget.WidgetProvider$UpdateService" />
-		-->
 		
 		<meta-data android:name="AA_DB_NAME" android:value="Lehms.db" />
 		<meta-data android:name="AA_DB_VERSION" android:value="2" />
